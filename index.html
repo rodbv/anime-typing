@@ -477,7 +477,7 @@ Object.assign(T.pt, {
   setupTitle: "Inscrição na Steel Ball Run",
   setupIntro: "Antes da largada, vamos descobrir o seu teclado e preencher a sua inscrição.",
   setupName: "Seu nome", setupNameHint: "Ele aparece na tela inicial e na classificação.",
-  setupNumber: "Seu número de corredor: {n}",
+  setupNumber: "Seu número de corredor: {n}, o mesmo do Johnny. A sua égua é a Slow Dancer.",
   in_rv: ["Revisão: todas as teclas que você já aprendeu nesta parte da corrida.", "Tente não olhar para o teclado. Olhe para a trilha."],
   passRule: "Para passar: 90% de precisão (nas corridas, 93%)",
   failedAcc: "Quase! Para passar, você precisa de {n}% de precisão.",
@@ -543,6 +543,7 @@ const SBR = {
   ]
 };
 
+const JOHNNY_NUMBER = 939;
 const MAP_START = {pt: [60, 232], label: "San Diego", dy: 20};
 const STAGES = [
   {lbl: "Etapa 1", place: "Praia de San Diego", from: "San Diego", to: "Igreja Santa Maria Novella", km: 15, pt: [76, 222]},
@@ -715,7 +716,7 @@ const DEFAULTS = {
   settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
   best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: [],
-  profile: {name: "", number: 0}, days: {}, bestStreak: 0
+  profile: {name: ""}, days: {}, bestStreak: 0
 };
 function loadData() {
   let d = null;
@@ -1786,7 +1787,7 @@ function renderHome() {
   const prof = data.profile;
   $("#home").innerHTML = `
     <div class="card hero">
-      <div class="sub">${esc(t("racerTag", {n: prof.number || 1, name: prof.name || "Johnny Joestar"}))}</div>
+      <div class="sub">${esc(t("racerTag", {n: JOHNNY_NUMBER, name: prof.name || "Johnny Joestar"}))}</div>
       <h1>${esc(stg.lbl)}: ${esc(stg.place)}</h1>
       <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stg.from)} → ${esc(stg.to)} · ${esc(t("kmOf", {a: fmtKm(kmTraveled()), b: fmtKm(TOTAL_KM)}))}</p>
       <button class="btn primary" data-go="start">${esc(first ? t("homeStart") : t("homeContinue", {n: nx + 1}))} ${esc(t("enterHint"))}</button>
@@ -1816,12 +1817,12 @@ const PROLOGUE = [
   {art: "🌅", title: "San Diego, 25 de setembro de 1890",
     narr: ["3.852 corredores esperam na praia. Na frente deles, quase 6.000 km de deserto, montanhas, rios e gelo até Nova York.", "Tem cowboy, tem nobre, tem bandido e tem até um corredor a pé, o Sandman. O prêmio é de 50 milhões de dólares."]},
   {art: "🏇", title: "Você é o Johnny Joestar",
-    narr: ["Você era o jóquei mais famoso do país, até levar um tiro na coluna. Desde então as suas pernas não se mexem. Em cima do cavalo, você ainda corre como qualquer um.", "Na largada, você conhece o Gyro Zeppeli, que veio de Nápoles. A família dele guarda um segredo: a Rotação. Você toca na bola de aço do Gyro e, por um segundo, fica de pé.", "Você decide seguir o Gyro até Nova York."],
+    narr: ["Você era o jóquei mais famoso do país, até levar um tiro na coluna. Desde então as suas pernas não se mexem. Em cima da sua égua, a Slow Dancer, você ainda corre como qualquer um.", "Na largada, você conhece o Gyro Zeppeli, que veio de Nápoles. A família dele guarda um segredo: a Rotação. Você toca na bola de aço do Gyro e, por um segundo, fica de pé.", "Você decide seguir o Gyro até Nova York."],
     gyro: "Quer aprender a Rotação? Então treina todo dia. Nyo-ho!"},
   {art: "hands", title: "O Tusk",
     narr: ["No deserto do Arizona, o braço esquerdo do Cadáver Santo entra no seu corpo. Você desperta um Stand: o Tusk. Ele gira as suas unhas e dispara como balas.", "Aqui, cada unha só dispara quando o dedo dela acha a tecla sem você olhar. Cada dedo cuida das suas teclas, e cada lição nova ensina mais um dedo a disparar."]},
   {art: "🏆", title: "A corrida",
-    narr: ["Cada lição concluída leva o seu cavalo alguns quilômetros mais perto de Nova York.", "No fim de cada etapa, um rival da série corre contra você: Sandman, Diego, Hot Pants, Pocoloco e o próprio Valentine. Pelo caminho você junta as partes do Cadáver Santo, e o Tusk evolui até o ACT4."]},
+    narr: ["Cada lição concluída leva a Slow Dancer alguns quilômetros mais perto de Nova York.", "No fim de cada etapa, um rival da série corre contra você: Sandman, Diego, Hot Pants, Pocoloco e o próprio Valentine. Pelo caminho você junta as partes do Cadáver Santo, e o Tusk evolui até o ACT4."]},
   {art: "💻", title: "E fora da corrida?",
     narr: ["Quem digita sem olhar faz o trabalho da escola, conversa no jogo e escreve código com os olhos na tela. A cabeça fica na ideia, e não na procura da tecla.", "Você vai usar isso a vida inteira."],
     gyro: "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais longo era o atalho."}
@@ -1830,7 +1831,7 @@ const PROLOGUE = [
 function whereSlide() {
   const lc = lessonCounts();
   if (lc.cleared === 0) return {art: "map", title: "Na largada",
-    narr: ["O seu cavalo está na praia de San Diego, no km 0. A missão diária na tela inicial diz o que treinar.",
+    narr: ["A Slow Dancer está na praia de San Diego, no km 0. A missão diária na tela inicial diz o que treinar.",
       "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição."],
     gyro: "Os dedos ficam no F e no J, Johnny. A largada é agora. Nyo-ho!"};
   if (lc.cleared === LESSON_DEFS.length) return {art: "map", title: "Trinity Church, Nova York", finished: true,
@@ -1898,7 +1899,6 @@ $("#prologue").addEventListener("click", e => {
 /* ---------- first-run setup ---------- */
 let setup = {step: 1, layout: null, msg: ""};
 function renderSetup() {
-  if (!data.profile.number) data.profile.number = 1 + rnd(3852);
   const names = t("layoutNames");
   let detect;
   if (setup.layout) detect = `<p><b>✓ ${esc(t("setupDetected", {name: names[setup.layout]}))}</b></p>`;
@@ -1916,7 +1916,7 @@ function renderSetup() {
     <div class="card"><h2>2. ${esc(t("setupName"))}</h2>
       <p class="sub" style="margin:0 0 10px">${esc(t("setupNameHint"))}</p>
       <input id="reg-name" class="input" maxlength="24" autocomplete="off" placeholder="Johnny Joestar" value="${esc(data.profile.name)}">
-      <p style="margin:12px 0 0">🏇 ${esc(t("setupNumber", {n: data.profile.number}))}</p></div>
+      <p style="margin:12px 0 0">🏇 ${esc(t("setupNumber", {n: JOHNNY_NUMBER}))}</p></div>
     <div class="type-actions"><button class="btn primary" data-go="finish">${esc(t("setupGo"))}</button></div>
     ${setup.needLayout ? `<p style="text-align:center;color:var(--err)">${esc(t("setupNeedLayout"))}</p>` : ""}`;
   $("#reg-name").addEventListener("input", e => { data.profile.name = e.target.value.trim(); });
