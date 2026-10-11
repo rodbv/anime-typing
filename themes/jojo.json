@@ -64,10 +64,24 @@
     "stDurabilityV": "treinou {n} dos últimos 7 dias",
     "stPotentialV": "o Tusk ainda evolui",
     "stage": "Etapa",
-    "proSignUp": "Fazer a inscrição (Enter)"
+    "proSignUp": "Fazer a inscrição (Enter)",
+    "mapLabel": "mapa da corrida",
+    "menacing": "ゴゴゴ",
+    "sheetAria": "ficha do Stand",
+    "shareText": "{icon} {name} (nº {number}) no Steel Ball Type: {mi} min de treino hoje, missão {ms} de 3{items}. {stage}, {km} de {total}.",
+    "shareHelp": "Aponte a câmera do celular para o código. Ele abre o seu diário de corrida, com um botão para mandar no WhatsApp.",
+    "cardRacer": "{icon} Corredor nº {number} · ",
+    "cardTitle": "Diário de corrida",
+    "cardJourney": "Na corrida"
   },
   "hero": {
-    "number": 939
+    "name": "Johnny Joestar",
+    "short": "Johnny",
+    "number": 939,
+    "icon": "🏇"
+  },
+  "mentor": {
+    "name": "Gyro"
   },
   "words": {
     "names": "Johnny Gyro Diego Valentine Lucy Steel Pocoloco Sandman Norisuke Ringo Wekapipo Magent Blackmore Zeppeli Joestar Brando Tusk Valkyrie",
@@ -136,6 +150,8 @@
     ]
   ],
   "journey": {
+    "unit": "km",
+    "marker": "🐎",
     "start": {
       "pt": [
         60,
@@ -336,125 +352,99 @@
   "story": {
     "fj": {
       "narr": "Milhares de cavaleiros na areia de San Diego. A largada está perto.",
-      "gyro": "Antes de girar qualquer coisa, aprenda onde a mão descansa. Sinta o relevo no F e no J. Tudo começa ali."
+      "mentor": "Antes de girar qualquer coisa, aprenda onde a mão descansa. Sinta o relevo no F e no J. Tudo começa ali."
     },
     "dk": {
-      "gyro": "O médio fica no D e no K. Depois de cada golpe, o dedo volta para casa."
+      "mentor": "O médio fica no D e no K. Depois de cada golpe, o dedo volta para casa."
     },
     "sl": {
       "narr": "Na Palma do Diabo, no deserto do Arizona, o braço esquerdo do Cadáver Santo entra no corpo do Johnny. Tusk ACT1 desperta.",
-      "gyro": "Suas unhas giram e disparam, mas só dos dedos que você treinou. Anelar: S e L."
+      "mentor": "Suas unhas giram e disparam, mas só dos dedos que você treinou. Anelar: S e L."
     },
     "a": {
-      "gyro": "O mindinho é o dedo mais fraco. No deserto a água é pouca, então economize movimento: só o mindinho se mexe."
+      "mentor": "O mindinho é o dedo mais fraco. No deserto a água é pouca, então economize movimento: só o mindinho se mexe."
     },
     "gh": {
-      "gyro": "O indicador estica para o lado, como a rédea que puxa o cavalo para o meio. Depois volta."
+      "mentor": "O indicador estica para o lado, como a rédea que puxa o cavalo para o meio. Depois volta."
     },
     "r1": {
-      "gyro": "A linha base inteira de uma vez. Respire, Johnny. Galope constante."
+      "mentor": "A linha base inteira de uma vez. Respire, Johnny. Galope constante."
     },
     "ei": {
       "narr": "A subida das Montanhas Rochosas. A trilha fica estreita e o ar fica frio.",
-      "gyro": "Agora os dedos sobem. O médio vai até o E e o I, e volta. A mão fica parada, como o cavaleiro firme na sela."
+      "mentor": "Agora os dedos sobem. O médio vai até o E e o I, e volta. A mão fica parada, como o cavaleiro firme na sela."
     },
     "ru": {
-      "gyro": "O indicador sobe até o R e o U, e volta para o F e o J."
+      "mentor": "O indicador sobe até o R e o U, e volta para o F e o J."
     },
     "to": {
       "narr": "As Grandes Planícies. Campo aberto até onde a vista alcança.",
-      "gyro": "Galope constante. O T é um esticão do indicador. O O é do anelar."
+      "mentor": "Galope constante. O T é um esticão do indicador. O O é do anelar."
     },
     "nm": {
-      "gyro": "N e M ficam embaixo do J. O indicador desce e volta, sem levantar a mão."
+      "mentor": "N e M ficam embaixo do J. O indicador desce e volta, sem levantar a mão."
     },
     "c,": {
-      "gyro": "O C é do médio esquerdo e a vírgula é do médio direito. Ritmo vence pressa."
+      "mentor": "O C é do médio esquerdo e a vírgula é do médio direito. Ritmo vence pressa."
     },
     "qp": {
       "narr": "No rio Mississippi, contra o Sandman e o In a Silent Way, o Tusk evolui para ACT2. O buraco da unha agora persegue o alvo.",
-      "gyro": "Para atravessar o Mississippi, até os mindinhos trabalham: Q e P."
+      "mentor": "Para atravessar o Mississippi, até os mindinhos trabalham: Q e P."
     },
     "r2": {
-      "gyro": "A linha de cima inteira. Não olhe para as mãos, olhe para a trilha."
+      "mentor": "A linha de cima inteira. Não olhe para as mãos, olhe para a trilha."
     },
     "acc1": {
       "narr": "Neve e gelo no Wisconsin. O gelo engana: primeiro você pisa no acento, depois na letra.",
-      "gyro": "A tecla morta é como gelo fino. Aperte o acento, solte, e só então a letra."
+      "mentor": "A tecla morta é como gelo fino. Aperte o acento, solte, e só então a letra."
     },
     "acc2": {
-      "gyro": "Chapéu no E (ê), crase no A (à) e o Ç. Mesmo jeito: primeiro o sinal, depois a letra."
+      "mentor": "Chapéu no E (ê), crase no A (à) e o Ç. Mesmo jeito: primeiro o sinal, depois a letra."
     },
     "vb": {
       "narr": "Em Gettysburg, contra o Axl RO, o Johnny atira em si mesmo e entra no buraco: Tusk ACT3.",
-      "gyro": "Linha de baixo. O indicador desce até o V e o B."
+      "mentor": "Linha de baixo. O indicador desce até o V e o B."
     },
     "x.": {
-      "gyro": "O anelar desce até o X e até o ponto. Desce e volta."
+      "mentor": "O anelar desce até o X e até o ponto. Desce e volta."
     },
     "zwy": {
-      "gyro": "As letras raras: Z com o mindinho, W com o anelar e Y com o indicador direito. Quase lá, Johnny."
+      "mentor": "As letras raras: Z com o mindinho, W com o anelar e Y com o indicador direito. Quase lá, Johnny."
     },
     "r3": {
       "narr": "Contra o Valentine, a Slow Dancer corre no Retângulo de Ouro e o Johnny acerta a Rotação de ouro. Nasce o Tusk ACT4.",
-      "gyro": "Todas as letras. Respire e mantenha o galope."
+      "mentor": "Todas as letras. Respire e mantenha o galope."
     },
     "shift": {
       "narr": "Os barcos atravessam a baía de Raritan. A última etapa começa em Coney Island.",
-      "gyro": "Para a maiúscula, o mindinho da outra mão segura o Shift. As duas mãos juntas, como a rotação perfeita."
+      "mentor": "Para a maiúscula, o mindinho da outra mão segura o Shift. As duas mãos juntas, como a rotação perfeita."
     },
     "quotes": {
       "narr": "Os últimos 13 km: de Coney Island, pela Ponte do Brooklyn, até a Trinity Church.",
-      "gyro": "Frases inteiras, com pontuação. Esta é a reta final."
+      "mentor": "Frases inteiras, com pontuação. Esta é a reta final."
     }
   },
-  "ranks": [
-    [
-      0,
-      "Novato da largada",
-      "Novato da largada"
-    ],
-    [
-      10,
-      "Cavaleiro",
-      "Cavaleiro"
-    ],
-    [
-      15,
-      "Competidor",
-      "Competidor"
-    ],
-    [
-      20,
-      "Top 100",
-      "Top 100"
-    ],
-    [
-      25,
-      "Top 10",
-      "Top 10"
-    ],
-    [
-      30,
-      "Rotação",
-      "Rotação"
-    ],
-    [
-      40,
-      "Rotação de ouro",
-      "Rotação de ouro"
-    ],
-    [
-      50,
-      "Proporção áurea",
-      "Proporção áurea"
-    ],
-    [
-      60,
-      "Rotação infinita",
-      "Rotação infinita"
+  "evolution": {
+    "name": "Tusk",
+    "levels": [
+      {
+        "label": "ACT1",
+        "lesson": "sl"
+      },
+      {
+        "label": "ACT2",
+        "lesson": "qp"
+      },
+      {
+        "label": "ACT3",
+        "lesson": "vb"
+      },
+      {
+        "label": "ACT4",
+        "lesson": "r3"
+      }
     ]
-  ],
+  },
   "prologue": {
     "slides": [
       {
@@ -473,7 +463,7 @@
           "Na largada, você conhece o Gyro Zeppeli, que veio de Nápoles. A família dele guarda um segredo: a Rotação. Você toca na bola de aço do Gyro e, por um segundo, fica de pé.",
           "Você decide seguir o Gyro até Nova York."
         ],
-        "gyro": "Quer aprender a Rotação? Então treina todo dia. Nyo-ho!"
+        "mentor": "Quer aprender a Rotação? Então treina todo dia. Nyo-ho!"
       },
       {
         "art": "hands",
@@ -498,9 +488,36 @@
           "Quem digita sem olhar faz o trabalho da escola, conversa no jogo e escreve código com os olhos na tela. A cabeça fica na ideia, e não na procura da tecla.",
           "Você vai usar isso a vida inteira."
         ],
-        "gyro": "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais curto era o desvio."
+        "mentor": "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais curto era o desvio."
       }
-    ]
+    ],
+    "where": {
+      "start": {
+        "title": "Na largada",
+        "narr": [
+          "A Slow Dancer está na praia de San Diego, no km 0. A missão diária na tela inicial diz o que treinar.",
+          "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição."
+        ],
+        "mentor": "Os dedos ficam no F e no J, Johnny. A largada é agora. Nyo-ho!"
+      },
+      "finished": {
+        "title": "Trinity Church, Nova York",
+        "narr": [
+          "Você cruzou a chegada depois de {total}.",
+          "Agora o treino livre e as frases deixam os seus dedos mais rápidos."
+        ],
+        "mentor": "Nyo-ho-ho! A Rotação sempre pode melhorar."
+      },
+      "progress": {
+        "title": "{lbl}: {place}",
+        "distance": "Você já percorreu {km} de {total}, entre {from} e {to}.",
+        "next": "Próxima lição: {n} ({lesson}).",
+        "race": " É uma corrida contra {rival}.",
+        "missionDone": "A missão de hoje já está cumprida. Um treino a mais é bônus.",
+        "mission": "Missão de hoje: {done} de 3 feitas.",
+        "mentor": "Galope constante, Johnny."
+      }
+    }
   },
   "achievements": [
     {
@@ -759,5 +776,52 @@
         "acc": 95
       }
     }
+  ],
+  "ranks": [
+    [
+      0,
+      "Novato da largada",
+      "Novato da largada"
+    ],
+    [
+      10,
+      "Cavaleiro",
+      "Cavaleiro"
+    ],
+    [
+      15,
+      "Competidor",
+      "Competidor"
+    ],
+    [
+      20,
+      "Top 100",
+      "Top 100"
+    ],
+    [
+      25,
+      "Top 10",
+      "Top 10"
+    ],
+    [
+      30,
+      "Rotação",
+      "Rotação"
+    ],
+    [
+      40,
+      "Rotação de ouro",
+      "Rotação de ouro"
+    ],
+    [
+      50,
+      "Proporção áurea",
+      "Proporção áurea"
+    ],
+    [
+      60,
+      "Rotação infinita",
+      "Rotação infinita"
+    ]
   ]
 }

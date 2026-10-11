@@ -124,11 +124,12 @@ const isLetter = c => /\p{L}/u.test(c);
 // Interface texts by language, loaded by loader.js; the theme's strings replace the ones with the same key.
 const T = window.I18N;
 Object.assign(T[window.THEME.lang] || T.pt, window.THEME.strings);
+const fill = (s, vars) => Object.entries(vars || {}).reduce((acc, [a, b]) => acc.split("{" + a + "}").join(b), s);
 const t = (k, vars) => {
-  let s = T[S.lang]?.[k] ?? T.pt[k] ?? T.en?.[k] ?? k;
-  if (vars && typeof s === "string") for (const [a, b] of Object.entries(vars)) s = s.split("{" + a + "}").join(b);
-  return s;
+  const s = T[S.lang]?.[k] ?? T.pt[k] ?? T.en?.[k] ?? k;
+  return typeof s === "string" ? fill(s, vars) : s;
 };
+const locale = () => S.lang === "pt" ? "pt-BR" : "en";
 
 /* ---------- content ---------- */
 // Story content of the page's theme, loaded by loader.js from the themes folder.
@@ -527,7 +528,7 @@ function applyTheme() {
   $("#deco").textContent = TH.look.deco;
 }
 function applyI18n() {
-  document.documentElement.lang = S.lang === "pt" ? "pt-BR" : "en";
+  document.documentElement.lang = locale() === "pt-BR" ? "pt-BR" : "en";
   document.querySelectorAll("[data-i18n]").forEach(e => { e.textContent = t(e.dataset.i18n); });
   renderLegend();
 }
@@ -563,7 +564,7 @@ function starRow(n) {
 }
 const lessonsInStage = si => LESSON_DEFS.filter(L => L.stage === si);
 const lessonDone = L => (progress()[L.id]?.stars || 0) >= 1;
-const fmtKm = n => Math.round(n).toLocaleString("pt-BR") + " km";
+const fmtKm = n => Math.round(n).toLocaleString(locale()) + " " + TH.journey.unit;
 function kmTraveled() {
   return STAGES.reduce((km, st, si) => {
     const ls = lessonsInStage(si);
@@ -592,11 +593,11 @@ function mapSvg() {
     return `<circle cx="${pl.pt[0]}" cy="${pl.pt[1]}" r="5" style="fill:${reached ? "var(--accent)" : "var(--panel2)"};stroke:var(--accent)"/>` +
       (pl.label ? `<text x="${pl.pt[0]}" y="${pl.pt[1] + pl.dy}" text-anchor="middle" style="fill:var(--muted);font:600 11px system-ui,sans-serif">${esc(pl.label)}</text>` : "");
   }).join("");
-  return `<svg class="map" viewBox="20 30 600 230" role="img" aria-label="mapa da corrida">
+  return `<svg class="map" viewBox="20 30 600 230" role="img" aria-label="${esc(t("mapLabel"))}">
     <polyline points="${line(pts)}" style="fill:none;stroke:var(--line);stroke-width:3;stroke-dasharray:6 6"/>
     <polyline points="${line(done)}" style="fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round"/>
     ${dots}
-    <g transform="translate(${pos[0].toFixed(1)},${(pos[1] - 6).toFixed(1)}) scale(-1,1)"><text text-anchor="middle" style="font-size:26px">🐎</text></g>
+    <g transform="translate(${pos[0].toFixed(1)},${(pos[1] - 6).toFixed(1)}) scale(-1,1)"><text text-anchor="middle" style="font-size:26px">${TH.journey.marker}</text></g>
   </svg>`;
 }
 function lessonCard(L, i, nx) {
@@ -936,7 +937,7 @@ function finish() {
   const missHtml = missed.length
     ? `<div class="kchips">${missed.map(([c, n]) => `<span class="cap">${esc(c === " " ? "␣" : c)}<small style="margin-left:4px;color:var(--err)">${n}</small></span>`).join("")}</div>`
     : `<p>${esc(t("noMiss"))}</p>`;
-  const unlockHtml = fresh.map(a => `<div class="unlock"><span class="ic">${a.ic}</span><div><span class="menacing">ゴゴゴ ${esc(t("unlocked"))}</span><br><b>${esc(a.nm)}</b> · <span class="sub">${esc(a.d)}</span></div></div>`).join("");
+  const unlockHtml = fresh.map(a => `<div class="unlock"><span class="ic">${a.ic}</span><div><span class="menacing">${esc(t("menacing"))} ${esc(t("unlocked"))}</span><br><b>${esc(a.nm)}</b> · <span class="sub">${esc(a.d)}</span></div></div>`).join("");
 
   const btns = [];
   const hasNext = run.mode === "lesson" && run.passed && !run.preview && run.lessonIdx < LESSON_DEFS.length - 1;
@@ -960,8 +961,8 @@ function finish() {
 
   const r = $("#results");
   r.innerHTML = `
-    ${mission.justDone ? `<div class="camp">🔥 <b>${esc(t("campTitle"))}</b> ${esc(t("campText", {name: data.profile.name || "Johnny"}))}</div>` : ""}
-    <h2 class="rt">${esc(title)} ${record ? `<span class="menacing">ゴゴゴ ${esc(t("newRecord"))}</span>` : ""}</h2>
+    ${mission.justDone ? `<div class="camp">🔥 <b>${esc(t("campTitle"))}</b> ${esc(t("campText", {name: data.profile.name || TH.hero.short}))}</div>` : ""}
+    <h2 class="rt">${esc(title)} ${record ? `<span class="menacing">${esc(t("menacing"))} ${esc(t("newRecord"))}</span>` : ""}</h2>
     ${mission.breakNow ? `<p class="tipline">⏸️ ${esc(t("breakMsg"))}</p>` : ""}
     ${extra}
     ${resultTip(m, missed)}
@@ -974,7 +975,7 @@ function finish() {
     </div>
     ${unlockHtml}
     <h2 style="margin-top:14px">${esc(t("missed"))}</h2>${missHtml}
-    <div class="type-actions">${btns.map(([id, label, primary]) => `<button class="btn${primary ? " primary" : ""}" data-act="${id}">${esc(label)}${primary ? " " + esc(t("enterHint")) : ""}</button>`).join("")}${run.preview ? "" : `<button class="btn" data-act="share">📲 Compartilhar no Zap</button>`}</div>`;
+    <div class="type-actions">${btns.map(([id, label, primary]) => `<button class="btn${primary ? " primary" : ""}" data-act="${id}">${esc(label)}${primary ? " " + esc(t("enterHint")) : ""}</button>`).join("")}${run.preview ? "" : `<button class="btn" data-act="share">${esc(t("shareBtn"))}</button>`}</div>`;
   r.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => actions[b.dataset.act]()));
   $("#typing-area").hidden = true;
   $("#type-actions").hidden = true;
@@ -1077,7 +1078,7 @@ function renderCollection() {
       const u = data.unlocked[a.id];
       return `<div class="item ${u ? "got" : "locked"}"><span class="ic">${a.ic}</span><div>
         <div class="nm">${esc(a.nm)}${u ? "" : " 🔒"}</div><div class="ds">${esc(a.d)}</div>
-        ${u ? `<div class="ds">${new Date(u).toLocaleDateString("pt-BR")}</div>` : ""}</div></div>`;
+        ${u ? `<div class="ds">${new Date(u).toLocaleDateString(locale())}</div>` : ""}</div></div>`;
     }).join("")}</div></div>`).join("");
 }
 
@@ -1097,7 +1098,7 @@ function renderStats() {
   const ks = data.keys[S.layout];
   const weak = Object.entries(ks).filter(([c, s]) => c !== " " && s.h + s.m >= 10)
     .map(([c, s]) => [c, s.m / (s.h + s.m)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 8);
-  const loc = S.lang === "pt" ? "pt-BR" : "en";
+  const loc = locale();
 
   $("#stats").innerHTML = tuskCardHtml() + raceTableHtml() + `
     <div class="statgrid">
@@ -1124,7 +1125,7 @@ function renderStats() {
         <label class="toggle"><input type="checkbox" id="opt-unlock" ${S.unlockAll ? "checked" : ""}> ${esc(t("unlockAll"))}</label>
         <button class="btn small" id="btn-redo" style="margin-top:8px">${esc(t("redoSetup"))}</button>
         <button class="btn small" id="btn-prologue" style="margin-top:8px">${esc(t("replayPrologue"))}</button>
-        <button class="btn small" id="btn-share" style="margin-top:8px">📲 Compartilhar no Zap</button>
+        <button class="btn small" id="btn-share" style="margin-top:8px">${esc(t("shareBtn"))}</button>
         <button class="btn small" id="btn-reset" style="margin-top:8px">${esc(t("reset"))}</button>
       </div>
     </div>`;
@@ -1275,8 +1276,8 @@ function storyHtml(L) {
   const st = STORY[L.id] || {}, stage = STAGES[L.stage], rival = L.race ? RIVALS[L.race] : null;
   return `<div class="stage-tag">${esc(stage.lbl)}: ${esc(stage.from)} → ${esc(stage.to)}</div>` +
     (st.narr ? `<p class="narr">${esc(st.narr)}</p>` : "") +
-    (st.gyro ? `<div class="bubble"><b>Gyro:</b> ${esc(st.gyro)}</div>` : "") +
-    (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}${rival.no ? ` (nº ${rival.no})` : ""}:</b> ${esc(rival.pre)}</div>` : "") +
+    (st.mentor ? `<div class="bubble"><b>${esc(TH.mentor.name)}:</b> ${esc(st.mentor)}</div>` : "") +
+    (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}${rival.no ? esc(t("runnerNo", {no: rival.no})) : ""}:</b> ${esc(rival.pre)}</div>` : "") +
     (rival && run && run.race ? `<p class="sub">🏁 ${esc(t("raceRule", {nm: rival.nm, wpm: run.race.wpm}))}</p>` : "");
 }
 function renderIntro() {
@@ -1324,14 +1325,14 @@ function renderHome() {
   const prof = data.profile;
   $("#home").innerHTML = `
     <div class="card hero">
-      <div class="sub">${esc(t("racerTag", {n: TH.hero.number, name: prof.name || "Johnny Joestar"}))}</div>
+      <div class="sub">${esc(t("racerTag", {n: TH.hero.number, name: prof.name || TH.hero.name}))}</div>
       <h1>${esc(stg.lbl)}: ${esc(stg.place)}</h1>
       <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stg.from)} → ${esc(stg.to)} · ${esc(t("kmOf", {a: fmtKm(kmTraveled()), b: fmtKm(TOTAL_KM)}))}</p>
       <button class="btn primary" data-go="start">${esc(first ? t("homeStart") : t("homeContinue", {n: nx + 1}))} ${esc(t("enterHint"))}</button>
       <div class="chips" style="margin-top:14px">
         <span class="chip">${esc(t("rank"))}: <b style="font-size:14px">${esc(rankName(cur))}</b></span>
         <span class="chip">${esc(t("tabCollection"))}: <b style="font-size:14px">${got}/${ACHIEVEMENTS.length}</b></span>
-        <button class="btn small" data-go="share">📲 Compartilhar no Zap</button>
+        <button class="btn small" data-go="share">${esc(t("shareBtn"))}</button>
       </div>
     </div>
     ${missionHtml()}
@@ -1360,12 +1361,12 @@ function shareSnapshot() {
   const best = runs.filter(h => h.acc >= 90).reduce((b, h) => h.wpm > b.wpm ? h : b, {wpm: 0, acc: 0});
   const lc = lessonCounts();
   return {
-    n: data.profile.name || "Johnny Joestar", d: dayKey(new Date()),
+    n: data.profile.name || TH.hero.name, d: dayKey(new Date()),
     mi: runs.length ? Math.max(1, Math.round((day.ms || 0) / 60000)) : 0, r: runs.length, w: best.wpm, a: best.acc,
     ms: [day.next, day.gyro, day.free].filter(Boolean).length, md: day.done ? 1 : 0,
     it: ACHIEVEMENTS.filter(a => (data.unlocked[a.id] || 0) >= start).map(a => a.id),
     km: Math.round(kmTraveled()), st: Math.max(0, currentStageIdx()), lc: lc.cleared,
-    act: tuskAct(), col: ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length, pts: racePoints()
+    act: evolutionLevel(), col: ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length, pts: racePoints()
   };
 }
 const toB64url = str => btoa(String.fromCharCode(...new TextEncoder().encode(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -1382,34 +1383,34 @@ function readCard(param) {
   const num = (v, max) => Math.min(max, Math.max(0, Math.round(+v) || 0));
   const ids = new Set(ACHIEVEMENTS.map(a => a.id));
   return {
-    n: String(c.n || "Johnny Joestar").slice(0, 24), d: /^\d{4}-\d{2}-\d{2}$/.test(c.d) ? c.d : dayKey(new Date()),
+    n: String(c.n || TH.hero.name).slice(0, 24), d: /^\d{4}-\d{2}-\d{2}$/.test(c.d) ? c.d : dayKey(new Date()),
     mi: num(c.mi, 1440), r: num(c.r, 999), w: num(c.w, 300), a: num(c.a, 100), ms: num(c.ms, 3), md: c.md ? 1 : 0,
     it: (Array.isArray(c.it) ? c.it : []).filter(id => ids.has(id)),
     km: num(c.km, TOTAL_KM), st: num(c.st, STAGES.length - 1), lc: num(c.lc, LESSON_DEFS.length),
-    act: num(c.act, 4), col: num(c.col, ACHIEVEMENTS.length), pts: num(c.pts, 999)
+    act: num(c.act, TH.evolution.levels.length), col: num(c.col, ACHIEVEMENTS.length), pts: num(c.pts, 999)
   };
 }
-const shareText = c => `🏇 ${c.n} (nº ${TH.hero.number}) no Steel Ball Type: ${c.mi} min de treino hoje, missão ${c.ms} de 3` +
-  (c.it.length ? `, ${c.it.length} ${c.it.length === 1 ? "conquista nova" : "conquistas novas"}` : "") +
-  `. ${STAGES[c.st].lbl}, ${fmtKm(c.km)} de ${fmtKm(TOTAL_KM)}.`;
+const shareText = c => t("shareText", {icon: TH.hero.icon, name: c.n, number: TH.hero.number, mi: c.mi, ms: c.ms,
+  items: c.it.length ? t(c.it.length === 1 ? "shareItemsOne" : "shareItemsMany", {n: c.it.length}) : "",
+  stage: STAGES[c.st].lbl, km: fmtKm(c.km), total: fmtKm(TOTAL_KM)});
 const statBox = (v, lbl) => `<div class="stat"><b>${esc(String(v))}</b><span>${esc(lbl)}</span></div>`;
 function cardHtml(c) {
   const [y, mo, dd] = c.d.split("-").map(Number), stg = STAGES[c.st];
-  const date = new Date(y, mo - 1, dd).toLocaleDateString("pt-BR", {weekday: "long", day: "numeric", month: "long"});
+  const date = new Date(y, mo - 1, dd).toLocaleDateString(locale(), {weekday: "long", day: "numeric", month: "long"});
   const items = c.it.map(id => ACHIEVEMENTS.find(a => a.id === id));
   return `<div class="card share-card">
-      <div class="sub">🏇 Corredor nº ${TH.hero.number} · ${esc(c.n)}</div>
-      <h1>Diário de corrida</h1>
+      <div class="sub">${esc(t("cardRacer", {icon: TH.hero.icon, number: TH.hero.number}))}${esc(c.n)}</div>
+      <h1>${esc(t("cardTitle"))}</h1>
       <div class="sub">${esc(date)}</div>
-      <h2>Hoje</h2>
-      <div class="big">${statBox(c.mi + " min", "de treino")}${statBox(c.r, "rodadas")}${statBox(c.w ? `${c.w} PPM` : "-", c.w ? `melhor, ${c.a}% de acerto` : "melhor rodada")}${statBox(`${c.ms}/3`, "missão do dia")}</div>
-      ${c.md ? `<div class="camp">🔥 <b>Missão do dia cumprida!</b></div>` : ""}
-      ${items.length ? `<h2>Conquistas novas</h2><div class="share-items">${items.map(a => `<span>${a.ic} ${esc(a.nm)}</span>`).join("")}</div>` : ""}
-      <h2>Na corrida</h2>
+      <h2>${esc(t("cardToday"))}</h2>
+      <div class="big">${statBox(t("minutes", {n: c.mi}), t("cardTrain"))}${statBox(c.r, t("cardRuns"))}${statBox(c.w ? `${c.w} ${t("wpm")}` : "-", c.w ? t("cardBest", {a: c.a}) : t("cardBestNone"))}${statBox(`${c.ms}/3`, t("cardMission"))}</div>
+      ${c.md ? `<div class="camp">🔥 <b>${esc(t("cardMissionDone"))}</b></div>` : ""}
+      ${items.length ? `<h2>${esc(t("cardNew"))}</h2><div class="share-items">${items.map(a => `<span>${a.ic} ${esc(a.nm)}</span>`).join("")}</div>` : ""}
+      <h2>${esc(t("cardJourney"))}</h2>
       <div><b>${esc(stg.lbl)}: ${esc(stg.place)}</b></div>
       <div class="kmbar"><i style="width:${(c.km / TOTAL_KM * 100).toFixed(1)}%"></i></div>
-      <div class="sub">${esc(fmtKm(c.km))} de ${esc(fmtKm(TOTAL_KM))}</div>
-      <div class="big">${statBox(`${c.lc}/${LESSON_DEFS.length}`, "lições")}${statBox(c.act ? `ACT${c.act}` : "-", "Tusk")}${statBox(`${c.col}/${ACHIEVEMENTS.length}`, "conquistas")}${statBox(c.pts, "pontos nas corridas")}</div>
+      <div class="sub">${esc(t("kmOf", {a: fmtKm(c.km), b: fmtKm(TOTAL_KM)}))}</div>
+      <div class="big">${statBox(`${c.lc}/${LESSON_DEFS.length}`, t("cardLessons"))}${statBox(c.act ? TH.evolution.levels[c.act - 1].label : "-", TH.evolution.name)}${statBox(`${c.col}/${ACHIEVEMENTS.length}`, t("cardAchievements"))}${statBox(c.pts, t("cardPoints"))}</div>
     </div>`;
 }
 function showCard(param) {
@@ -1419,21 +1420,21 @@ function showCard(param) {
   document.querySelectorAll(".view").forEach(sec => { sec.hidden = sec.id !== "v-card"; });
   $("#share-view").innerHTML = c ? cardHtml(c) + `
     <div class="type-actions">
-      <a class="btn primary" href="https://wa.me/?text=${encodeURIComponent(shareText(c) + "\n" + location.href)}">Mandar no WhatsApp</a>
-      <a class="btn" href="${SITE_URL}">Abrir o jogo</a>
-    </div>` : `<div class="card"><h1>Link inválido</h1><p>Este link de progresso está quebrado. Gere um novo QR code no jogo.</p><a class="btn" href="${SITE_URL}">Abrir o jogo</a></div>`;
+      <a class="btn primary" href="https://wa.me/?text=${encodeURIComponent(shareText(c) + "\n" + location.href)}">${esc(t("cardSend"))}</a>
+      <a class="btn" href="${SITE_URL}">${esc(t("cardOpen"))}</a>
+    </div>` : `<div class="card"><h1>${esc(t("cardInvalidTitle"))}</h1><p>${esc(t("cardInvalidText"))}</p><a class="btn" href="${SITE_URL}">${esc(t("cardOpen"))}</a></div>`;
 }
 function openShare() {
   const url = shareUrl(), q = qrcode(0, "M");
   q.addData(url);
   q.make();
-  $("#share-box").innerHTML = `<h2>Compartilhe o seu dia</h2>
+  $("#share-box").innerHTML = `<h2>${esc(t("shareTitle"))}</h2>
     <div class="qr">${q.createSvgTag({cellSize: 4, margin: 2, scalable: true})}</div>
-    <p>Aponte a câmera do celular para o código. Ele abre o seu diário de corrida, com um botão para mandar no WhatsApp.</p>
+    <p>${esc(t("shareHelp"))}</p>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-      <a class="btn small" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText(shareSnapshot()) + "\n" + url)}">WhatsApp neste computador</a>
-      <button class="btn small" data-share="copy">Copiar o link</button>
-      <button class="btn small primary" data-share="close">Fechar (Esc)</button>
+      <a class="btn small" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText(shareSnapshot()) + "\n" + url)}">${esc(t("shareWaHere"))}</a>
+      <button class="btn small" data-share="copy">${esc(t("shareCopy"))}</button>
+      <button class="btn small primary" data-share="close">${esc(t("shareClose"))}</button>
     </div>
     <p class="sub" id="share-msg" style="min-height:1.2em;margin:8px 0 0"></p>`;
   $("#share-box").dataset.url = url;
@@ -1445,28 +1446,22 @@ $("#share").addEventListener("click", e => {
   const b = e.target.closest("[data-share]");
   if (!b) return;
   if (b.dataset.share === "close") closeShare();
-  else navigator.clipboard?.writeText($("#share-box").dataset.url).then(() => { $("#share-msg").textContent = "Link copiado."; }, () => { $("#share-msg").textContent = "Não deu para copiar."; });
+  else navigator.clipboard?.writeText($("#share-box").dataset.url).then(() => { $("#share-msg").textContent = t("shareCopied"); }, () => { $("#share-msg").textContent = t("shareCopyFail"); });
 });
 
 /* ---------- prologue ---------- */
 const PROLOGUE = TH.prologue.slides;
-// The last slide points to where the player is in the race.
+// The last slide points to where the player is in the race, from the theme's templates.
 function whereSlide() {
-  const lc = lessonCounts();
-  if (lc.cleared === 0) return {art: "map", title: "Na largada",
-    narr: ["A Slow Dancer está na praia de San Diego, no km 0. A missão diária na tela inicial diz o que treinar.",
-      "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição."],
-    gyro: "Os dedos ficam no F e no J, Johnny. A largada é agora. Nyo-ho!"};
-  if (lc.cleared === LESSON_DEFS.length) return {art: "map", title: "Trinity Church, Nova York", finished: true,
-    narr: [`Você cruzou a chegada depois de ${fmtKm(TOTAL_KM)}.`, "Agora o treino livre e as frases deixam os seus dedos mais rápidos."],
-    gyro: "Nyo-ho-ho! A Rotação sempre pode melhorar."};
-  const stg = STAGES[currentStageIdx()], nx = nextLessonIdx(), L = LESSON_DEFS[nx], day = today();
-  const done = [day.next, day.gyro, day.free].filter(Boolean).length;
-  return {art: "map", title: `${stg.lbl}: ${stg.place}`, lesson: nx + 1,
-    narr: [`Você já percorreu ${fmtKm(kmTraveled())} de ${fmtKm(TOTAL_KM)}, entre ${stg.from} e ${stg.to}.`,
-      `Próxima lição: ${nx + 1} (${lessonTitle(L)}).` + (L.race ? ` É uma corrida contra ${RIVALS[L.race].nm}.` : ""),
-      day.done ? "A missão de hoje já está cumprida. Um treino a mais é bônus." : `Missão de hoje: ${done} de 3 feitas.`],
-    gyro: STORY[L.id]?.gyro || "Galope constante, Johnny."};
+  const W = TH.prologue.where, lc = lessonCounts(), total = fmtKm(TOTAL_KM);
+  if (lc.cleared === 0) return {art: "map", ...W.start};
+  if (lc.cleared === LESSON_DEFS.length) return {art: "map", finished: true, title: W.finished.title, narr: W.finished.narr.map(x => fill(x, {total})), mentor: W.finished.mentor};
+  const stg = STAGES[currentStageIdx()], nx = nextLessonIdx(), L = LESSON_DEFS[nx], day = today(), P = W.progress;
+  const vars = {lbl: stg.lbl, place: stg.place, from: stg.from, to: stg.to, km: fmtKm(kmTraveled()), total, n: nx + 1, lesson: lessonTitle(L),
+    rival: L.race ? RIVALS[L.race].nm : "", done: [day.next, day.gyro, day.free].filter(Boolean).length};
+  return {art: "map", title: fill(P.title, vars), lesson: nx + 1,
+    narr: [fill(P.distance, vars), fill(P.next, vars) + (L.race ? fill(P.race, vars) : ""), day.done ? P.missionDone : fill(P.mission, vars)],
+    mentor: STORY[L.id]?.mentor || P.mentor};
 }
 const prologueSlides = () => [...PROLOGUE, whereSlide()];
 let prologueAt = 0;
@@ -1483,7 +1478,7 @@ function renderPrologue() {
       <div class="pro-art">${prologueArt(P.art)}</div>
       <h1>${esc(P.title)}</h1>
       ${P.narr.map(x => `<p>${esc(x)}</p>`).join("")}
-      ${P.gyro ? `<div class="bubble"><b>Gyro:</b> ${esc(P.gyro)}</div>` : ""}
+      ${P.mentor ? `<div class="bubble"><b>${esc(TH.mentor.name)}:</b> ${esc(P.mentor)}</div>` : ""}
       <div class="pro-dots">${slides.map((_, i) => `<i class="${i === prologueAt ? "on" : ""}"></i>`).join("")}</div>
       <div class="pro-nav">
         ${!last ? `<button class="btn small" data-pro="skip">${esc(t("proSkip"))}</button>` : S.setupDone && P.lesson ? `<button class="btn small" data-pro="home">${esc(t("proHome"))}</button>` : "<span></span>"}
@@ -1538,8 +1533,8 @@ function renderSetup() {
       <p class="sub" style="margin:12px 0 6px">${esc(t("setupManual"))}</p><div style="display:flex;gap:8px;flex-wrap:wrap">${layoutBtns}</div></div>
     <div class="card"><h2>2. ${esc(t("setupName"))}</h2>
       <p class="sub" style="margin:0 0 10px">${esc(t("setupNameHint"))}</p>
-      <input id="reg-name" class="input" maxlength="24" autocomplete="off" placeholder="Johnny Joestar" value="${esc(data.profile.name)}">
-      <p style="margin:12px 0 0">🏇 ${esc(t("setupNumber", {n: TH.hero.number}))}</p></div>
+      <input id="reg-name" class="input" maxlength="24" autocomplete="off" placeholder="${esc(TH.hero.name)}" value="${esc(data.profile.name)}">
+      <p style="margin:12px 0 0">${TH.hero.icon} ${esc(t("setupNumber", {n: TH.hero.number}))}</p></div>
     <div class="type-actions"><button class="btn primary" data-go="finish">${esc(t("setupGo"))}</button></div>
     ${setup.needLayout ? `<p style="text-align:center;color:var(--err)">${esc(t("setupNeedLayout"))}</p>` : ""}`;
   $("#reg-name").addEventListener("input", e => { data.profile.name = e.target.value.trim(); });
@@ -1722,7 +1717,9 @@ function rhythmGrade(gaps) {
   return cv < 0.35 ? "A" : cv < 0.5 ? "B" : cv < 0.65 ? "C" : cv < 0.8 ? "D" : "E";
 }
 const gradeOf = (v, cuts) => { const g = ["A", "B", "C", "D"].find((_, i) => v >= cuts[i]); return g || "E"; };
-const tuskAct = () => ["r3", "vb", "qp", "sl"].map((id, i) => lessonDone(LESSON_DEFS[lessonIndexOf(id)]) ? 4 - i : 0).find(n => n) || 0;
+// Highest evolution level whose lesson is cleared, 0 before the first one.
+const evolutionLevel = () => TH.evolution.levels.reduce((n, lv, i) => lessonDone(LESSON_DEFS[lessonIndexOf(lv.lesson)]) ? i + 1 : n, 0);
+const evolutionName = n => `${TH.evolution.name} ${TH.evolution.levels[n - 1].label}`;
 function standStats() {
   const hist = data.history;
   const fast = hist.filter(h => h.acc >= 90).reduce((a, h) => Math.max(a, h.wpm), 0);
@@ -1752,21 +1749,21 @@ function hexSvg(stats) {
     return `<text x="${x.toFixed(1)}" y="${(y - 2).toFixed(1)}" text-anchor="middle" style="fill:var(--muted);font:600 11px system-ui,sans-serif">${esc(st.nm)}</text>
       <text x="${x.toFixed(1)}" y="${(y + 13).toFixed(1)}" text-anchor="middle" style="fill:var(--accent);font:800 15px system-ui,sans-serif">${st.g}</text>`;
   }).join("");
-  return `<svg class="hex" viewBox="0 0 320 300" role="img" aria-label="ficha do Stand">${rings}${axes}
+  return `<svg class="hex" viewBox="0 0 320 300" role="img" aria-label="${esc(t("sheetAria"))}">${rings}${axes}
     <polygon points="${poly}" style="fill:color-mix(in srgb,var(--accent) 35%,transparent);stroke:var(--accent);stroke-width:2"/>${labels}</svg>`;
 }
 function tuskCardHtml() {
-  const act = tuskAct(), stats = standStats();
+  const act = evolutionLevel(), stats = standStats();
   return `<div class="card" style="margin-bottom:12px"><h2>${esc(t("sheetTitle"))}</h2>
     <div class="sheet"><div>${hexSvg(stats)}</div><div>
-      <div style="font-size:24px;font-weight:900;margin-bottom:8px">${esc(act ? `Tusk ACT${act}` : t("noStand"))}</div>
+      <div style="font-size:24px;font-weight:900;margin-bottom:8px">${esc(act ? evolutionName(act) : t("noStand"))}</div>
       <table>${stats.map(st => `<tr><td>${esc(st.nm)}</td><td><b>${st.g}</b></td><td class="sub">${esc(st.v)}</td></tr>`).join("")}</table>
     </div></div></div>`;
 }
 function raceTableHtml() {
   const rows = LESSON_DEFS.filter(L => L.race).map(L => {
     const pl = progress()[L.id]?.place;
-    return `<tr><td>${esc(STAGES[L.stage].lbl)}</td><td>${esc(RIVALS[L.race].nm)}</td><td>${pl ? (pl <= 3 ? `${pl}º` : esc(t("noPodium"))) : "-"}</td></tr>`;
+    return `<tr><td>${esc(STAGES[L.stage].lbl)}</td><td>${esc(RIVALS[L.race].nm)}</td><td>${pl ? (pl <= 3 ? esc(t("ordinal", {n: pl})) : esc(t("noPodium"))) : "-"}</td></tr>`;
   }).join("");
   return `<div class="card" style="margin-bottom:12px"><h2>${esc(t("raceTable", {p: racePoints()}))}</h2>
     <table><tr><th>${esc(t("stage"))}</th><th>${esc(t("rival"))}</th><th>${esc(t("placeCol"))}</th></tr>${rows}</table></div>`;
