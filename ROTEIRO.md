@@ -147,8 +147,23 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 | Valkyrie | 3 pódios seguidos |
 | Tusk ACT1 a ACT4 | chegar em cada fase |
 
-## Perguntas em aberto
+## Decisões
 
-1. **Outros animes:** tirar Eva, AoT e Soul Eater, ou deixar essas séries só em Frases e na Corrida livre?
-2. **Velocidade dos fantasmas:** começa em 6 PPM e termina em 20 PPM. É fácil ou difícil demais para ele?
-3. **Personagem:** ele joga como o Johnny, ou cria um corredor próprio, com nome e cavalo, que corre junto com o Johnny e o Gyro?
+1. **Só Steel Ball Run:** a tela inicial, as lições, a corrida livre, as frases e a coleção usam só Steel Ball Run. O seletor de anime e o de idioma saem. A versão com vários animes fica no branch `v1-multi-anime`.
+2. **Personagem:** ele joga como o Johnny. Na primeira vez, escreve o nome dele na inscrição da corrida e recebe um número de corredor. O nome aparece na tela inicial e na classificação.
+3. **Fantasma ajustado:** o rival corre 10% acima da média das 3 últimas rodadas dele com 90% ou mais de precisão (20% acima nas duas últimas corridas). Cada rival tem um piso, de 6 PPM (Sandman) a 14 PPM (Diego de outro mundo).
+4. **Três trechos por lição:** aquecimento (drill de âncora, da tecla base até a nova), palavras (palavras reais com a tecla nova) e mistura. Cada trecho tem cerca de 50 caracteres. Entre os trechos aparece um aviso rápido com os quilômetros, sem parar a digitação.
+5. **Avanço:** passar uma vez libera a próxima lição. Lição comum pede 90% de precisão. Corrida de fim de etapa pede 93%.
+6. **Missão do dia:** a próxima lição, um treino do Gyro (uma lição antiga, escolhida pela pior nota ou pela mais esquecida) e uma rodada livre de 30 s ou uma frase. No fim, a tela "Missão cumprida" sugere parar e deixa continuar. Depois de 20 minutos no dia, o resultado sugere uma pausa. A tela inicial mostra os dias treinados na semana, sem sequência que zera.
+7. **Ajuda do teclado:**
+
+   | Momento | Teclado | Tecla acesa e dica |
+   |---|---|---|
+   | Aquecimento de lição com tecla nova | visível | sempre |
+   | Palavras e mistura | visível | depois de 1,2 s parado ou de um erro |
+   | Revisões, corridas, corrida livre e frases | escondido | depois de 1,5 s parado ou de um erro |
+
+   Um botão na tela mostra o teclado só naquela rodada. Depois de 3 erros na mesma letra, a tecla pulsa.
+8. **Estrelas:** até a revisão da linha de cima, as estrelas contam só a precisão (90, 95 e 98%). Depois disso: 1 estrela com 90%, 2 com 94% e 15 PPM, 3 com 97% e 20 PPM.
+9. **Acentos:** depois da segunda lição de acentos, a corrida livre e as frases usam acentos nos layouts US Intl e ABNT2.
+10. **Ritmo:** o resultado mostra uma nota de ritmo de A a E, calculada pela variação do intervalo entre as teclas.
