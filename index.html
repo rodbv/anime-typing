@@ -145,6 +145,8 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 .bubble.rival{border-left-color:var(--err)}
 .input{all:unset;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:18px;min-width:240px}
 .input:focus{border-color:var(--accent)}
+.toast{position:absolute;top:8px;right:12px;background:var(--accent);color:#111;font:700 14px system-ui,sans-serif;padding:4px 12px;border-radius:99px;animation:toast 1.4s ease-out}
+@keyframes toast{0%{opacity:0;transform:translateY(-6px)}15%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
 @media (max-width:640px){
   .big{grid-template-columns:repeat(2,1fr)}
   .textbox{font-size:20px}
@@ -239,6 +241,7 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
         <textarea id="sink" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="typing input"></textarea>
         <div id="text-inner"></div>
         <div class="focus-overlay" id="focus-overlay" hidden data-i18n="clickToType"></div>
+        <div class="toast" id="toast" hidden></div>
       </div>
       <div class="attrib" id="attrib"></div>
       <div class="hint" id="hint"></div>
@@ -449,6 +452,13 @@ Object.assign(T.pt, {
   setupName: "Seu nome", setupNameHint: "Ele aparece na tela inicial e na classificação.",
   setupNumber: "Seu número de corredor: {n}",
   in_rv: ["Revisão: todas as teclas que você já aprendeu nesta parte da corrida.", "Tente não olhar para o teclado. Olhe para a trilha."],
+  passRule: "Para passar: 90% de precisão (nas corridas, 93%)",
+  failedAcc: "Quase! Para passar, você precisa de {n}% de precisão.",
+  partDone: "Trecho {n} de 3 · +{km}",
+  in_acc1_intl: ["No US Internacional, o acento é uma tecla morta: nada aparece até você apertar a letra.", "' e depois A faz á. ~ e depois A faz ã.", "Para escrever só o apóstrofo, aperte ' e depois Espaço."],
+  in_acc2_intl: ["Shift+6 (^) e depois E faz ê.", "` (a tecla à esquerda do 1) e depois A faz à.", "Para o Ç, segure AltGr e aperte a vírgula."],
+  in_acc1_abnt: ["No ABNT2, o acento é uma tecla morta: nada aparece até você apertar a letra.", "´ e depois A faz á. ~ e depois A faz ã."],
+  in_acc2_abnt: ["Shift + ~ faz ^ (para ê). Shift + ´ faz ` (para à).", "O Ç tem tecla própria, no mindinho direito."],
   footer: "O progresso fica salvo neste navegador."
 });
 const t = (k, vars) => {
@@ -710,11 +720,14 @@ function nextLessonIdx() {
   }
   return LESSON_DEFS.length - 1;
 }
-function starsFor(wpm, acc) {
-  if (acc >= 97 && wpm >= 25) return 3;
-  if (acc >= 94 && wpm >= 18) return 2;
-  if (acc >= 90 && wpm >= 10) return 1;
-  return 0;
+// Up to the top-row review, stars reward accuracy only. After it, speed counts too.
+function starsFor(wpm, acc, idx) {
+  const L = LESSON_DEFS[idx];
+  if (acc < passAcc(L)) return 0;
+  if (idx <= lessonIndexOf("r2")) return acc >= 98 ? 3 : acc >= 95 ? 2 : 1;
+  if (acc >= 97 && wpm >= 20) return 3;
+  if (acc >= 94 && wpm >= 15) return 2;
+  return 1;
 }
 
 function wordPools(accents) {
@@ -731,69 +744,119 @@ function drill(letters, focus) {
   return s;
 }
 function allQuotes() { return SBR.quotes.map(q => [q[0], q[1]]); }
-function lessonText(idx) {
-  const L = LESSON_DEFS[idx];
-  if (L.quotes) {
-    const qs = allQuotes().filter(q => q[0].length < 90).sort(() => Math.random() - 0.5).slice(0, 3);
-    return qs.map(q => sanitize(q[0], true)).join(" ");
+const VOWELS = "aeiou";
+const PART_LEN = 48;
+const homeOf = k => { const rc = keyGeometry().pos[k]; return rc ? HOME[S.layout][rc.f] : k; };
+const passAcc = L => L.race ? 93 : 90;
+const accentsOn = () => S.layout !== "us" && (S.accents || (progress().acc2?.stars || 0) >= 1);
+
+// Warm-up drill: the finger leaves its home key, presses the new key and comes back ("fgf", "jhhj").
+function anchorPart(focus) {
+  const letters = focus.filter(isLetter), out = [];
+  while (out.join(" ").length < PART_LEN) {
+    const k = pick(focus), h = homeOf(k);
+    let w;
+    if (!isLetter(k)) w = h + h + k;
+    else if (h === k) { const o = pick(letters); w = pick([k + k + k, k + o + k, k + k + o + o]); }
+    else w = pick([h + k + h, h + k + k + h, k + h + k, h + h + k]);
+    out.push(w);
   }
-  if (L.accents) {
-    const words = uniq(ACCENT_WORDS.map(w => sanitize(w, true)));
-    const out = [], used = {};
-    while (out.join(" ").length < 130) {
-      const w = pick(words);
-      if (w === out[out.length - 1] || used[w] >= 2) continue;
-      used[w] = (used[w] || 0) + 1;
-      out.push(w);
-    }
-    return out.join(" ");
-  }
-  const allowed = allowedUpTo(idx);
-  const letters = [...allowed].filter(isLetter);
-  const puncts = [...allowed].filter(c => !isLetter(c));
-  const focusAll = L.k ? [...lessonKeys(L)] : letters;
-  const focusLetters = focusAll.filter(isLetter);
-  const focusPunct = focusAll.filter(c => !isLetter(c));
-  const {themed, common} = wordPools(false);
-  const fits = w => [...w.toLowerCase()].every(c => allowed.has(c));
-  const prep = w => L.shift ? w : w.toLowerCase();
-  const T1 = themed.filter(fits).map(prep);
-  const C1 = common.filter(fits).map(w => L.shift && Math.random() < 0.35 ? cap(w) : w);
-  const hasFocus = w => !L.k || [...w.toLowerCase()].some(c => focusLetters.includes(c));
-  const TF = T1.filter(hasFocus), CF = C1.filter(hasFocus);
-  // A short themed list would repeat the same name, so its share grows with its size.
+  return out.join(" ");
+}
+// A pronounceable pseudo-word of two consonant-vowel syllables, with a focus letter when one is given.
+function sylWord(letters, focus) {
+  const vow = letters.filter(c => VOWELS.includes(c));
+  const con = letters.filter(c => isLetter(c) && !VOWELS.includes(c) && c !== "ç");
+  if (!vow.length || !con.length) return null;
+  let a = pick(con) + pick(vow);
+  const b = pick(con) + pick(vow);
+  const f = focus.length ? pick(focus) : null;
+  if (f && VOWELS.includes(f)) a = pick(con) + f;
+  else if (f && f !== "ç" && isLetter(f)) a = f + pick(vow);
+  return Math.random() < 0.5 ? a + b : b + a;
+}
+// Builds one part from real words, at most twice each across the lesson, then pseudo-words, then drills.
+function wordPart(themedList, commonList, used, fallback, opts = {}) {
   const themedShare = list => Math.min(0.5, list.length / 12);
-  // Each word appears at most twice, so the new key is not always practiced inside the same word.
-  const used = {};
   const fresh = list => {
     for (let i = 0; list.length && i < 8; i++) { const w = pick(list); if ((used[w] || 0) < 2) return w; }
     return null;
   };
-  const choose = (themedList, commonList) => {
-    const useThemed = themedList.length && (Math.random() < themedShare(themedList) || !commonList.length);
-    return fresh(useThemed ? themedList : commonList) || fresh(useThemed ? commonList : themedList);
-  };
-  const tokens = [];
+  const out = [];
   let guard = 0;
-  while (tokens.join(" ").length < 140 && guard++ < 500) {
-    const r = Math.random();
-    let w = null;
-    if (TF.length + CF.length >= 3 && r < (L.k ? 0.7 : 0.95)) w = choose(TF, CF);
-    else if (T1.length + C1.length >= 3 && r < 0.85) w = choose(T1, C1);
+  while (out.join(" ").length < PART_LEN && guard++ < 200) {
+    const useThemed = themedList.length && (Math.random() < themedShare(themedList) || !commonList.length);
+    let w = fresh(useThemed ? themedList : commonList) || fresh(useThemed ? commonList : themedList);
     if (w) used[w] = (used[w] || 0) + 1;
-    else {
-      w = drill(letters, focusLetters.length ? focusLetters : letters);
-      if (L.shift && Math.random() < 0.4) w = cap(w);
-    }
-    if (focusPunct.length && Math.random() < 0.35) w += pick(focusPunct);
-    else if (puncts.length && Math.random() < 0.08) w += pick(puncts);
-    if (w === tokens[tokens.length - 1]) continue;
-    tokens.push(w);
+    else w = fallback();
+    if (opts.punct && opts.punct.length && Math.random() < (opts.punctRate || 0.3)) w += pick(opts.punct);
+    if (w !== out[out.length - 1]) out.push(w);
   }
-  return tokens.join(" ");
+  return out.join(" ");
 }
+function lessonParts(idx) {
+  const L = LESSON_DEFS[idx];
+  if (L.quotes) {
+    return allQuotes().filter(q => q[0].length < 60).sort(() => Math.random() - 0.5).slice(0, 3).map(q => sanitize(q[0], S.layout !== "us"));
+  }
+  const allowed = allowedUpTo(idx);
+  const letters = [...allowed].filter(isLetter);
+  const puncts = [...allowed].filter(c => !isLetter(c));
+  const {themed, common} = wordPools(false);
+  const fits = w => [...w.toLowerCase()].every(c => allowed.has(c));
+  const used = {};
+  const T1 = themed.filter(fits), C1 = common.filter(fits);
+  const lower = a => a.map(w => w.toLowerCase());
+  const syl = focus => () => sylWord(letters, focus) || anchorPart(focus.length ? focus : letters).split(" ")[0];
+
+  if (L.accents && S.layout !== "us") {
+    const baseFits = w => [...w.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()].every(c => allowed.has(c) || c === "c");
+    const pool = uniq([...ACCENT_WORDS, ...COMMON.pt.split(" "), ...SBR.terms.split(" ")])
+      .filter(w => /[^\x00-\x7f]/.test(w) && sanitize(w, true) === w.normalize("NFC") && baseFits(w));
+    const second = w => /[âêôàç]/i.test(w);
+    const mine = pool.filter(w => L.accents === 1 ? !second(w) : second(w));
+    const marks = (L.accents === 1 ? ["á", "é", "í", "ó", "ú", "ã", "õ", "ão", "ãe"] : ["â", "ê", "ô", "à", "ça", "ço", "çu"]).filter(m => sanitize(m, true) === m);
+    const warm = [];
+    while (warm.join(" ").length < PART_LEN) warm.push(pick(marks));
+    const known = L.accents === 1 ? mine : pool;
+    return [
+      warm.join(" "),
+      wordPart([], mine, used, () => pick(marks)),
+      wordPart([], [...known, ...lower(C1)], used, syl([]))
+    ];
+  }
+  if (L.shift) {
+    const names = T1.filter(w => w[0] !== w[0].toLowerCase());
+    const warm = [];
+    while (warm.join(" ").length < PART_LEN) { const k = pick(letters.filter(c => c !== "ç")); warm.push(k.toUpperCase() + k + k); }
+    const sentences = [];
+    while (sentences.join(" ").length < PART_LEN) {
+      const ws = [pick(names.length ? names : C1), pick(C1), pick(C1)].map(w => w.toLowerCase());
+      sentences.push(cap(ws.join(" ")) + ".");
+    }
+    return [warm.join(" "), wordPart(names, C1.map(cap), used, () => cap(syl([])())), sentences.join(" ")];
+  }
+  const focusAll = L.k ? [...lessonKeys(L)] : null;
+  if (!focusAll || L.accents) {
+    const sample = [...letters].sort(() => Math.random() - 0.5).slice(0, 4);
+    return [
+      anchorPart(sample),
+      wordPart(lower(T1), lower(C1), used, syl([]), {punct: puncts, punctRate: 0.1}),
+      wordPart(lower(T1), lower(C1), used, syl([]), {punct: puncts, punctRate: 0.1})
+    ];
+  }
+  const focusLetters = focusAll.filter(isLetter);
+  const focusPunct = focusAll.filter(c => !isLetter(c));
+  const hasFocus = w => [...w.toLowerCase()].some(c => focusLetters.includes(c));
+  return [
+    anchorPart(focusAll),
+    wordPart(lower(T1.filter(hasFocus)), lower(C1.filter(hasFocus)), used, syl(focusLetters), {punct: focusPunct, punctRate: 0.35}),
+    wordPart(lower(T1), lower(C1), used, syl(focusLetters), {punct: focusPunct.length ? focusPunct : puncts, punctRate: focusPunct.length ? 0.3 : 0.08})
+  ];
+}
+const lessonText = idx => lessonParts(idx).join(" ");
 function freeChunk(n) {
-  const {themed, common} = wordPools(S.accents);
+  const {themed, common} = wordPools(accentsOn());
   let T2 = themed.map(w => w.toLowerCase()), C2 = common.map(w => w.toLowerCase()), letters = null;
   const lim = learnedLimit();
   if (lim !== null) {
@@ -981,13 +1044,15 @@ function newRun(mode, o = {}) {
     pausedMs: 0, pauseStart: 0, lastKey: 0, menuOpen: false, errCount: {}};
   if (mode === "lesson") {
     const L = LESSON_DEFS[r.lessonIdx];
-    r.text = lessonText(r.lessonIdx);
+    const parts = lessonParts(r.lessonIdx);
+    r.text = parts.join(" ");
+    r.bounds = [parts[0].length + 1, parts[0].length + parts[1].length + 2];
     r.intro = lessonIntro(L);
     r.introOpen = !!r.intro && (!!o.forceIntro || (!(progress()[L.id]?.stars >= 1) && !introSeen.has(L.id)));
     if (r.introOpen) introSeen.add(L.id);
   }
   else if (mode === "free") r.text = freeChunk(80);
-  else { r.quote = r.quote || pick(allQuotes()); r.text = sanitize(r.quote[0], S.accents); }
+  else { r.quote = r.quote || pick(allQuotes()); r.text = sanitize(r.quote[0], S.layout !== "us"); }
   return r;
 }
 function startRun(mode, o) {
@@ -1155,6 +1220,11 @@ function typeChar(ch) {
       appendText(more);
     }
     if (run.pos >= run.text.length) { finish(); return; }
+    const part = (run.bounds || []).indexOf(run.pos);
+    if (part >= 0) {
+      const L = LESSON_DEFS[run.lessonIdx];
+      showToast(t("partDone", {n: part + 1, km: fmtKm(STAGES[L.stage].km / lessonsInStage(L.stage).length / 3)}));
+    }
     setCursor();
   } else {
     run.errors++;
@@ -1230,12 +1300,12 @@ function finish() {
   run.passed = false;
   if (run.mode === "lesson") {
     const L = LESSON_DEFS[run.lessonIdx];
-    const st = starsFor(m.wpm, m.acc);
+    const st = starsFor(m.wpm, m.acc, run.lessonIdx);
     const prev = progress()[L.id];
     record = !run.preview && !!prev && st >= 1 && m.wpm > prev.wpm;
     if (!run.preview) progress()[L.id] = {stars: Math.max(st, prev?.stars || 0), wpm: Math.max(m.wpm, prev?.wpm || 0), acc: Math.max(m.acc, prev?.acc || 0)};
     run.passed = st >= 1;
-    title = run.preview ? t("previewDone") : run.passed ? t("cleared") : t("failed");
+    title = run.preview ? t("previewDone") : run.passed ? t("cleared") : t("failedAcc", {n: passAcc(L)});
     extra = `<div style="font-size:28px">${starRow(st)}</div>`;
   } else {
     const prev = data.best[run.mode];
@@ -1557,9 +1627,10 @@ function lessonIntro(L) {
   if (L.id === "r1") return {title: t("rv_home"), bullets: tipList("in_r1"), hi: homeAll, reach: []};
   if (L.shift) return {title: t("shiftLesson"), bullets: tipList("in_shift"), hi: ["shiftL", "shiftR"], reach: [[homeAll[0], "shiftL"], [homeAll[7], "shiftR"]]};
   if (L.accents) {
-    if (S.layout === "intl") return {title: t("accLesson"), bullets: tipList("in_acc_intl"), hi: ["'", "~", "^", ",", "altgr"], reach: []};
-    if (S.layout === "abnt") return {title: t("accLesson"), bullets: tipList("in_acc_abnt"), hi: ["´", "~", "ç"], reach: []};
-    return {title: t("accLesson"), bullets: tipList("in_acc_us"), hi: [], reach: []};
+    const title = lessonTitle(L), n = L.accents;
+    if (S.layout === "intl") return {title, bullets: tipList(`in_acc${n}_intl`), hi: n === 1 ? ["'", "~"] : ["^", "`", ",", "altgr"], reach: []};
+    if (S.layout === "abnt") return {title, bullets: tipList(`in_acc${n}_abnt`), hi: n === 1 ? ["´", "~"] : ["^", "`", "ç"], reach: []};
+    return {title, bullets: tipList("in_acc_us"), hi: [], reach: []};
   }
   if (L.quotes) return {title: t("quotesLesson"), bullets: tipList(S.layout === "intl" ? "in_q_intl" : "in_q"), hi: [",", ".", "!", "?", "shiftL", "shiftR"], reach: []};
   if (L.review) return {title: lessonTitle(L), bullets: tipList("in_rv"), hi: [], reach: []};
@@ -1715,6 +1786,14 @@ $("#setup").addEventListener("click", e => {
 });
 
 /* ---------- pause, focus mode and locks ---------- */
+let toastTimer = null;
+function showToast(msg) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 1400);
+}
 function activeMs() {
   if (!run.started) return 0;
   const end = run.ended || Date.now();
