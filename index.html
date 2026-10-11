@@ -527,19 +527,18 @@ const SBR = {
     ["Nyo-ho-ho!", "Gyro"],
     ["Pizza mozzarella, pizza mozzarella, rella rella rella!", "Gyro"],
     ["Eu ainda estou no negativo. Eu só quero voltar ao zero.", "Johnny"],
-    ["O caminho mais longo era o atalho.", "Gyro"],
+    ["O caminho mais curto era o desvio.", "Gyro"],
     ["Bem-vindo ao mundo dos homens.", "Ringo Roadagain"],
     ["Quem pega o primeiro guardanapo decide a regra para todos.", "Valentine"],
     ["Dojyaaan!", "Valentine"],
     ["WRYYYYY!", "Diego"],
     ["Tusk ACT4!", "Johnny"],
-    ["Hoje é meu dia de sorte!", "Pocoloco"],
-    ["Eu vou correr a pé até Nova York.", "Sandman"],
-    ["Gire, Johnny! Gire!", "Gyro"],
-    ["A rotação perfeita segue a proporção áurea.", "Gyro"],
-    ["Eu não sou o mais rápido. Sou o mais constante.", "Norisuke"],
+    ["Eu sou um sortudo em cinco bilhões!", "Pocoloco"],
+    ["Vou atravessar o continente só com os meus pés.", "Sandman"],
+    ["Acredite na Rotação! O poder da rotação não tem limite!", "Gyro"],
+    ["Gire as balas na proporção áurea!", "Gyro"],
     ["Meu cavalo se chama Slow Dancer.", "Johnny"],
-    ["Valkyrie, vamos!", "Gyro"]
+    ["Não se preocupe com nada, Valkyrie!", "Gyro"]
   ]
 };
 
@@ -559,13 +558,13 @@ const STAGES = [
 const TOTAL_KM = STAGES.reduce((a, st) => a + st.km, 0);
 
 const RIVALS = {
-  sandman: {nm: "Sandman", floor: 6, pre: "Eu corro a pé. Mesmo assim, chego antes de você.", win: "Você chegou na igreja antes do Sandman!", lose: "O Sandman venceu a primeira etapa, como na série. Ainda faltam quase 6.000 km."},
-  diego: {nm: "Diego Brando", floor: 8, pre: "Um paraplégico e um carrasco. Vocês não chegam ao Monument Valley.", win: "O Diego comeu poeira no Monument Valley.", lose: "O Diego venceu esta etapa na série também. A revanche vem na etapa 7."},
-  hotpants: {nm: "Hot Pants", floor: 10, pre: "Meu spray fecha qualquer ferida. E qualquer atalho também.", win: "Você passou a Hot Pants na descida das Rochosas!", lose: "A Hot Pants chegou primeiro em Cañon City."},
-  norisuke: {nm: "Norisuke Higashikata", floor: 11, pre: "Eu não sou o mais rápido. Sou o mais constante.", win: "Ritmo contra ritmo, e você venceu o Norisuke.", lose: "O Norisuke venceu com constância, como na série."},
-  pocoloco: {nm: "Pocoloco", floor: 12, pre: "Hoje é meu dia de sorte!", win: "Nem a sorte do Pocoloco segurou você.", lose: "A sorte do Pocoloco funcionou de novo."},
-  gyro: {nm: "Gyro Zeppeli", floor: 13, pre: "Nyo-ho! Nesta etapa eu não espero você, Johnny.", win: "Você venceu o seu próprio mestre na travessia do gelo.", lose: "O Gyro venceu a etapa 6, como na série. Nyo-ho-ho!"},
-  diego2: {nm: "Diego Brando", floor: 13, pre: "Com o Scary Monsters, eu vejo a corrida de cima.", win: "Revanche feita. O Diego chegou atrás na Filadélfia.", lose: "O Diego levou de novo. Ainda tem o final."},
+  sandman: {nm: "Sandman", no: "C-990", floor: 6, pre: "Eu corro a pé. Mesmo assim, chego antes de você.", win: "Você chegou na igreja antes do Sandman!", lose: "O Sandman venceu a primeira etapa, como na série. Ainda faltam quase 6.000 km."},
+  diego: {nm: "Diego Brando", no: "001", floor: 8, pre: "Um paraplégico e um carrasco. Vocês não chegam ao Monument Valley.", win: "O Diego e o Silver Bullet comeram poeira no Monument Valley.", lose: "O Diego venceu esta etapa na série também. A revanche vem na etapa 7."},
+  hotpants: {nm: "Hot Pants", no: "191", floor: 10, pre: "Com o Cream Starter eu fecho qualquer ferida. E qualquer atalho também.", win: "Você passou a Hot Pants na descida das Rochosas!", lose: "A Hot Pants chegou primeiro em Cañon City."},
+  norisuke: {nm: "Norisuke Higashikata", floor: 11, pre: "Eu e o Hono vamos no nosso ritmo.", win: "Ritmo contra ritmo, e você venceu o Norisuke.", lose: "O Norisuke venceu com constância, como na série."},
+  pocoloco: {nm: "Pocoloco", no: "A-777", floor: 12, pre: "Eu sou um sortudo em cinco bilhões!", win: "Nem a sorte do Pocoloco segurou você.", lose: "A sorte do Pocoloco funcionou de novo."},
+  gyro: {nm: "Gyro Zeppeli", no: "B-636", floor: 13, pre: "Nyo-ho! Hoje a Valkyrie não espera você, Johnny.", win: "Você venceu o seu próprio mestre na travessia do gelo.", lose: "O Gyro venceu a etapa 6, como na série. Nyo-ho-ho!"},
+  diego2: {nm: "Diego Brando", no: "001", floor: 13, pre: "Com o Scary Monsters, eu vejo a corrida de cima.", win: "Revanche feita. O Diego chegou atrás na Filadélfia.", lose: "O Diego levou de novo. Ainda tem o final."},
   valentine: {nm: "Funny Valentine", floor: 14, boss: true, pre: "Neste mundo, cada erro seu vira uma cópia que trabalha para mim.", win: "O D4C não alcançou você. Union Beach está logo ali.", lose: "O D4C pegou você desta vez. Mas a corrida continua."},
   diego3: {nm: "Diego de outro mundo", floor: 14, boss: true, pre: "Eu vim de outro mundo para terminar esta corrida.", win: "Trinity Church! Desta vez o Johnny cruza a chegada.", lose: "O Diego de outro mundo chegou antes. Tente de novo: a chegada é sua."}
 };
@@ -1739,7 +1738,7 @@ function storyHtml(L) {
   return `<div class="stage-tag">${esc(stage.lbl)}: ${esc(stage.from)} → ${esc(stage.to)}</div>` +
     (st.narr ? `<p class="narr">${esc(st.narr)}</p>` : "") +
     (st.gyro ? `<div class="bubble"><b>Gyro:</b> ${esc(st.gyro)}</div>` : "") +
-    (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}:</b> ${esc(rival.pre)}</div>` : "") +
+    (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}${rival.no ? ` (nº ${rival.no})` : ""}:</b> ${esc(rival.pre)}</div>` : "") +
     (rival && run && run.race ? `<p class="sub">🏁 ${esc(t("raceRule", {nm: rival.nm, wpm: run.race.wpm}))}</p>` : "");
 }
 function renderIntro() {
@@ -1825,7 +1824,7 @@ const PROLOGUE = [
     narr: ["Cada lição concluída leva a Slow Dancer alguns quilômetros mais perto de Nova York.", "No fim de cada etapa, um rival da série corre contra você: Sandman, Diego, Hot Pants, Pocoloco e o próprio Valentine. Pelo caminho você junta as partes do Cadáver Santo, e o Tusk evolui até o ACT4."]},
   {art: "💻", title: "E fora da corrida?",
     narr: ["Quem digita sem olhar faz o trabalho da escola, conversa no jogo e escreve código com os olhos na tela. A cabeça fica na ideia, e não na procura da tecla.", "Você vai usar isso a vida inteira."],
-    gyro: "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais longo era o atalho."}
+    gyro: "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais curto era o desvio."}
 ];
 // The last slide points to where the player is in the race.
 function whereSlide() {
