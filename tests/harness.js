@@ -18,6 +18,9 @@ function inlineLoader(attrs, themeEdit) {
   return `<script>window.I18N = ${JSON.stringify(i18n)};${theme ? ` window.THEME = ${JSON.stringify(theme)};` : ''}</script>\n<script>\n${read('engine.js')}\n</script>`;
 }
 
+// The localStorage key of the page's theme.
+const storeKey = (page = 'index.html') => JSON.parse(read(/data-theme="([^"]*)"/.exec(read(page))[1])).storeKey;
+
 // Inlines local scripts and stylesheets so jsdom runs the page without a server.
 function pageHtml(page = 'index.html', themeEdit) {
   return read(page)
@@ -52,7 +55,7 @@ function boot(storage, url = 'http://localhost/', opts = {}) {
       w.addEventListener('error', e => errors.push(e.message));
       if (opts.seed !== undefined) w.Math.random = seededRandom(opts.seed);
       if (opts.now !== undefined) w.Date = frozenDate(w.Date, opts.now);
-      if (storage) w.localStorage.setItem('typedojo:v1', storage);
+      if (storage) w.localStorage.setItem(storeKey(opts.page), storage);
     }});
   const w = dom.window, d = w.document;
   const ev = c => w.eval(c);
@@ -62,6 +65,7 @@ function boot(storage, url = 'http://localhost/', opts = {}) {
     key: (k, code) => d.dispatchEvent(new w.KeyboardEvent('keydown', {key: k, code, bubbles: true})),
     type: s => { for (const ch of s) { sink.value += ch; sink.dispatchEvent(new w.InputEvent('input', {data: ch})); } },
     vis: id => !d.getElementById(id).hidden,
+    saved: () => w.localStorage.getItem(storeKey(opts.page)),
     ready: () => ev('S.setupDone=true; S.layout="intl"; save(); showView("home")'),
     // Plays a lesson to the end: closes the intro and types the text with the given number of misses at the start.
     playLesson: function (i, misses = 0) {
@@ -72,4 +76,4 @@ function boot(storage, url = 'http://localhost/', opts = {}) {
     }
   };
 }
-module.exports = {boot, seededRandom, ROOT};
+module.exports = {boot, seededRandom, storeKey, ROOT};

@@ -231,52 +231,52 @@
    "2026-10-10": {
     "ms": 900000,
     "next": true,
-    "gyro": true,
     "free": true,
     "done": true,
     "breakShown": false,
     "nextLesson": "ei",
-    "gyroLesson": "dk"
+    "review": true,
+    "reviewLesson": "dk"
    },
    "2026-10-09": {
     "ms": 900000,
     "next": true,
-    "gyro": true,
     "free": true,
     "done": true,
     "breakShown": false,
     "nextLesson": "ei",
-    "gyroLesson": "dk"
+    "review": true,
+    "reviewLesson": "dk"
    },
    "2026-10-07": {
     "ms": 900000,
     "next": true,
-    "gyro": true,
     "free": true,
     "done": true,
     "breakShown": false,
     "nextLesson": "ei",
-    "gyroLesson": "dk"
+    "review": true,
+    "reviewLesson": "dk"
    },
    "2026-10-06": {
     "ms": 900000,
     "next": true,
-    "gyro": true,
     "free": true,
     "done": true,
     "breakShown": false,
     "nextLesson": "ei",
-    "gyroLesson": "dk"
+    "review": true,
+    "reviewLesson": "dk"
    },
    "2026-10-11": {
     "ms": 420000,
     "next": true,
-    "gyro": false,
     "free": false,
     "done": false,
     "breakShown": false,
     "nextLesson": "ru",
-    "gyroLesson": "a"
+    "review": false,
+    "reviewLesson": "a"
    }
   },
   "bestStreak": 88

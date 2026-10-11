@@ -39,7 +39,7 @@ L.ev('startRun("free")'); add('free run text', L.ev('run.text'));
 L.ev('startRun("quote")'); add('quote text', L.ev('run.text') + '\n' + L.ev('run.quote[1]'));
 
 // shared card
-const card = Buffer.from(JSON.stringify({n: 'Theo', d: '2026-10-11', mi: 18, r: 7, w: 14, a: 96, ms: 3, md: 1, it: ['larm', 'act1', 'slowdancer'], km: 1215, st: 1, lc: 6, act: 1, col: 5, pts: 16})).toString('base64url');
+const card = Buffer.from(JSON.stringify({n: 'Theo', d: '2026-10-11', mi: 18, r: 7, w: 14, a: 96, ms: 3, md: 1, it: ['larm', 'act1', 'slowdancer'], dist: 1215, st: 1, lc: 6, act: 1, col: 5, pts: 16})).toString('base64url');
 const C = fresh(null, `http://localhost/?card=${card}`);
 add('shared card', C.d.getElementById('share-view').innerHTML);
 

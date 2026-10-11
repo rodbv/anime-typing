@@ -135,7 +135,7 @@ const locale = () => S.lang === "pt" ? "pt-BR" : "en";
 // Story content of the page's theme, loaded by loader.js from the themes folder.
 const TH = window.THEME;
 const STAGES = TH.journey.stages;
-const TOTAL_KM = STAGES.reduce((a, st) => a + st.km, 0);
+const TOTAL_DIST = STAGES.reduce((a, st) => a + st.dist, 0);
 const RIVALS = TH.rivals;
 const STORY = TH.story;
 const RANKS = TH.ranks;
@@ -587,11 +587,11 @@ function starRow(n) {
 }
 const lessonsInStage = si => LESSON_DEFS.filter(L => L.stage === si);
 const lessonDone = L => (progress()[L.id]?.stars || 0) >= 1;
-const fmtKm = n => Math.round(n).toLocaleString(locale()) + " " + TH.journey.unit;
-function kmTraveled() {
-  return STAGES.reduce((km, st, si) => {
+const fmtDist = n => Math.round(n).toLocaleString(locale()) + " " + TH.journey.unit;
+function distTraveled() {
+  return STAGES.reduce((dist, st, si) => {
     const ls = lessonsInStage(si);
-    return km + st.km * ls.filter(lessonDone).length / ls.length;
+    return dist + st.dist * ls.filter(lessonDone).length / ls.length;
   }, 0);
 }
 function currentStageIdx() {
@@ -635,8 +635,8 @@ function lessonCard(L, i, nx) {
 }
 function renderLessons() {
   const nx = nextLessonIdx();
-  $("#lesson-grid").innerHTML = `<div class="card">${mapSvg()}<p class="sub" style="text-align:center;margin:4px 0 0">${esc(t("kmOf", {a: fmtKm(kmTraveled()), b: fmtKm(TOTAL_KM)}))}</p></div>` +
-    STAGES.map((st, si) => `<h2 class="stage-h">${esc(st.lbl)}: ${esc(st.from)} → ${esc(st.to)} · ${fmtKm(st.km)}</h2>
+  $("#lesson-grid").innerHTML = `<div class="card">${mapSvg()}<p class="sub" style="text-align:center;margin:4px 0 0">${esc(t("distOf", {a: fmtDist(distTraveled()), b: fmtDist(TOTAL_DIST)}))}</p></div>` +
+    STAGES.map((st, si) => `<h2 class="stage-h">${esc(st.lbl)}: ${esc(st.from)} → ${esc(st.to)} · ${fmtDist(st.dist)}</h2>
       <div class="grid">${LESSON_DEFS.map((L, i) => L.stage === si ? lessonCard(L, i, nx) : "").join("")}</div>`).join("");
 }
 $("#lesson-grid").addEventListener("click", e => {
@@ -842,7 +842,7 @@ function typeChar(ch) {
     const part = (run.bounds || []).indexOf(run.pos);
     if (part >= 0) {
       const L = LESSON_DEFS[run.lessonIdx];
-      showToast(t("partDone", {n: part + 1, km: fmtKm(STAGES[L.stage].km / lessonsInStage(L.stage).length / 3)}));
+      showToast(t("partDone", {n: part + 1, dist: fmtDist(STAGES[L.stage].dist / lessonsInStage(L.stage).length / 3)}));
     }
     setCursor();
   } else {
@@ -960,7 +960,7 @@ function finish() {
   const missHtml = missed.length
     ? `<div class="kchips">${missed.map(([c, n]) => `<span class="cap">${esc(c === " " ? "␣" : c)}<small style="margin-left:4px;color:var(--err)">${n}</small></span>`).join("")}</div>`
     : `<p>${esc(t("noMiss"))}</p>`;
-  const unlockHtml = fresh.map(a => `<div class="unlock"><span class="ic">${a.ic}</span><div><span class="menacing">${esc(t("menacing"))} ${esc(t("unlocked"))}</span><br><b>${esc(a.nm)}</b> · <span class="sub">${esc(a.d)}</span></div></div>`).join("");
+  const unlockHtml = fresh.map(a => `<div class="unlock"><span class="ic">${a.ic}</span><div><span class="flair">${esc(t("flair"))} ${esc(t("unlocked"))}</span><br><b>${esc(a.nm)}</b> · <span class="sub">${esc(a.d)}</span></div></div>`).join("");
 
   const btns = [];
   const hasNext = run.mode === "lesson" && run.passed && !run.preview && run.lessonIdx < LESSON_DEFS.length - 1;
@@ -984,8 +984,8 @@ function finish() {
 
   const r = $("#results");
   r.innerHTML = `
-    ${mission.justDone ? `<div class="camp">🔥 <b>${esc(t("campTitle"))}</b> ${esc(t("campText", {name: data.profile.name || TH.hero.short}))}</div>` : ""}
-    <h2 class="rt">${esc(title)} ${record ? `<span class="menacing">${esc(t("menacing"))} ${esc(t("newRecord"))}</span>` : ""}</h2>
+    ${mission.justDone ? `<div class="done-box">🔥 <b>${esc(t("missionDoneTitle"))}</b> ${esc(t("missionDoneText", {name: data.profile.name || TH.hero.short}))}</div>` : ""}
+    <h2 class="rt">${esc(title)} ${record ? `<span class="flair">${esc(t("flair"))} ${esc(t("newRecord"))}</span>` : ""}</h2>
     ${mission.breakNow ? `<p class="tipline">⏸️ ${esc(t("breakMsg"))}</p>` : ""}
     ${extra}
     ${resultTip(m, missed)}
@@ -1123,7 +1123,7 @@ function renderStats() {
     .map(([c, s]) => [c, s.m / (s.h + s.m)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 8);
   const loc = locale();
 
-  $("#stats").innerHTML = tuskCardHtml() + raceTableHtml() + `
+  $("#stats").innerHTML = sheetCardHtml() + raceTableHtml() + `
     <div class="statgrid">
       <div class="card"><h2>${esc(t("rank"))}</h2><b>${esc(rankName(cur))}</b>
         <div class="bar"><i style="width:${pct}%"></i></div>
@@ -1350,7 +1350,7 @@ function renderHome() {
     <div class="card hero">
       <div class="sub">${esc(t("racerTag", {n: TH.hero.number, name: prof.name || TH.hero.name}))}</div>
       <h1>${esc(stg.lbl)}: ${esc(stg.place)}</h1>
-      <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stg.from)} → ${esc(stg.to)} · ${esc(t("kmOf", {a: fmtKm(kmTraveled()), b: fmtKm(TOTAL_KM)}))}</p>
+      <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stg.from)} → ${esc(stg.to)} · ${esc(t("distOf", {a: fmtDist(distTraveled()), b: fmtDist(TOTAL_DIST)}))}</p>
       <button class="btn primary" data-go="start">${esc(first ? t("homeStart") : t("homeContinue", {n: nx + 1}))} ${esc(t("enterHint"))}</button>
       <div class="chips" style="margin-top:14px">
         <span class="chip">${esc(t("rank"))}: <b style="font-size:14px">${esc(rankName(cur))}</b></span>
@@ -1360,7 +1360,7 @@ function renderHome() {
     </div>
     ${missionHtml()}
     <div class="card">${mapSvg()}</div>
-    <div class="card"><h2>${esc(t("gyroTip"))}</h2>
+    <div class="card"><h2>${esc(t("mentorTip"))}</h2>
       ${first ? handsSvg({hi: ["f", "j"]}) + `<div class="legend">${legendHtml()}</div>` : ""}
       <p style="margin:8px 0 0">${esc(pick(tipList("homeTips")))}</p>
     </div>`;
@@ -1370,7 +1370,7 @@ $("#home").addEventListener("click", e => {
   if (!b) return;
   if (b.dataset.go === "share") openShare();
   else if (b.dataset.go === "start") startNext();
-  else if (b.dataset.go === "gyro") startGyro();
+  else if (b.dataset.go === "review") startReview();
   else showView(b.dataset.go);
 });
 $("#btn-tip").addEventListener("click", () => openTip());
@@ -1386,9 +1386,9 @@ function shareSnapshot() {
   return {
     n: data.profile.name || TH.hero.name, d: dayKey(new Date()),
     mi: runs.length ? Math.max(1, Math.round((day.ms || 0) / 60000)) : 0, r: runs.length, w: best.wpm, a: best.acc,
-    ms: [day.next, day.gyro, day.free].filter(Boolean).length, md: day.done ? 1 : 0,
+    ms: [day.next, day.review, day.free].filter(Boolean).length, md: day.done ? 1 : 0,
     it: ACHIEVEMENTS.filter(a => (data.unlocked[a.id] || 0) >= start).map(a => a.id),
-    km: Math.round(kmTraveled()), st: Math.max(0, currentStageIdx()), lc: lc.cleared,
+    dist: Math.round(distTraveled()), st: Math.max(0, currentStageIdx()), lc: lc.cleared,
     act: evolutionLevel(), col: ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length, pts: racePoints()
   };
 }
@@ -1409,13 +1409,13 @@ function readCard(param) {
     n: String(c.n || TH.hero.name).slice(0, 24), d: /^\d{4}-\d{2}-\d{2}$/.test(c.d) ? c.d : dayKey(new Date()),
     mi: num(c.mi, 1440), r: num(c.r, 999), w: num(c.w, 300), a: num(c.a, 100), ms: num(c.ms, 3), md: c.md ? 1 : 0,
     it: (Array.isArray(c.it) ? c.it : []).filter(id => ids.has(id)),
-    km: num(c.km, TOTAL_KM), st: num(c.st, STAGES.length - 1), lc: num(c.lc, LESSON_DEFS.length),
+    dist: num(c.dist, TOTAL_DIST), st: num(c.st, STAGES.length - 1), lc: num(c.lc, LESSON_DEFS.length),
     act: num(c.act, TH.evolution.levels.length), col: num(c.col, ACHIEVEMENTS.length), pts: num(c.pts, 999)
   };
 }
 const shareText = c => t("shareText", {icon: TH.hero.icon, name: c.n, number: TH.hero.number, mi: c.mi, ms: c.ms,
   items: c.it.length ? t(c.it.length === 1 ? "shareItemsOne" : "shareItemsMany", {n: c.it.length}) : "",
-  stage: STAGES[c.st].lbl, km: fmtKm(c.km), total: fmtKm(TOTAL_KM)});
+  stage: STAGES[c.st].lbl, dist: fmtDist(c.dist), total: fmtDist(TOTAL_DIST)});
 const statBox = (v, lbl) => `<div class="stat"><b>${esc(String(v))}</b><span>${esc(lbl)}</span></div>`;
 function cardHtml(c) {
   const [y, mo, dd] = c.d.split("-").map(Number), stg = STAGES[c.st];
@@ -1427,12 +1427,12 @@ function cardHtml(c) {
       <div class="sub">${esc(date)}</div>
       <h2>${esc(t("cardToday"))}</h2>
       <div class="big">${statBox(t("minutes", {n: c.mi}), t("cardTrain"))}${statBox(c.r, t("cardRuns"))}${statBox(c.w ? `${c.w} ${t("wpm")}` : "-", c.w ? t("cardBest", {a: c.a}) : t("cardBestNone"))}${statBox(`${c.ms}/3`, t("cardMission"))}</div>
-      ${c.md ? `<div class="camp">🔥 <b>${esc(t("cardMissionDone"))}</b></div>` : ""}
+      ${c.md ? `<div class="done-box">🔥 <b>${esc(t("cardMissionDone"))}</b></div>` : ""}
       ${items.length ? `<h2>${esc(t("cardNew"))}</h2><div class="share-items">${items.map(a => `<span>${a.ic} ${esc(a.nm)}</span>`).join("")}</div>` : ""}
       <h2>${esc(t("cardJourney"))}</h2>
       <div><b>${esc(stg.lbl)}: ${esc(stg.place)}</b></div>
-      <div class="kmbar"><i style="width:${(c.km / TOTAL_KM * 100).toFixed(1)}%"></i></div>
-      <div class="sub">${esc(t("kmOf", {a: fmtKm(c.km), b: fmtKm(TOTAL_KM)}))}</div>
+      <div class="distbar"><i style="width:${(c.dist / TOTAL_DIST * 100).toFixed(1)}%"></i></div>
+      <div class="sub">${esc(t("distOf", {a: fmtDist(c.dist), b: fmtDist(TOTAL_DIST)}))}</div>
       <div class="big">${statBox(`${c.lc}/${LESSON_DEFS.length}`, t("cardLessons"))}${statBox(c.act ? TH.evolution.levels[c.act - 1].label : "-", TH.evolution.name)}${statBox(`${c.col}/${ACHIEVEMENTS.length}`, t("cardAchievements"))}${statBox(c.pts, t("cardPoints"))}</div>
     </div>`;
 }
@@ -1476,12 +1476,12 @@ $("#share").addEventListener("click", e => {
 const PROLOGUE = TH.prologue.slides;
 // The last slide points to where the player is in the race, from the theme's templates.
 function whereSlide() {
-  const W = TH.prologue.where, lc = lessonCounts(), total = fmtKm(TOTAL_KM);
+  const W = TH.prologue.where, lc = lessonCounts(), total = fmtDist(TOTAL_DIST);
   if (lc.cleared === 0) return {art: "map", ...W.start};
   if (lc.cleared === LESSON_DEFS.length) return {art: "map", finished: true, title: W.finished.title, narr: W.finished.narr.map(x => fill(x, {total})), mentor: W.finished.mentor};
   const stg = STAGES[currentStageIdx()], nx = nextLessonIdx(), L = LESSON_DEFS[nx], day = today(), P = W.progress;
-  const vars = {lbl: stg.lbl, place: stg.place, from: stg.from, to: stg.to, km: fmtKm(kmTraveled()), total, n: nx + 1, lesson: lessonTitle(L),
-    rival: L.race ? RIVALS[L.race].nm : "", done: [day.next, day.gyro, day.free].filter(Boolean).length};
+  const vars = {lbl: stg.lbl, place: stg.place, from: stg.from, to: stg.to, dist: fmtDist(distTraveled()), total, n: nx + 1, lesson: lessonTitle(L),
+    rival: L.race ? RIVALS[L.race].nm : "", done: [day.next, day.review, day.free].filter(Boolean).length};
   return {art: "map", title: fill(P.title, vars), lesson: nx + 1,
     narr: [fill(P.distance, vars), fill(P.next, vars) + (L.race ? fill(P.race, vars) : ""), day.done ? P.missionDone : fill(P.mission, vars)],
     mentor: STORY[L.id]?.mentor || P.mentor};
@@ -1629,8 +1629,8 @@ const racePoints = () => LESSON_DEFS.reduce((a, L) => a + (L.race ? PLACE_POINTS
 /* ---------- daily mission ---------- */
 const BREAK_MS = 20 * 60000;
 const dayKey = dt => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
-// The Gyro lesson revisits the cleared lesson with the worst key, or else the weakest and oldest one.
-function pickGyroLesson(exclude) {
+// The review lesson revisits the cleared lesson with the worst key, or else the weakest and oldest one.
+function pickReviewLesson(exclude) {
   const pr = progress(), done = LESSON_DEFS.filter(L => lessonDone(L) && L.id !== exclude);
   if (!done.length) return null;
   const rate = st => st.m / (st.h + st.m);
@@ -1644,7 +1644,7 @@ function today() {
   const k = dayKey(new Date());
   if (!data.days[k]) {
     const nx = LESSON_DEFS[Math.max(0, nextLessonIdx())];
-    data.days[k] = {ms: 0, next: false, gyro: false, free: false, done: false, breakShown: false, nextLesson: nx.id, gyroLesson: pickGyroLesson(nx.id)};
+    data.days[k] = {ms: 0, next: false, review: false, free: false, done: false, breakShown: false, nextLesson: nx.id, reviewLesson: pickReviewLesson(nx.id)};
     save();
   }
   return data.days[k];
@@ -1654,12 +1654,12 @@ function updateMission(m) {
   day.ms += m.ms;
   if (run.mode === "lesson" && run.passed && !run.preview) {
     const L = LESSON_DEFS[run.lessonIdx];
-    // Without a Gyro lesson (nothing cleared at the start of the day), any lesson after the new one counts.
+    // Without a review lesson (nothing cleared at the start of the day), any lesson after the new one counts.
     if (!day.next && (L.id === day.nextLesson || run.wasNew)) day.next = true;
-    else if (!day.gyroLesson || L.id === day.gyroLesson) day.gyro = true;
+    else if (!day.reviewLesson || L.id === day.reviewLesson) day.review = true;
   }
   if (run.mode === "free" || run.mode === "quote") day.free = true;
-  const justDone = !day.done && day.next && day.gyro && day.free;
+  const justDone = !day.done && day.next && day.review && day.free;
   if (justDone) day.done = true;
   const breakNow = !day.breakShown && day.ms >= BREAK_MS;
   if (breakNow) day.breakShown = true;
@@ -1686,12 +1686,12 @@ function missionHtml() {
   const item = (ok, go, txt) => `<li><button data-go="${go}" class="${ok ? "ok" : ""}">${ok ? "✅" : "⬜"} ${esc(txt)}</button></li>`;
   return `<div class="card"><h2>${esc(t("missionTitle"))}</h2><ul class="mission">
     ${item(day.next, "start", t("mNext", label(day.nextLesson)))}
-    ${item(day.gyro, "gyro", day.gyroLesson ? t("mGyro", label(day.gyroLesson)) : t("mGyroAny"))}
+    ${item(day.review, "review", day.reviewLesson ? t("mReview", label(day.reviewLesson)) : t("mReviewAny"))}
     ${item(day.free, "free", t("mFree"))}
   </ul>${day.done ? `<p style="margin:10px 0 0">🔥 ${esc(t("missionDoneHome"))}</p>` : ""}${weekHtml()}</div>`;
 }
-function startGyro() {
-  const id = today().gyroLesson;
+function startReview() {
+  const id = today().reviewLesson;
   const i = id ? LESSON_DEFS.findIndex(L => L.id === id) : Math.max(0, nextLessonIdx() - 1);
   startRun("lesson", {lessonIdx: i});
 }
@@ -1730,7 +1730,7 @@ $("#btn-kb").addEventListener("click", () => {
   focusSink();
 });
 
-/* ---------- Stand sheet ---------- */
+/* ---------- attribute sheet ---------- */
 // Rhythm grade from the spread of the gaps between correct keys: a steady gallop has similar gaps.
 function rhythmGrade(gaps) {
   if (gaps.length < 20) return "-";
@@ -1743,7 +1743,7 @@ const gradeOf = (v, cuts) => { const g = ["A", "B", "C", "D"].find((_, i) => v >
 // Highest evolution level whose lesson is cleared, 0 before the first one.
 const evolutionLevel = () => TH.evolution.levels.reduce((n, lv, i) => lessonDone(LESSON_DEFS[lessonIndexOf(lv.lesson)]) ? i + 1 : n, 0);
 const evolutionName = n => `${TH.evolution.name} ${TH.evolution.levels[n - 1].label}`;
-function standStats() {
+function sheetStats() {
   const hist = data.history;
   const fast = hist.filter(h => h.acc >= 90).reduce((a, h) => Math.max(a, h.wpm), 0);
   const last = hist.slice(-10), acc = last.length ? Math.round(last.reduce((a, h) => a + h.acc, 0) / last.length) : 0;
@@ -1775,11 +1775,11 @@ function hexSvg(stats) {
   return `<svg class="hex" viewBox="0 0 320 300" role="img" aria-label="${esc(t("sheetAria"))}">${rings}${axes}
     <polygon points="${poly}" style="fill:color-mix(in srgb,var(--accent) 35%,transparent);stroke:var(--accent);stroke-width:2"/>${labels}</svg>`;
 }
-function tuskCardHtml() {
-  const act = evolutionLevel(), stats = standStats();
+function sheetCardHtml() {
+  const act = evolutionLevel(), stats = sheetStats();
   return `<div class="card" style="margin-bottom:12px"><h2>${esc(t("sheetTitle"))}</h2>
     <div class="sheet"><div>${hexSvg(stats)}</div><div>
-      <div style="font-size:24px;font-weight:900;margin-bottom:8px">${esc(act ? evolutionName(act) : t("noStand"))}</div>
+      <div style="font-size:24px;font-weight:900;margin-bottom:8px">${esc(act ? evolutionName(act) : t("sheetEmpty"))}</div>
       <table>${stats.map(st => `<tr><td>${esc(st.nm)}</td><td><b>${st.g}</b></td><td class="sub">${esc(st.v)}</td></tr>`).join("")}</table>
     </div></div></div>`;
 }

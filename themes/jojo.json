@@ -1,7 +1,7 @@
 {
   "id": "jojo",
   "lang": "pt",
-  "storeKey": "typedojo:v1",
+  "storeKey": "typedojo:jojo",
   "siteUrl": "https://rodbv.github.io/jojo-typing/",
   "look": {
     "logo": [
@@ -32,7 +32,6 @@
     "homeStart": "Largar: lição 1",
     "homeContinue": "Continuar a corrida: lição {n}",
     "racerTag": "Corredor nº {n} · {name}",
-    "gyroTip": "Dica do Gyro",
     "collGroups": {
       "race": "Partes do Cadáver Santo",
       "tusk": "Tusk",
@@ -45,14 +44,10 @@
       "Revisão: todas as teclas que você já aprendeu nesta parte da corrida.",
       "Tente não olhar para o teclado. Olhe para a trilha."
     ],
-    "partDone": "Trecho {n} de 3 · +{km}",
+    "partDone": "Trecho {n} de 3 · +{dist}",
     "raceRule": "Corrida contra {nm}: o fantasma corre a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
     "mNext": "Próximo trecho: lição {n} ({title})",
-    "mGyro": "Treino do Gyro: refaça a lição {n} ({title})",
-    "mGyroAny": "Treino do Gyro: refaça qualquer lição",
-    "campText": "O Gyro acendeu a fogueira do acampamento. Bom trabalho hoje, {name}. Amanhã a corrida continua.",
     "sheetTitle": "Ficha do Stand",
-    "noStand": "O Stand ainda não despertou",
     "stPower": "Poder",
     "stSpeed": "Velocidade",
     "stRange": "Alcance",
@@ -66,13 +61,18 @@
     "stage": "Etapa",
     "proSignUp": "Fazer a inscrição (Enter)",
     "mapLabel": "mapa da corrida",
-    "menacing": "ゴゴゴ",
     "sheetAria": "ficha do Stand",
-    "shareText": "{icon} {name} (nº {number}) no Steel Ball Type: {mi} min de treino hoje, missão {ms} de 3{items}. {stage}, {km} de {total}.",
+    "shareText": "{icon} {name} (nº {number}) no Steel Ball Type: {mi} min de treino hoje, missão {ms} de 3{items}. {stage}, {dist} de {total}.",
     "shareHelp": "Aponte a câmera do celular para o código. Ele abre o seu diário de corrida, com um botão para mandar no WhatsApp.",
     "cardRacer": "{icon} Corredor nº {number} · ",
     "cardTitle": "Diário de corrida",
-    "cardJourney": "Na corrida"
+    "cardJourney": "Na corrida",
+    "mReview": "Treino do Gyro: refaça a lição {n} ({title})",
+    "mReviewAny": "Treino do Gyro: refaça qualquer lição",
+    "mentorTip": "Dica do Gyro",
+    "sheetEmpty": "O Stand ainda não despertou",
+    "missionDoneText": "O Gyro acendeu a fogueira do acampamento. Bom trabalho hoje, {name}. Amanhã a corrida continua.",
+    "flair": "ゴゴゴ"
   },
   "hero": {
     "name": "Johnny Joestar",
@@ -166,7 +166,7 @@
         "place": "Praia de San Diego",
         "from": "San Diego",
         "to": "Igreja Santa Maria Novella",
-        "km": 15,
+        "dist": 15,
         "pt": [
           76,
           222
@@ -182,7 +182,7 @@
         "place": "Deserto do Arizona",
         "from": "Igreja Santa Maria Novella",
         "to": "Monument Valley",
-        "km": 1200,
+        "dist": 1200,
         "pt": [
           175,
           162
@@ -202,7 +202,7 @@
         "place": "Montanhas Rochosas",
         "from": "Monument Valley",
         "to": "Cañon City",
-        "km": 510,
+        "dist": 510,
         "pt": [
           262,
           150
@@ -220,7 +220,7 @@
         "place": "Grandes Planícies",
         "from": "Cañon City",
         "to": "Kansas City",
-        "km": 1250,
+        "dist": 1250,
         "pt": [
           352,
           166
@@ -239,7 +239,7 @@
         "place": "Rio Mississippi",
         "from": "Kansas City",
         "to": "Chicago",
-        "km": 780,
+        "dist": 780,
         "pt": [
           445,
           128
@@ -257,7 +257,7 @@
         "place": "Tundra do Wisconsin",
         "from": "Chicago",
         "to": "Mackinaw City",
-        "km": 690,
+        "dist": 690,
         "pt": [
           458,
           70
@@ -275,7 +275,7 @@
         "place": "Margem do lago Erie",
         "from": "Mackinaw City",
         "to": "Filadélfia",
-        "km": 1300,
+        "dist": 1300,
         "pt": [
           548,
           150
@@ -294,7 +294,7 @@
         "place": "Campos de Nova Jersey",
         "from": "Filadélfia",
         "to": "Union Beach",
-        "km": 140,
+        "dist": 140,
         "pt": [
           570,
           139
@@ -309,7 +309,7 @@
         "place": "Nova York",
         "from": "Union Beach",
         "to": "Trinity Church",
-        "km": 13,
+        "dist": 13,
         "pt": [
           586,
           122
@@ -558,7 +558,7 @@
       },
       "progress": {
         "title": "{lbl}: {place}",
-        "distance": "Você já percorreu {km} de {total}, entre {from} e {to}.",
+        "distance": "Você já percorreu {dist} de {total}, entre {from} e {to}.",
         "next": "Próxima lição: {n} ({lesson}).",
         "race": " É uma corrida contra {rival}.",
         "missionDone": "A missão de hoje já está cumprida. Um treino a mais é bônus.",

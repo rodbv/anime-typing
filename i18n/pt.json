@@ -211,7 +211,6 @@
   "footer": "O progresso fica salvo neste navegador.",
   "acc1Lesson": "Acentos: ´ e ~",
   "acc2Lesson": "Acentos: ^, ` e Ç",
-  "kmOf": "{a} de {b}",
   "setupName": "Seu nome",
   "setupNameHint": "Ele aparece na tela inicial e na classificação.",
   "failedAcc": "Quase! Para passar, você precisa de {n}% de precisão.",
@@ -250,7 +249,6 @@
     "S",
     "S"
   ],
-  "campTitle": "Missão cumprida!",
   "seeYou": "Até amanhã",
   "keepTraining": "Continuar treinando",
   "breakMsg": "Você já treinou 20 minutos hoje. Que tal uma pausa? Beba água e alongue as mãos.",
@@ -291,5 +289,7 @@
   "cardPoints": "pontos nas corridas",
   "minutes": "{n} min",
   "ordinal": "{n}º",
-  "runnerNo": " (nº {no})"
+  "runnerNo": " (nº {no})",
+  "distOf": "{a} de {b}",
+  "missionDoneTitle": "Missão cumprida!"
 }

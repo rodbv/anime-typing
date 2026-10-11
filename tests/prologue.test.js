@@ -11,14 +11,14 @@ A.key('Escape'); console.log('Esc jumps to last:', title(A), '| map:', !!d.query
 A.key('Enter'); console.log('first run after last -> view:', ev('view'));
 // returning player mid-race: prologue opens on every load, last slide shows the position
 A.ready(); A.playLesson(0); A.playLesson(1); A.playLesson(2);
-const B = boot(A.w.localStorage.getItem('typedojo:v1'));
+const B = boot(A.saved());
 console.log('reload view:', B.ev('view'), '| title:', title(B));
 B.d.querySelector('[data-pro=skip]').click();
 console.log('last slide:', title(B), '|', body(B));
 console.log('buttons:', nextBtn(B), '/', B.d.querySelector('[data-pro=home]')?.textContent);
 B.key('Enter'); console.log('Enter starts lesson:', B.ev('view'), B.ev('run.lessonIdx'), B.ev('LESSON_DEFS[run.lessonIdx].id'));
 // race lesson mention
-const C = boot(A.w.localStorage.getItem('typedojo:v1'));
+const C = boot(A.saved());
 C.ev('S.unlockAll=false; LESSON_DEFS.slice(0,5).forEach(L => progress()[L.id] = {stars:1,wpm:20,acc:95,last:1}); save()');
 C.ev('prologueAt = PROLOGUE.length; renderPrologue()'); console.log('before race:', body(C).split(' | ')[1]);
 C.d.querySelector('[data-pro=home]').click(); console.log('home button ->', C.ev('view'));

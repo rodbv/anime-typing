@@ -32,7 +32,7 @@ ev("S.layout='abnt'");
 // lessons view
 ev('showView("lessons")');
 console.log('stage headers:', d.querySelectorAll('#lesson-grid .stage-h').length, '| cards:', d.querySelectorAll('#lesson-grid .lesson').length, '| race tags:', d.querySelectorAll('#lesson-grid .race-tag').length);
-// progress moves the horse and km
+// progress moves the marker and the distance
 A.playLesson(0); A.playLesson(1);
 const unlockText = [...d.querySelectorAll('#results .unlock')].map(u => u.textContent.replace(/\s+/g, ' ').trim());
 console.log('unlocks on results:', unlockText.join(' / '));

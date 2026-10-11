@@ -87,7 +87,7 @@ nav.tabs button.on{color:var(--text);border-color:var(--accent)}
 .stat{background:var(--panel2);border-radius:12px;padding:12px;text-align:center}
 .stat b{display:block;font-size:34px;font-variant-numeric:tabular-nums;line-height:1.2}
 .stat span{color:var(--muted);font-size:13px}
-.menacing{display:inline-block;color:var(--accent2);font-weight:900;animation:pulse .7s ease-in-out infinite alternate}
+.flair{display:inline-block;color:var(--accent2);font-weight:900;animation:pulse .7s ease-in-out infinite alternate}
 @keyframes pulse{from{transform:scale(1) rotate(-2deg)}to{transform:scale(1.08) rotate(2deg)}}
 .unlock{display:flex;gap:12px;align-items:center;background:color-mix(in srgb,var(--accent2) 14%,var(--panel2));border:1px solid var(--accent2);border-radius:12px;padding:10px 14px;margin:8px 0}
 .unlock .ic{font-size:34px}
@@ -144,8 +144,8 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 .share-card h2{margin:18px 0 6px}
 .share-items{display:flex;flex-wrap:wrap;gap:8px}
 .share-items span{background:var(--panel2);border:1px solid var(--accent);border-radius:999px;padding:6px 12px;font-weight:700}
-.kmbar{height:10px;border-radius:999px;background:var(--panel2);overflow:hidden;margin:6px 0 2px}
-.kmbar i{display:block;height:100%;background:var(--accent)}
+.distbar{height:10px;border-radius:999px;background:var(--panel2);overflow:hidden;margin:6px 0 2px}
+.distbar i{display:block;height:100%;background:var(--accent)}
 body.cardmode header .controls,body.cardmode .tabs,body.cardmode footer{display:none}
 .pro{max-width:640px;margin:0 auto;width:100%}
 .pro-art{text-align:center;font-size:84px;line-height:1.1;margin:4px 0 10px}
@@ -172,7 +172,7 @@ body.cardmode header .controls,body.cardmode .tabs,body.cardmode footer{display:
 .week i{width:18px;height:18px;border-radius:50%;border:2px solid var(--accent);box-sizing:border-box}
 .week i.done{background:var(--accent)}
 .week i.part{background:color-mix(in srgb,var(--accent) 35%,transparent)}
-.camp{background:color-mix(in srgb,var(--accent) 16%,var(--panel2));border:1px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:12px}
+.done-box{background:color-mix(in srgb,var(--accent) 16%,var(--panel2));border:1px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:12px}
 .hex{display:block;width:100%;max-width:340px;margin:0 auto;height:auto}
 .sheet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:center}
 @media (max-width:640px){.sheet{grid-template-columns:1fr}}
