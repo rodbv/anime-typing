@@ -19,11 +19,37 @@ O app aceita três layouts: US Internacional (com teclas mortas para acentos), U
 
 ## Rodar localmente
 
-O app é um único arquivo HTML, sem dependências e sem servidor. Abra o `index.html` no navegador.
+O jogo carrega o tema e os textos com fetch, então precisa de um servidor. Com o [just](https://github.com/casey/just) instalado:
 
-O progresso fica no localStorage do navegador. O navegador guarda esse progresso separado por endereço, então o arquivo local e o site publicado têm progressos diferentes. Se o arquivo mudar de pasta ou de nome, o progresso local some.
+```
+just run
+```
+
+Depois abra http://localhost:8000. Sem o just, `python3 -m http.server` na pasta faz a mesma coisa.
+
+O progresso fica no localStorage do navegador, separado por endereço e por tema. O site publicado e o servidor local têm progressos diferentes.
 
 O [ROTEIRO.md](ROTEIRO.md) descreve a história, as etapas e as decisões de design.
+
+## Estrutura
+
+- `engine.js` e `engine.css`: o jogo, igual para todos os temas.
+- `loader.js`: busca o tema e os textos e depois inicia o engine.
+- `themes/jojo.json`: tudo o que é de Steel Ball Run.
+- `i18n/pt.json` e `i18n/en.json`: os textos comuns da interface.
+- `index.html`: a página do tema JoJo.
+
+O [TEMAS.md](TEMAS.md) explica como criar um tema novo.
+
+## Testes
+
+Os testes rodam no jsdom e precisam do Node:
+
+```
+just test
+```
+
+Um dos testes compara as telas principais com `tests/snapshot.txt`. Se uma mudança altera uma tela de propósito, `just snapshot` grava o snapshot novo, e o diff mostra o que mudou.
 
 ## Aviso sobre direitos autorais
 
