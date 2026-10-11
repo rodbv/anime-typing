@@ -272,16 +272,39 @@ function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
 
 /* ---------- lessons ---------- */
 const LESSON_DEFS = [
-  {id: "fj", k: "fj", stage: 0}, {id: "dk", k: "dk", stage: 0, race: "sandman"},
-  {id: "sl", k: "sl", stage: 1}, {id: "a", k: {intl: "a;", us: "a;", abnt: "aç"}, stage: 1}, {id: "gh", k: "gh", stage: 1}, {id: "r1", review: "home", stage: 1, race: "diego"},
-  {id: "ei", k: "ei", stage: 2}, {id: "ru", k: "ru", stage: 2, race: "hotpants"},
-  {id: "to", k: "to", stage: 3}, {id: "nm", k: "nm", stage: 3}, {id: "c,", k: "c,", stage: 3, race: "norisuke"},
-  {id: "qp", k: "qp", stage: 4}, {id: "r2", review: "mid", stage: 4, race: "pocoloco"},
-  {id: "acc1", accents: 1, stage: 5}, {id: "acc2", accents: 2, stage: 5, race: "gyro"},
-  {id: "vb", k: "vb", stage: 6}, {id: "x.", k: "x.", stage: 6}, {id: "zwy", k: "zwy", stage: 6, race: "diego2"},
-  {id: "r3", review: "all", stage: 7, race: "valentine"},
-  {id: "shift", shift: true, stage: 8}, {id: "quotes", quotes: true, stage: 8, race: "diego3"}
+  {id: "fj", k: "fj"}, {id: "dk", k: "dk"},
+  {id: "sl", k: "sl"}, {id: "a", k: {intl: "a;", us: "a;", abnt: "aç"}}, {id: "gh", k: "gh"}, {id: "r1", review: "home"},
+  {id: "ei", k: "ei"}, {id: "ru", k: "ru"},
+  {id: "to", k: "to"}, {id: "nm", k: "nm"}, {id: "c,", k: "c,"},
+  {id: "qp", k: "qp"}, {id: "r2", review: "mid"},
+  {id: "acc1", accents: 1}, {id: "acc2", accents: 2},
+  {id: "vb", k: "vb"}, {id: "x.", k: "x."}, {id: "zwy", k: "zwy"},
+  {id: "r3", review: "all"},
+  {id: "shift", shift: true}, {id: "quotes", quotes: true}
 ];
+// The theme groups the course into stages in course order; a stage's rival races its last lesson.
+const themeProblems = [];
+STAGES.forEach((st, si) => (st.lessons || []).forEach(id => {
+  const L = LESSON_DEFS.find(x => x.id === id);
+  if (!L) themeProblems.push(`etapa ${si + 1}: a lição "${id}" não existe`);
+  else L.stage = si;
+}));
+STAGES.forEach((st, si) => {
+  if (!st.rival) return;
+  if (!RIVALS[st.rival]) themeProblems.push(`etapa ${si + 1}: o rival "${st.rival}" não existe`);
+  else {
+    const last = LESSON_DEFS.find(L => L.id === st.lessons?.[st.lessons.length - 1]);
+    if (last) last.race = st.rival;
+  }
+});
+LESSON_DEFS.forEach((L, i) => {
+  if (L.stage === undefined) themeProblems.push(`a lição "${L.id}" não está em nenhuma etapa`);
+  else if (i && L.stage < LESSON_DEFS[i - 1].stage) themeProblems.push(`a lição "${L.id}" está numa etapa anterior à lição que vem antes dela`);
+});
+if (themeProblems.length) {
+  document.body.innerHTML = `<div class="card" style="max-width:640px;margin:40px auto"><h1>O tema tem problemas</h1><ul>${themeProblems.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>`;
+  throw new Error("theme problems: " + themeProblems.join("; "));
+}
 const lessonKeys = L => !L.k ? "" : (typeof L.k === "string" ? L.k : L.k[S.layout]);
 function lessonTitle(L) {
   if (L.k) return [...lessonKeys(L)].map(c => c.toUpperCase()).join(" ");
@@ -528,7 +551,7 @@ function applyTheme() {
   $("#deco").textContent = TH.look.deco;
 }
 function applyI18n() {
-  document.documentElement.lang = locale() === "pt-BR" ? "pt-BR" : "en";
+  document.documentElement.lang = locale();
   document.querySelectorAll("[data-i18n]").forEach(e => { e.textContent = t(e.dataset.i18n); });
   renderLegend();
 }

@@ -170,7 +170,12 @@
         "pt": [
           76,
           222
-        ]
+        ],
+        "lessons": [
+          "fj",
+          "dk"
+        ],
+        "rival": "sandman"
       },
       {
         "lbl": "Etapa 2",
@@ -183,7 +188,14 @@
           162
         ],
         "label": "Monument Valley",
-        "dy": 22
+        "dy": 22,
+        "lessons": [
+          "sl",
+          "a",
+          "gh",
+          "r1"
+        ],
+        "rival": "diego"
       },
       {
         "lbl": "Etapa 3",
@@ -196,7 +208,12 @@
           150
         ],
         "label": "Cañon City",
-        "dy": -12
+        "dy": -12,
+        "lessons": [
+          "ei",
+          "ru"
+        ],
+        "rival": "hotpants"
       },
       {
         "lbl": "Etapa 4",
@@ -209,7 +226,13 @@
           166
         ],
         "label": "Kansas City",
-        "dy": 22
+        "dy": 22,
+        "lessons": [
+          "to",
+          "nm",
+          "c,"
+        ],
+        "rival": "norisuke"
       },
       {
         "lbl": "Etapa 5",
@@ -222,7 +245,12 @@
           128
         ],
         "label": "Chicago",
-        "dy": 22
+        "dy": 22,
+        "lessons": [
+          "qp",
+          "r2"
+        ],
+        "rival": "pocoloco"
       },
       {
         "lbl": "Etapa 6",
@@ -235,7 +263,12 @@
           70
         ],
         "label": "Mackinaw City",
-        "dy": -12
+        "dy": -12,
+        "lessons": [
+          "acc1",
+          "acc2"
+        ],
+        "rival": "gyro"
       },
       {
         "lbl": "Etapa 7",
@@ -248,7 +281,13 @@
           150
         ],
         "label": "Filadélfia",
-        "dy": 22
+        "dy": 22,
+        "lessons": [
+          "vb",
+          "x.",
+          "zwy"
+        ],
+        "rival": "diego2"
       },
       {
         "lbl": "Etapa 8",
@@ -259,7 +298,11 @@
         "pt": [
           570,
           139
-        ]
+        ],
+        "lessons": [
+          "r3"
+        ],
+        "rival": "valentine"
       },
       {
         "lbl": "Etapa final",
@@ -272,7 +315,12 @@
           122
         ],
         "label": "Nova York",
-        "dy": -12
+        "dy": -12,
+        "lessons": [
+          "shift",
+          "quotes"
+        ],
+        "rival": "diego3"
       }
     ]
   },

@@ -8,17 +8,20 @@ const ROOT = path.resolve(__dirname, '..');
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 
 // jsdom has no fetch, so the loader's JSON files go into the page as globals, followed by the engine.
-function inlineLoader(attrs) {
+// A test can pass themeEdit to change the theme data before the page loads.
+function inlineLoader(attrs, themeEdit) {
   const files = (/data-i18n="([^"]*)"/.exec(attrs)?.[1] || '').split(/\s+/).filter(Boolean);
   const i18n = Object.fromEntries(files.map(f => [path.basename(f, '.json'), JSON.parse(read(f))]));
-  const theme = /data-theme="([^"]*)"/.exec(attrs)?.[1];
-  return `<script>window.I18N = ${JSON.stringify(i18n)};${theme ? ` window.THEME = ${read(theme)};` : ''}</script>\n<script>\n${read('engine.js')}\n</script>`;
+  const themeFile = /data-theme="([^"]*)"/.exec(attrs)?.[1];
+  const theme = themeFile && JSON.parse(read(themeFile));
+  if (theme && themeEdit) themeEdit(theme);
+  return `<script>window.I18N = ${JSON.stringify(i18n)};${theme ? ` window.THEME = ${JSON.stringify(theme)};` : ''}</script>\n<script>\n${read('engine.js')}\n</script>`;
 }
 
 // Inlines local scripts and stylesheets so jsdom runs the page without a server.
-function pageHtml(page = 'index.html') {
+function pageHtml(page = 'index.html', themeEdit) {
   return read(page)
-    .replace(/<script src="loader\.js[^"]*"([^>]*)><\/script>/, (_, attrs) => inlineLoader(attrs))
+    .replace(/<script src="loader\.js[^"]*"([^>]*)><\/script>/, (_, attrs) => inlineLoader(attrs, themeEdit))
     .replace(/<script src="([^"?]+)(\?[^"]*)?"><\/script>/g, (_, src) => `<script>\n${read(src)}\n</script>`)
     .replace(/<link rel="stylesheet" href="([^"?]+)(\?[^"]*)?">/g, (_, href) => `<style>\n${read(href)}\n</style>`);
 }
@@ -43,7 +46,7 @@ function frozenDate(RealDate, now) {
 
 function boot(storage, url = 'http://localhost/', opts = {}) {
   const errors = [];
-  const dom = new JSDOM(pageHtml(opts.page), {runScripts: 'dangerously', pretendToBeVisual: true, url,
+  const dom = new JSDOM(pageHtml(opts.page, opts.themeEdit), {runScripts: 'dangerously', pretendToBeVisual: true, url,
     beforeParse(w) {
       w.structuredClone = structuredClone; w.TextEncoder = TextEncoder; w.TextDecoder = TextDecoder;
       w.addEventListener('error', e => errors.push(e.message));
