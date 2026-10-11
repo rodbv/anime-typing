@@ -150,6 +150,16 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 .c.ghost{box-shadow:inset 0 3px 0 var(--accent2)}
 .c.ghost.cur{box-shadow:inset 0 3px 0 var(--accent2),inset 0 -3px 0 var(--accent)}
 .meter .ghostmark{position:absolute;top:0;bottom:0;width:4px;margin-left:-2px;background:var(--accent2);border-radius:2px}
+.mission{list-style:none;padding:0;margin:0}
+.mission button{all:unset;cursor:pointer;display:block;box-sizing:border-box;width:100%;padding:9px 12px;border-radius:9px;background:var(--panel2);margin:6px 0}
+.mission button:hover{outline:1px solid var(--accent)}
+.mission .ok{opacity:.55;text-decoration:line-through}
+.week{display:flex;gap:10px;margin-top:14px;align-items:flex-end;flex-wrap:wrap}
+.week span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--muted)}
+.week i{width:18px;height:18px;border-radius:50%;border:2px solid var(--accent);box-sizing:border-box}
+.week i.done{background:var(--accent)}
+.week i.part{background:color-mix(in srgb,var(--accent) 35%,transparent)}
+.camp{background:color-mix(in srgb,var(--accent) 16%,var(--panel2));border:1px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:12px}
 @media (max-width:640px){
   .big{grid-template-columns:repeat(2,1fr)}
   .textbox{font-size:20px}
@@ -465,6 +475,18 @@ Object.assign(T.pt, {
   raceRule: "Corrida contra {nm}: o fantasma corre a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
   place: "{n}º lugar!", noPodium: "Fora do pódio",
   aheadBy: "Você chegou {s} s antes de {nm}.", behindBy: "{nm} chegou {s} s antes.",
+  missionTitle: "Missão do dia",
+  mNext: "Próximo trecho: lição {n} ({title})",
+  mGyro: "Treino do Gyro: refaça a lição {n} ({title})",
+  mGyroAny: "Treino do Gyro: refaça qualquer lição",
+  mFree: "Uma rodada de treino livre ou uma frase",
+  missionDoneHome: "Missão cumprida hoje. Se quiser, continue treinando.",
+  weekCount: "{n} dias de treino nesta semana",
+  weekdays: ["D", "S", "T", "Q", "Q", "S", "S"],
+  campTitle: "Missão cumprida!",
+  campText: "O Gyro acendeu a fogueira do acampamento. Bom trabalho hoje, {name}. Amanhã a corrida continua.",
+  seeYou: "Até amanhã", keepTraining: "Continuar treinando",
+  breakMsg: "Você já treinou 20 minutos hoje. Que tal uma pausa? Beba água e alongue as mãos.",
   footer: "O progresso fica salvo neste navegador."
 });
 const t = (k, vars) => {
@@ -1312,6 +1334,7 @@ function finish() {
     const L = LESSON_DEFS[run.lessonIdx];
     const st = starsFor(m.wpm, m.acc, run.lessonIdx);
     const prev = progress()[L.id];
+    run.wasNew = !(prev?.stars >= 1);
     record = !run.preview && !!prev && st >= 1 && m.wpm > prev.wpm;
     if (!run.preview) progress()[L.id] = {stars: Math.max(st, prev?.stars || 0), wpm: Math.max(m.wpm, prev?.wpm || 0), acc: Math.max(m.acc, prev?.acc || 0), place: prev?.place, last: Date.now()};
     run.passed = st >= 1;
@@ -1330,6 +1353,7 @@ function finish() {
     const [cur, nxt] = rankFor(bestOverall());
     extra = `<p>${esc(t("rank"))}: <b>${esc(rankName(cur))}</b>${nxt ? " · " + esc(t("nextRank", {r: rankName(nxt), n: nxt[0]})) : ""}</p>`;
   }
+  const mission = updateMission(m);
   let fresh = [];
   if (!run.preview) {
     data.totals.runs++;
@@ -1353,7 +1377,12 @@ function finish() {
   else if (run.mode === "quote") btns.push(["nextq", t("nextQuote"), true], ["again", t("again"), false]);
   else btns.push(["again", t("again"), true]);
   btns.push(["back", t("back") + " (Esc)", false]);
+  if (mission.justDone) {
+    const keep = btns[0][0];
+    btns.splice(0, btns.length, ["home", t("seeYou"), true], [keep, t("keepTraining"), false]);
+  }
   const actions = {
+    home: () => { run = null; showView("home"); },
     next: () => startRun("lesson", {lessonIdx: run.lessonIdx + 1}),
     nextq: () => startRun("quote", {preview: run.preview}),
     again: () => restart(),
@@ -1363,7 +1392,9 @@ function finish() {
 
   const r = $("#results");
   r.innerHTML = `
+    ${mission.justDone ? `<div class="camp">🔥 <b>${esc(t("campTitle"))}</b> ${esc(t("campText", {name: data.profile.name || "Johnny"}))}</div>` : ""}
     <h2 class="rt">${esc(title)} ${record ? `<span class="menacing">ゴゴゴ ${esc(t("newRecord"))}</span>` : ""}</h2>
+    ${mission.breakNow ? `<p class="tipline">⏸️ ${esc(t("breakMsg"))}</p>` : ""}
     ${extra}
     ${resultTip(m, missed)}
     <div class="big">
@@ -1726,7 +1757,7 @@ function renderHome() {
         <span class="chip">${esc(t("tabCollection"))}: <b style="font-size:14px">${got}/${ACHIEVEMENTS.length}</b></span>
       </div>
     </div>
-    <div id="mission-slot"></div>
+    ${missionHtml()}
     <div class="card">${mapSvg()}</div>
     <div class="card"><h2>${esc(t("gyroTip"))}</h2>
       ${first ? handsSvg({hi: ["f", "j"]}) + `<div class="legend">${legendHtml()}</div>` : ""}
@@ -1737,6 +1768,7 @@ $("#home").addEventListener("click", e => {
   const b = e.target.closest("[data-go]");
   if (!b) return;
   if (b.dataset.go === "start") startNext();
+  else if (b.dataset.go === "gyro") startGyro();
   else showView(b.dataset.go);
 });
 $("#btn-tip").addEventListener("click", () => openTip());
@@ -1830,6 +1862,76 @@ function raceResultHtml(place, ms) {
   return `<div class="bubble${place === 1 ? "" : " rival"}"><b>🏁 ${esc(place <= 3 ? t("place", {n: place}) : t("noPodium"))}</b> · ${esc(gap)}<br>${esc(place === 1 ? rival.win : rival.lose)}</div>`;
 }
 const racePoints = () => LESSON_DEFS.reduce((a, L) => a + (L.race ? PLACE_POINTS[progress()[L.id]?.place || 0] || 0 : 0), 0);
+
+/* ---------- daily mission ---------- */
+const BREAK_MS = 20 * 60000;
+const dayKey = dt => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+// The Gyro lesson revisits the cleared lesson with the worst key, or else the weakest and oldest one.
+function pickGyroLesson(exclude) {
+  const pr = progress(), done = LESSON_DEFS.filter(L => lessonDone(L) && L.id !== exclude);
+  if (!done.length) return null;
+  const rate = st => st.m / (st.h + st.m);
+  const worst = Object.entries(data.keys[S.layout]).filter(([, st]) => st.h + st.m >= 10 && st.m > 0).sort((a, b) => rate(b[1]) - rate(a[1]))[0];
+  const byKey = worst && done.find(L => lessonKeys(L).includes(worst[0]));
+  if (byKey) return byKey.id;
+  done.sort((a, b) => (pr[a.id].stars - pr[b.id].stars) || ((pr[a.id].last || 0) - (pr[b.id].last || 0)));
+  return done[0].id;
+}
+function today() {
+  const k = dayKey(new Date());
+  if (!data.days[k]) {
+    const nx = LESSON_DEFS[Math.max(0, nextLessonIdx())];
+    data.days[k] = {ms: 0, next: false, gyro: false, free: false, done: false, breakShown: false, nextLesson: nx.id, gyroLesson: pickGyroLesson(nx.id)};
+    save();
+  }
+  return data.days[k];
+}
+function updateMission(m) {
+  const day = today();
+  day.ms += m.ms;
+  if (run.mode === "lesson" && run.passed && !run.preview) {
+    const L = LESSON_DEFS[run.lessonIdx];
+    // Without a Gyro lesson (nothing cleared at the start of the day), any lesson after the new one counts.
+    if (!day.next && (L.id === day.nextLesson || run.wasNew)) day.next = true;
+    else if (!day.gyroLesson || L.id === day.gyroLesson) day.gyro = true;
+  }
+  if (run.mode === "free" || run.mode === "quote") day.free = true;
+  const justDone = !day.done && day.next && day.gyro && day.free;
+  if (justDone) day.done = true;
+  const breakNow = !day.breakShown && day.ms >= BREAK_MS;
+  if (breakNow) day.breakShown = true;
+  save();
+  return {justDone, breakNow};
+}
+function weekHtml() {
+  const names = t("weekdays");
+  let n = 0;
+  const dots = [];
+  for (let i = 6; i >= 0; i--) {
+    const dt = new Date();
+    dt.setDate(dt.getDate() - i);
+    const day = data.days[dayKey(dt)];
+    if (day && day.ms > 0) n++;
+    dots.push(`<span><i class="${day?.done ? "done" : day?.ms > 0 ? "part" : ""}"></i>${names[dt.getDay()]}</span>`);
+  }
+  return `<div class="week">${dots.join("")}<span style="margin-left:6px;font-size:13px">${esc(t("weekCount", {n}))}</span></div>`;
+}
+function missionHtml() {
+  const day = today();
+  const idxOf = id => LESSON_DEFS.findIndex(L => L.id === id);
+  const label = id => { const i = idxOf(id); return {n: i + 1, title: lessonTitle(LESSON_DEFS[i])}; };
+  const item = (ok, go, txt) => `<li><button data-go="${go}" class="${ok ? "ok" : ""}">${ok ? "✅" : "⬜"} ${esc(txt)}</button></li>`;
+  return `<div class="card"><h2>${esc(t("missionTitle"))}</h2><ul class="mission">
+    ${item(day.next, "start", t("mNext", label(day.nextLesson)))}
+    ${item(day.gyro, "gyro", day.gyroLesson ? t("mGyro", label(day.gyroLesson)) : t("mGyroAny"))}
+    ${item(day.free, "free", t("mFree"))}
+  </ul>${day.done ? `<p style="margin:10px 0 0">🔥 ${esc(t("missionDoneHome"))}</p>` : ""}${weekHtml()}</div>`;
+}
+function startGyro() {
+  const id = today().gyroLesson;
+  const i = id ? LESSON_DEFS.findIndex(L => L.id === id) : Math.max(0, nextLessonIdx() - 1);
+  startRun("lesson", {lessonIdx: i});
+}
 
 /* ---------- pause, focus mode and locks ---------- */
 let toastTimer = null;
