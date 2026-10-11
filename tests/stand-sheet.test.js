@@ -1,0 +1,12 @@
+const {boot} = require('./harness');
+const A = boot(); const {d, ev} = A; A.ready();
+console.log('rhythm steady:', ev('rhythmGrade(Array(30).fill(300))'), '| jumpy:', ev('rhythmGrade(Array.from({length:30},(_, i)=>i%2?150:900))'), '| short:', ev('rhythmGrade([300,300])'));
+A.playLesson(0); A.playLesson(1); A.playLesson(2);
+console.log('result stats:', [...d.querySelectorAll('#results .stat span')].map(s => s.textContent).join(','));
+console.log('bestStreak saved:', ev('data.bestStreak'));
+ev('showView("stats")');
+console.log('sheet:', d.querySelector('#stats .sheet div[style]').textContent, '|', [...d.querySelectorAll('#stats .sheet tr')].map(r => r.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
+console.log('race table:', d.querySelector('#stats h2:nth-of-type(1)') && [...d.querySelectorAll('#stats .card h2')].map(h => h.textContent).slice(0, 3).join(' | '));
+console.log('race rows:', [...d.querySelectorAll('#stats .card:nth-child(2) tr')].slice(1, 3).map(r => r.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
+console.log('ERRORS', A.errors);
+process.exit(0);

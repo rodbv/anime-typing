@@ -1,0 +1,26 @@
+const {boot} = require('./harness');
+const A = boot(); const {d, ev} = A;
+A.ready(); ev('data.profile.name = "Theo <b>"; save()');
+A.playLesson(0); A.playLesson(1); A.playLesson(2);
+ev('showView("home")');
+d.querySelector('#home [data-go=share]').click();
+console.log('modal open:', !d.getElementById('share').hidden, '| qr svg:', !!d.querySelector('#share .qr svg'));
+const url = d.getElementById('share-box').dataset.url;
+console.log('url length:', url.length, '|', url.slice(0, 60));
+console.log('wa link:', decodeURIComponent(d.querySelector('#share a').href.split('text=')[1]).slice(0, 160));
+A.key('Escape'); console.log('Esc closes:', d.getElementById('share').hidden, '| view still:', ev('view'));
+const snap = ev('JSON.stringify(shareSnapshot())'); console.log('snapshot:', snap);
+// phone opens the link: no saved data on that device
+const P = boot(null, url);
+console.log('card view:', P.ev('view'), '| body:', P.d.body.className);
+console.log('card text:', P.d.getElementById('share-view').textContent.replace(/\s+/g, ' ').trim().slice(0, 400));
+console.log('name escaped:', P.d.getElementById('share-view').innerHTML.includes('Theo &lt;b&gt;'));
+console.log('phone storage untouched:', P.w.localStorage.getItem('typedojo:v1'));
+const bad = boot(null, 'http://localhost/?card=%%%garbage');
+console.log('bad link:', bad.d.querySelector('#share-view h1').textContent);
+const evil = boot(null, 'http://localhost/?card=' + Buffer.from(JSON.stringify({n: '<img src=x onerror=alert(1)>', st: 99, km: -5, it: ['nope', 'ball'], w: 'x'})).toString('base64url'));
+console.log('evil card:', evil.d.getElementById('share-view').innerHTML.includes('<img'), '| stage:', evil.d.querySelector('.share-card b').textContent, '| items:', evil.d.querySelectorAll('.share-items span').length);
+d.getElementById('tabs').querySelector('[data-view=stats]').click(); d.getElementById('btn-share').click();
+console.log('ficha button opens modal:', !d.getElementById('share').hidden);
+console.log('ERRORS', A.errors, P.errors, bad.errors, evil.errors);
+process.exit(0);

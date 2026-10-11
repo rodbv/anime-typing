@@ -1,0 +1,284 @@
+{
+ "now": 1791723600000,
+ "data": {
+  "settings": {
+   "layout": "intl",
+   "lang": "pt",
+   "showKb": true,
+   "time": 60,
+   "accents": false,
+   "unlockAll": false,
+   "setupDone": true
+  },
+  "lessons": {
+   "intl": {
+    "fj": {
+     "stars": 3,
+     "wpm": 12,
+     "acc": 98,
+     "last": 1791637200000
+    },
+    "dk": {
+     "stars": 2,
+     "wpm": 13,
+     "acc": 96,
+     "last": 1791637200000,
+     "place": 2
+    },
+    "sl": {
+     "stars": 2,
+     "wpm": 12,
+     "acc": 95,
+     "last": 1791637200000
+    },
+    "a": {
+     "stars": 1,
+     "wpm": 11,
+     "acc": 92,
+     "last": 1791637200000
+    },
+    "gh": {
+     "stars": 3,
+     "wpm": 14,
+     "acc": 99,
+     "last": 1791637200000
+    },
+    "r1": {
+     "stars": 1,
+     "wpm": 15,
+     "acc": 94,
+     "last": 1791637200000,
+     "place": 1
+    },
+    "ei": {
+     "stars": 1,
+     "wpm": 13,
+     "acc": 91,
+     "last": 1791637200000
+    }
+   },
+   "us": {},
+   "abnt": {}
+  },
+  "keys": {
+   "intl": {
+    "f": {
+     "h": 120,
+     "m": 3
+    },
+    "j": {
+     "h": 118,
+     "m": 2
+    },
+    "d": {
+     "h": 90,
+     "m": 9
+    },
+    "k": {
+     "h": 88,
+     "m": 4
+    },
+    "s": {
+     "h": 70,
+     "m": 8
+    },
+    "l": {
+     "h": 66,
+     "m": 3
+    },
+    "a": {
+     "h": 40,
+     "m": 7
+    },
+    "g": {
+     "h": 30,
+     "m": 2
+    },
+    "h": {
+     "h": 31,
+     "m": 1
+    },
+    "e": {
+     "h": 20,
+     "m": 4
+    },
+    "i": {
+     "h": 18,
+     "m": 2
+    }
+   },
+   "us": {},
+   "abnt": {}
+  },
+  "best": {
+   "free": 18,
+   "quote": 15
+  },
+  "totals": {
+   "runs": 14,
+   "chars": 3100
+  },
+  "unlocked": {
+   "ball": 1791464400000,
+   "larm": 1791637200000,
+   "act1": 1791378000000,
+   "golden": 1791550800000,
+   "nyoho": 1791291600000,
+   "slowdancer": 1791720000000
+  },
+  "history": [
+   {
+    "t": 1791680400000,
+    "mode": "lesson",
+    "wpm": 9,
+    "acc": 88,
+    "layout": "intl",
+    "label": "1"
+   },
+   {
+    "t": 1791684000000,
+    "mode": "lesson",
+    "wpm": 10,
+    "acc": 89,
+    "layout": "intl",
+    "label": "2"
+   },
+   {
+    "t": 1791687600000,
+    "mode": "lesson",
+    "wpm": 11,
+    "acc": 90,
+    "layout": "intl",
+    "label": "3"
+   },
+   {
+    "t": 1791691200000,
+    "mode": "free",
+    "wpm": 12,
+    "acc": 91,
+    "layout": "intl",
+    "label": "60 s"
+   },
+   {
+    "t": 1791694800000,
+    "mode": "lesson",
+    "wpm": 13,
+    "acc": 92,
+    "layout": "intl",
+    "label": "5"
+   },
+   {
+    "t": 1791698400000,
+    "mode": "lesson",
+    "wpm": 14,
+    "acc": 93,
+    "layout": "intl",
+    "label": "6"
+   },
+   {
+    "t": 1791702000000,
+    "mode": "lesson",
+    "wpm": 15,
+    "acc": 94,
+    "layout": "intl",
+    "label": "7"
+   },
+   {
+    "t": 1791705600000,
+    "mode": "free",
+    "wpm": 16,
+    "acc": 95,
+    "layout": "intl",
+    "label": "60 s"
+   },
+   {
+    "t": 1791709200000,
+    "mode": "lesson",
+    "wpm": 17,
+    "acc": 96,
+    "layout": "intl",
+    "label": "2"
+   },
+   {
+    "t": 1791712800000,
+    "mode": "lesson",
+    "wpm": 18,
+    "acc": 97,
+    "layout": "intl",
+    "label": "3"
+   },
+   {
+    "t": 1791716400000,
+    "mode": "lesson",
+    "wpm": 19,
+    "acc": 88,
+    "layout": "intl",
+    "label": "4"
+   },
+   {
+    "t": 1791720000000,
+    "mode": "free",
+    "wpm": 20,
+    "acc": 89,
+    "layout": "intl",
+    "label": "60 s"
+   }
+  ],
+  "profile": {
+   "name": "Theo"
+  },
+  "days": {
+   "2026-10-10": {
+    "ms": 900000,
+    "next": true,
+    "gyro": true,
+    "free": true,
+    "done": true,
+    "breakShown": false,
+    "nextLesson": "ei",
+    "gyroLesson": "dk"
+   },
+   "2026-10-09": {
+    "ms": 900000,
+    "next": true,
+    "gyro": true,
+    "free": true,
+    "done": true,
+    "breakShown": false,
+    "nextLesson": "ei",
+    "gyroLesson": "dk"
+   },
+   "2026-10-07": {
+    "ms": 900000,
+    "next": true,
+    "gyro": true,
+    "free": true,
+    "done": true,
+    "breakShown": false,
+    "nextLesson": "ei",
+    "gyroLesson": "dk"
+   },
+   "2026-10-06": {
+    "ms": 900000,
+    "next": true,
+    "gyro": true,
+    "free": true,
+    "done": true,
+    "breakShown": false,
+    "nextLesson": "ei",
+    "gyroLesson": "dk"
+   },
+   "2026-10-11": {
+    "ms": 420000,
+    "next": true,
+    "gyro": false,
+    "free": false,
+    "done": false,
+    "breakShown": false,
+    "nextLesson": "ru",
+    "gyroLesson": "a"
+   }
+  },
+  "bestStreak": 88
+ }
+}

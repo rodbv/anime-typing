@@ -1,0 +1,10 @@
+{
+  "name": "steel-ball-type-tests",
+  "private": true,
+  "scripts": {
+    "test": "node run.js"
+  },
+  "devDependencies": {
+    "jsdom": "24.1.3"
+  }
+}
