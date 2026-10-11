@@ -11,7 +11,7 @@
   "tabStats": "Progresso",
   "lessonTip": "Deixe os dedos na linha base: F e J têm um relevo para você achar sem olhar. Olhe para a tela, não para as mãos.",
   "lesson": "Lição",
-  "passRule": "Para passar: 90% de precisão e 10 PPM",
+  "passRule": "Para passar: 90% de precisão (nas corridas, 93%)",
   "preview": "Prévia",
   "lockedTip": "Bloqueada: clique para ver uma prévia. A prévia não conta para o progresso.",
   "previewDone": "Fim da prévia. Esta rodada não conta para o progresso.",
@@ -80,7 +80,7 @@
   "trend": "Evolução de PPM",
   "noData": "Faça algumas rodadas para ver os dados.",
   "settings": "Ajustes",
-  "showKb": "Mostrar o teclado enquanto digita",
+  "showKb": "Mostrar o teclado nas lições de tecla nova",
   "accents": "Usar acentos nas frases e na corrida livre",
   "unlockAll": "Desbloquear todas as lições",
   "reset": "Apagar progresso",
@@ -92,7 +92,7 @@
   },
   "date": "Data",
   "mode": "Modo",
-  "collSummary": "{n} de {t} desbloqueados. Bata as metas para despertar Stands, Evas, Titãs e armas.",
+  "collSummary": "{n} de {t} conquistados.",
   "seriesTitles": {
     "jojo": "Stands (JoJo)",
     "eva": "Evas (Evangelion)",
@@ -208,5 +208,61 @@
   "freeLimited": "Por enquanto, a corrida livre usa só as teclas que você já sabe: {k}. Todas as letras liberam depois da lição {n}.",
   "quotesLocked": "As frases liberam depois da lição {n} (Maiúsculas com Shift). Até lá, você pode ver uma prévia.",
   "previewBtn": "Ver prévia (Enter)",
-  "footer": "O progresso fica salvo neste navegador."
+  "footer": "O progresso fica salvo neste navegador.",
+  "acc1Lesson": "Acentos: ´ e ~",
+  "acc2Lesson": "Acentos: ^, ` e Ç",
+  "kmOf": "{a} de {b}",
+  "setupName": "Seu nome",
+  "setupNameHint": "Ele aparece na tela inicial e na classificação.",
+  "failedAcc": "Quase! Para passar, você precisa de {n}% de precisão.",
+  "in_acc1_intl": [
+    "No US Internacional, o acento é uma tecla morta: nada aparece até você apertar a letra.",
+    "' e depois A faz á. ~ e depois A faz ã.",
+    "Para escrever só o apóstrofo, aperte ' e depois Espaço."
+  ],
+  "in_acc2_intl": [
+    "Shift+6 (^) e depois E faz ê.",
+    "` (a tecla à esquerda do 1) e depois A faz à.",
+    "Para o Ç, segure AltGr e aperte a vírgula."
+  ],
+  "in_acc1_abnt": [
+    "No ABNT2, o acento é uma tecla morta: nada aparece até você apertar a letra.",
+    "´ e depois A faz á. ~ e depois A faz ã."
+  ],
+  "in_acc2_abnt": [
+    "Shift + ~ faz ^ (para ê). Shift + ´ faz ` (para à).",
+    "O Ç tem tecla própria, no mindinho direito."
+  ],
+  "place": "{n}º lugar!",
+  "noPodium": "Fora do pódio",
+  "aheadBy": "Você chegou {s} s antes de {nm}.",
+  "behindBy": "{nm} chegou {s} s antes.",
+  "missionTitle": "Missão do dia",
+  "mFree": "Uma rodada de treino livre ou uma frase",
+  "missionDoneHome": "Missão cumprida hoje. Se quiser, continue treinando.",
+  "weekCount": "{n} dias de treino nesta semana",
+  "weekdays": [
+    "D",
+    "S",
+    "T",
+    "Q",
+    "Q",
+    "S",
+    "S"
+  ],
+  "campTitle": "Missão cumprida!",
+  "seeYou": "Até amanhã",
+  "keepTraining": "Continuar treinando",
+  "breakMsg": "Você já treinou 20 minutos hoje. Que tal uma pausa? Beba água e alongue as mãos.",
+  "showKbBtn": "Mostrar teclado",
+  "hideKbBtn": "Esconder teclado",
+  "rhythm": "Ritmo",
+  "raceTable": "Classificação: {p} pontos",
+  "rival": "Rival",
+  "placeCol": "Colocação",
+  "proNext": "Próximo (Enter)",
+  "proPrev": "Voltar",
+  "proSkip": "Pular a história",
+  "proHome": "Ir para o início",
+  "replayPrologue": "Ver a história de novo"
 }

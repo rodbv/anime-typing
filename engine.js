@@ -4,7 +4,7 @@ document.body.insertAdjacentHTML("afterbegin", `
 <div class="wrap">
   <header>
     <div>
-      <div class="logo">STEEL BALL <span>TYPE</span></div>
+      <div class="logo" id="logo"></div>
       <div class="sub" data-i18n="subtitle"></div>
     </div>
     <div class="controls">
@@ -121,59 +121,9 @@ const uniq = a => [...new Set(a)];
 const isLetter = c => /\p{L}/u.test(c);
 
 /* ---------- i18n ---------- */
-// Interface texts by language, loaded by loader.js from the i18n folder.
+// Interface texts by language, loaded by loader.js; the theme's strings replace the ones with the same key.
 const T = window.I18N;
-Object.assign(T.pt, {
-  subtitle: "A corrida de digitação de San Diego a Nova York",
-  tabLessons: "Etapas", tabFree: "Treino livre", tabStats: "Ficha",
-  freeIntro: "Treino do Gyro: palavras da corrida contra o relógio.",
-  quoteIntro: "Digite falas da corrida. Maiúsculas e pontuação contam.",
-  freeLimited: "Por enquanto, o treino livre usa só as teclas que você já sabe: {k}. Todas as letras liberam depois da lição {n}.",
-  lessonTip: "Cada lição é um trecho da corrida. Termine as lições para avançar no mapa.",
-  acc1Lesson: "Acentos: ´ e ~", acc2Lesson: "Acentos: ^, ` e Ç",
-  homeStart: "Largar: lição 1", homeContinue: "Continuar a corrida: lição {n}",
-  racerTag: "Corredor nº {n} · {name}", gyroTip: "Dica do Gyro", kmOf: "{a} de {b}",
-  collSummary: "{n} de {t} conquistados.",
-  collGroups: {race: "Partes do Cadáver Santo", tusk: "Tusk", goal: "Metas"},
-  setupTitle: "Inscrição na Steel Ball Run",
-  setupIntro: "Antes da largada, vamos descobrir o seu teclado e preencher a sua inscrição.",
-  setupName: "Seu nome", setupNameHint: "Ele aparece na tela inicial e na classificação.",
-  setupNumber: "Seu número de corredor: {n}, o mesmo do Johnny. A sua égua é a Slow Dancer.",
-  in_rv: ["Revisão: todas as teclas que você já aprendeu nesta parte da corrida.", "Tente não olhar para o teclado. Olhe para a trilha."],
-  passRule: "Para passar: 90% de precisão (nas corridas, 93%)",
-  failedAcc: "Quase! Para passar, você precisa de {n}% de precisão.",
-  partDone: "Trecho {n} de 3 · +{km}",
-  in_acc1_intl: ["No US Internacional, o acento é uma tecla morta: nada aparece até você apertar a letra.", "' e depois A faz á. ~ e depois A faz ã.", "Para escrever só o apóstrofo, aperte ' e depois Espaço."],
-  in_acc2_intl: ["Shift+6 (^) e depois E faz ê.", "` (a tecla à esquerda do 1) e depois A faz à.", "Para o Ç, segure AltGr e aperte a vírgula."],
-  in_acc1_abnt: ["No ABNT2, o acento é uma tecla morta: nada aparece até você apertar a letra.", "´ e depois A faz á. ~ e depois A faz ã."],
-  in_acc2_abnt: ["Shift + ~ faz ^ (para ê). Shift + ´ faz ` (para à).", "O Ç tem tecla própria, no mindinho direito."],
-  raceRule: "Corrida contra {nm}: o fantasma corre a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
-  place: "{n}º lugar!", noPodium: "Fora do pódio",
-  aheadBy: "Você chegou {s} s antes de {nm}.", behindBy: "{nm} chegou {s} s antes.",
-  missionTitle: "Missão do dia",
-  mNext: "Próximo trecho: lição {n} ({title})",
-  mGyro: "Treino do Gyro: refaça a lição {n} ({title})",
-  mGyroAny: "Treino do Gyro: refaça qualquer lição",
-  mFree: "Uma rodada de treino livre ou uma frase",
-  missionDoneHome: "Missão cumprida hoje. Se quiser, continue treinando.",
-  weekCount: "{n} dias de treino nesta semana",
-  weekdays: ["D", "S", "T", "Q", "Q", "S", "S"],
-  campTitle: "Missão cumprida!",
-  campText: "O Gyro acendeu a fogueira do acampamento. Bom trabalho hoje, {name}. Amanhã a corrida continua.",
-  seeYou: "Até amanhã", keepTraining: "Continuar treinando",
-  breakMsg: "Você já treinou 20 minutos hoje. Que tal uma pausa? Beba água e alongue as mãos.",
-  showKbBtn: "Mostrar teclado", hideKbBtn: "Esconder teclado",
-  showKb: "Mostrar o teclado nas lições de tecla nova",
-  rhythm: "Ritmo",
-  sheetTitle: "Ficha do Stand", noStand: "O Stand ainda não despertou",
-  stPower: "Poder", stSpeed: "Velocidade", stRange: "Alcance", stDurability: "Resistência", stPrecision: "Precisão", stPotential: "Potencial",
-  stPowerV: "{n} letras seguidas sem erro", stRangeV: "{n}% da corrida", stDurabilityV: "treinou {n} dos últimos 7 dias", stPotentialV: "o Tusk ainda evolui",
-  raceTable: "Classificação: {p} pontos", stage: "Etapa", rival: "Rival", placeCol: "Colocação",
-  proNext: "Próximo (Enter)", proPrev: "Voltar", proSkip: "Pular a história",
-  proSignUp: "Fazer a inscrição (Enter)", proHome: "Ir para o início",
-  replayPrologue: "Ver a história de novo",
-  footer: "O progresso fica salvo neste navegador."
-});
+Object.assign(T[window.THEME.lang] || T.pt, window.THEME.strings);
 const t = (k, vars) => {
   let s = T[S.lang]?.[k] ?? T.pt[k] ?? T.en?.[k] ?? k;
   if (vars && typeof s === "string") for (const [a, b] of Object.entries(vars)) s = s.split("{" + a + "}").join(b);
@@ -181,78 +131,13 @@ const t = (k, vars) => {
 };
 
 /* ---------- content ---------- */
-const SBR = {
-  names: "Johnny Gyro Diego Valentine Lucy Steel Pocoloco Sandman Norisuke Ringo Wekapipo Magent Blackmore Zeppeli Joestar Brando Tusk Valkyrie",
-  terms: "cavalo corrida rotação bola aço unha deserto pradaria montanha cadáver santo sela rédea galope trilha etapa largada chegada chapéu poeira ferradura estribo dimensão guardanapo bandeira presidente trem ponte rio lago gelo neve fogueira acampamento mapa bússola cowboy rancho xerife vento sol areia pedra caminho",
-  quotes: [
-    ["Nyo-ho-ho!", "Gyro"],
-    ["Pizza mozzarella, pizza mozzarella, rella rella rella!", "Gyro"],
-    ["Eu ainda estou no negativo. Eu só quero voltar ao zero.", "Johnny"],
-    ["O caminho mais curto era o desvio.", "Gyro"],
-    ["Bem-vindo ao mundo dos homens.", "Ringo Roadagain"],
-    ["Quem pega o primeiro guardanapo decide a regra para todos.", "Valentine"],
-    ["Dojyaaan!", "Valentine"],
-    ["WRYYYYY!", "Diego"],
-    ["Tusk ACT4!", "Johnny"],
-    ["Eu sou um sortudo em cinco bilhões!", "Pocoloco"],
-    ["Vou atravessar o continente só com os meus pés.", "Sandman"],
-    ["Acredite na Rotação! O poder da rotação não tem limite!", "Gyro"],
-    ["Gire as balas na proporção áurea!", "Gyro"],
-    ["Meu cavalo se chama Slow Dancer.", "Johnny"],
-    ["Não se preocupe com nada, Valkyrie!", "Gyro"]
-  ]
-};
-
-const JOHNNY_NUMBER = 939;
-const MAP_START = {pt: [60, 232], label: "San Diego", dy: 20};
-const STAGES = [
-  {lbl: "Etapa 1", place: "Praia de San Diego", from: "San Diego", to: "Igreja Santa Maria Novella", km: 15, pt: [76, 222]},
-  {lbl: "Etapa 2", place: "Deserto do Arizona", from: "Igreja Santa Maria Novella", to: "Monument Valley", km: 1200, pt: [175, 162], label: "Monument Valley", dy: 22},
-  {lbl: "Etapa 3", place: "Montanhas Rochosas", from: "Monument Valley", to: "Cañon City", km: 510, pt: [262, 150], label: "Cañon City", dy: -12},
-  {lbl: "Etapa 4", place: "Grandes Planícies", from: "Cañon City", to: "Kansas City", km: 1250, pt: [352, 166], label: "Kansas City", dy: 22},
-  {lbl: "Etapa 5", place: "Rio Mississippi", from: "Kansas City", to: "Chicago", km: 780, pt: [445, 128], label: "Chicago", dy: 22},
-  {lbl: "Etapa 6", place: "Tundra do Wisconsin", from: "Chicago", to: "Mackinaw City", km: 690, pt: [458, 70], label: "Mackinaw City", dy: -12},
-  {lbl: "Etapa 7", place: "Margem do lago Erie", from: "Mackinaw City", to: "Filadélfia", km: 1300, pt: [548, 150], label: "Filadélfia", dy: 22},
-  {lbl: "Etapa 8", place: "Campos de Nova Jersey", from: "Filadélfia", to: "Union Beach", km: 140, pt: [570, 139]},
-  {lbl: "Etapa final", place: "Nova York", from: "Union Beach", to: "Trinity Church", km: 13, pt: [586, 122], label: "Nova York", dy: -12}
-];
+// Story content of the page's theme, loaded by loader.js from the themes folder.
+const TH = window.THEME;
+const STAGES = TH.journey.stages;
 const TOTAL_KM = STAGES.reduce((a, st) => a + st.km, 0);
-
-const RIVALS = {
-  sandman: {nm: "Sandman", no: "C-990", floor: 6, pre: "Eu corro a pé. Mesmo assim, chego antes de você.", win: "Você chegou na igreja antes do Sandman!", lose: "O Sandman venceu a primeira etapa, como na série. Ainda faltam quase 6.000 km."},
-  diego: {nm: "Diego Brando", no: "001", floor: 8, pre: "Um paraplégico e um carrasco. Vocês não chegam ao Monument Valley.", win: "O Diego e o Silver Bullet comeram poeira no Monument Valley.", lose: "O Diego venceu esta etapa na série também. A revanche vem na etapa 7."},
-  hotpants: {nm: "Hot Pants", no: "191", floor: 10, pre: "Com o Cream Starter eu fecho qualquer ferida. E qualquer atalho também.", win: "Você passou a Hot Pants na descida das Rochosas!", lose: "A Hot Pants chegou primeiro em Cañon City."},
-  norisuke: {nm: "Norisuke Higashikata", floor: 11, pre: "Eu e o Hono vamos no nosso ritmo.", win: "Ritmo contra ritmo, e você venceu o Norisuke.", lose: "O Norisuke venceu com constância, como na série."},
-  pocoloco: {nm: "Pocoloco", no: "A-777", floor: 12, pre: "Eu sou um sortudo em cinco bilhões!", win: "Nem a sorte do Pocoloco segurou você.", lose: "A sorte do Pocoloco funcionou de novo."},
-  gyro: {nm: "Gyro Zeppeli", no: "B-636", floor: 13, pre: "Nyo-ho! Hoje a Valkyrie não espera você, Johnny.", win: "Você venceu o seu próprio mestre na travessia do gelo.", lose: "O Gyro venceu a etapa 6, como na série. Nyo-ho-ho!"},
-  diego2: {nm: "Diego Brando", no: "001", floor: 13, pre: "Com o Scary Monsters, eu vejo a corrida de cima.", win: "Revanche feita. O Diego chegou atrás na Filadélfia.", lose: "O Diego levou de novo. Ainda tem o final."},
-  valentine: {nm: "Funny Valentine", floor: 14, boss: true, pre: "Neste mundo, cada erro seu vira uma cópia que trabalha para mim.", win: "O D4C não alcançou você. Union Beach está logo ali.", lose: "O D4C pegou você desta vez. Mas a corrida continua."},
-  diego3: {nm: "Diego de outro mundo", floor: 14, boss: true, pre: "Eu vim de outro mundo para terminar esta corrida.", win: "Trinity Church! Desta vez o Johnny cruza a chegada.", lose: "O Diego de outro mundo chegou antes. Tente de novo: a chegada é sua."}
-};
-
-const STORY = {
-  fj: {narr: "Milhares de cavaleiros na areia de San Diego. A largada está perto.", gyro: "Antes de girar qualquer coisa, aprenda onde a mão descansa. Sinta o relevo no F e no J. Tudo começa ali."},
-  dk: {gyro: "O médio fica no D e no K. Depois de cada golpe, o dedo volta para casa."},
-  sl: {narr: "Na Palma do Diabo, no deserto do Arizona, o braço esquerdo do Cadáver Santo entra no corpo do Johnny. Tusk ACT1 desperta.", gyro: "Suas unhas giram e disparam, mas só dos dedos que você treinou. Anelar: S e L."},
-  a: {gyro: "O mindinho é o dedo mais fraco. No deserto a água é pouca, então economize movimento: só o mindinho se mexe."},
-  gh: {gyro: "O indicador estica para o lado, como a rédea que puxa o cavalo para o meio. Depois volta."},
-  r1: {gyro: "A linha base inteira de uma vez. Respire, Johnny. Galope constante."},
-  ei: {narr: "A subida das Montanhas Rochosas. A trilha fica estreita e o ar fica frio.", gyro: "Agora os dedos sobem. O médio vai até o E e o I, e volta. A mão fica parada, como o cavaleiro firme na sela."},
-  ru: {gyro: "O indicador sobe até o R e o U, e volta para o F e o J."},
-  to: {narr: "As Grandes Planícies. Campo aberto até onde a vista alcança.", gyro: "Galope constante. O T é um esticão do indicador. O O é do anelar."},
-  nm: {gyro: "N e M ficam embaixo do J. O indicador desce e volta, sem levantar a mão."},
-  "c,": {gyro: "O C é do médio esquerdo e a vírgula é do médio direito. Ritmo vence pressa."},
-  qp: {narr: "No rio Mississippi, contra o Sandman e o In a Silent Way, o Tusk evolui para ACT2. O buraco da unha agora persegue o alvo.", gyro: "Para atravessar o Mississippi, até os mindinhos trabalham: Q e P."},
-  r2: {gyro: "A linha de cima inteira. Não olhe para as mãos, olhe para a trilha."},
-  acc1: {narr: "Neve e gelo no Wisconsin. O gelo engana: primeiro você pisa no acento, depois na letra.", gyro: "A tecla morta é como gelo fino. Aperte o acento, solte, e só então a letra."},
-  acc2: {gyro: "Chapéu no E (ê), crase no A (à) e o Ç. Mesmo jeito: primeiro o sinal, depois a letra."},
-  vb: {narr: "Em Gettysburg, contra o Axl RO, o Johnny atira em si mesmo e entra no buraco: Tusk ACT3.", gyro: "Linha de baixo. O indicador desce até o V e o B."},
-  "x.": {gyro: "O anelar desce até o X e até o ponto. Desce e volta."},
-  zwy: {gyro: "As letras raras: Z com o mindinho, W com o anelar e Y com o indicador direito. Quase lá, Johnny."},
-  r3: {narr: "Contra o Valentine, a Slow Dancer corre no Retângulo de Ouro e o Johnny acerta a Rotação de ouro. Nasce o Tusk ACT4.", gyro: "Todas as letras. Respire e mantenha o galope."},
-  shift: {narr: "Os barcos atravessam a baía de Raritan. A última etapa começa em Coney Island.", gyro: "Para a maiúscula, o mindinho da outra mão segura o Shift. As duas mãos juntas, como a rotação perfeita."},
-  quotes: {narr: "Os últimos 13 km: de Coney Island, pela Ponte do Brooklyn, até a Trinity Church.", gyro: "Frases inteiras, com pontuação. Esta é a reta final."}
-};
+const RIVALS = TH.rivals;
+const STORY = TH.story;
+const RANKS = TH.ranks;
 
 const COMMON = {
   en: "as ask all fall dad add lad sad salad flask glass half has had hall flash gas ash dash slash flag shall lass " +
@@ -263,12 +148,6 @@ const COMMON = {
 };
 
 const ACCENT_WORDS = "não mão mãe pão são irmão coração ação lição canção mãos já lá pá pé fé só nó é até está café sofá aí país saída útil fácil difícil rápido música último único número sábado próximo herói céu água três você vovô avô pôr mês português lâmpada câmera à às força faça laço peça poço caça moço praça cabeça começo rotação galão estação".split(" ");
-
-const RANKS = [
-  [0, "Novato da largada", "Novato da largada"], [10, "Cavaleiro", "Cavaleiro"], [15, "Competidor", "Competidor"],
-  [20, "Top 100", "Top 100"], [25, "Top 10", "Top 10"], [30, "Rotação", "Rotação"],
-  [40, "Rotação de ouro", "Rotação de ouro"], [50, "Proporção áurea", "Proporção áurea"], [60, "Rotação infinita", "Rotação infinita"]
-];
 
 const stageRaceId = si => { const ls = LESSON_DEFS.filter(L => L.stage === si); return ls[ls.length - 1].id; };
 const stageCleared = si => (progress()[stageRaceId(si)]?.stars || 0) >= 1;
@@ -371,7 +250,7 @@ function sanitize(str, accents) {
 }
 
 /* ---------- storage ---------- */
-const STORE_KEY = "typedojo:v1";
+const STORE_KEY = TH.storeKey;
 const DEFAULTS = {
   settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
@@ -391,7 +270,7 @@ function loadData() {
   out.totals = {...base.totals, ...(d.totals || {})};
   out.profile = {...base.profile, ...(d.profile || {})};
   out.days = d.days || {};
-  out.settings.lang = "pt";
+  out.settings.lang = TH.lang;
   if (!LAYOUTS[out.settings.layout]) out.settings.layout = "intl";
   return out;
 }
@@ -449,7 +328,7 @@ function starsFor(wpm, acc, idx) {
 }
 
 function wordPools(accents) {
-  const themed = [...SBR.names.split(" "), ...SBR.terms.split(" ")];
+  const themed = [...TH.words.names.split(" "), ...TH.words.terms.split(" ")];
   const common = COMMON[S.lang].split(" ");
   // A word that would lose an accent or a Ç on this layout is dropped, so no misspelled word shows up.
   const clean = a => uniq(a.filter(w => w && sanitize(w, accents) === w.normalize("NFC")));
@@ -461,7 +340,7 @@ function drill(letters, focus) {
   for (let i = 0; i < len; i++) s += Math.random() < 0.6 ? pick(focus) : pick(letters);
   return s;
 }
-function allQuotes() { return SBR.quotes.map(q => [q[0], q[1]]); }
+function allQuotes() { return TH.quotes.map(q => [q[0], q[1]]); }
 const VOWELS = "aeiou";
 const PART_LEN = 48;
 const homeOf = k => { const rc = keyGeometry().pos[k]; return rc ? HOME[S.layout][rc.f] : k; };
@@ -529,7 +408,7 @@ function lessonParts(idx) {
 
   if (L.accents && S.layout !== "us") {
     const baseFits = w => [...w.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()].every(c => allowed.has(c) || c === "c");
-    const pool = uniq([...ACCENT_WORDS, ...COMMON.pt.split(" "), ...SBR.terms.split(" ")])
+    const pool = uniq([...ACCENT_WORDS, ...COMMON.pt.split(" "), ...TH.words.terms.split(" ")])
       .filter(w => /[^\x00-\x7f]/.test(w) && sanitize(w, true) === w.normalize("NFC") && baseFits(w));
     const second = w => /[âêôàç]/i.test(w);
     const mine = pool.filter(w => L.accents === 1 ? !second(w) : second(w));
@@ -657,7 +536,9 @@ const sink = $("#sink");
 
 function applyTheme() {
   document.documentElement.dataset.series = "sbr";
-  $("#deco").textContent = "回転";
+  for (const [k, v] of Object.entries(TH.look.colors)) document.documentElement.style.setProperty("--" + k, v);
+  $("#logo").innerHTML = `${esc(TH.look.logo[0])} <span>${esc(TH.look.logo[1])}</span>`;
+  $("#deco").textContent = TH.look.deco;
 }
 function applyI18n() {
   document.documentElement.lang = S.lang === "pt" ? "pt-BR" : "en";
@@ -708,7 +589,7 @@ function currentStageIdx() {
   return i === -1 ? STAGES.length - 1 : i;
 }
 function mapSvg() {
-  const pts = [MAP_START.pt, ...STAGES.map(st => st.pt)];
+  const pts = [TH.journey.start.pt, ...STAGES.map(st => st.pt)];
   const si = STAGES.findIndex((st, i) => lessonsInStage(i).some(L => !lessonDone(L)));
   let pos, done;
   if (si === -1) { pos = pts[pts.length - 1]; done = pts; }
@@ -719,7 +600,7 @@ function mapSvg() {
     done = [...pts.slice(0, si + 1), pos];
   }
   const line = ps => ps.map(q => q.map(v => v.toFixed(1)).join(",")).join(" ");
-  const places = [MAP_START, ...STAGES];
+  const places = [TH.journey.start, ...STAGES];
   const dots = places.map((pl, i) => {
     const reached = i === 0 || stageCleared(i - 1);
     return `<circle cx="${pl.pt[0]}" cy="${pl.pt[1]}" r="5" style="fill:${reached ? "var(--accent)" : "var(--panel2)"};stroke:var(--accent)"/>` +
@@ -1457,7 +1338,7 @@ function renderHome() {
   const prof = data.profile;
   $("#home").innerHTML = `
     <div class="card hero">
-      <div class="sub">${esc(t("racerTag", {n: JOHNNY_NUMBER, name: prof.name || "Johnny Joestar"}))}</div>
+      <div class="sub">${esc(t("racerTag", {n: TH.hero.number, name: prof.name || "Johnny Joestar"}))}</div>
       <h1>${esc(stg.lbl)}: ${esc(stg.place)}</h1>
       <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stg.from)} → ${esc(stg.to)} · ${esc(t("kmOf", {a: fmtKm(kmTraveled()), b: fmtKm(TOTAL_KM)}))}</p>
       <button class="btn primary" data-go="start">${esc(first ? t("homeStart") : t("homeContinue", {n: nx + 1}))} ${esc(t("enterHint"))}</button>
@@ -1485,7 +1366,7 @@ $("#home").addEventListener("click", e => {
 $("#btn-tip").addEventListener("click", () => openTip());
 
 /* ---------- share the day ---------- */
-const SITE_URL = "https://rodbv.github.io/jojo-typing/";
+const SITE_URL = TH.siteUrl;
 const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); };
 function shareSnapshot() {
   const start = startOfToday(), day = data.days[dayKey(new Date())] || {};
@@ -1522,7 +1403,7 @@ function readCard(param) {
     act: num(c.act, 4), col: num(c.col, ACHIEVEMENTS.length), pts: num(c.pts, 999)
   };
 }
-const shareText = c => `🏇 ${c.n} (nº ${JOHNNY_NUMBER}) no Steel Ball Type: ${c.mi} min de treino hoje, missão ${c.ms} de 3` +
+const shareText = c => `🏇 ${c.n} (nº ${TH.hero.number}) no Steel Ball Type: ${c.mi} min de treino hoje, missão ${c.ms} de 3` +
   (c.it.length ? `, ${c.it.length} ${c.it.length === 1 ? "conquista nova" : "conquistas novas"}` : "") +
   `. ${STAGES[c.st].lbl}, ${fmtKm(c.km)} de ${fmtKm(TOTAL_KM)}.`;
 const statBox = (v, lbl) => `<div class="stat"><b>${esc(String(v))}</b><span>${esc(lbl)}</span></div>`;
@@ -1531,7 +1412,7 @@ function cardHtml(c) {
   const date = new Date(y, mo - 1, dd).toLocaleDateString("pt-BR", {weekday: "long", day: "numeric", month: "long"});
   const items = c.it.map(id => ACHIEVEMENTS.find(a => a.id === id));
   return `<div class="card share-card">
-      <div class="sub">🏇 Corredor nº ${JOHNNY_NUMBER} · ${esc(c.n)}</div>
+      <div class="sub">🏇 Corredor nº ${TH.hero.number} · ${esc(c.n)}</div>
       <h1>Diário de corrida</h1>
       <div class="sub">${esc(date)}</div>
       <h2>Hoje</h2>
@@ -1582,20 +1463,7 @@ $("#share").addEventListener("click", e => {
 });
 
 /* ---------- prologue ---------- */
-const PROLOGUE = [
-  {art: "🌅", title: "San Diego, 25 de setembro de 1890",
-    narr: ["3.852 corredores esperam na praia. Na frente deles, quase 6.000 km de deserto, montanhas, rios e gelo até Nova York.", "Tem cowboy, tem nobre, tem bandido e tem até um corredor a pé, o Sandman. O prêmio é de 50 milhões de dólares."]},
-  {art: "🏇", title: "Você é o Johnny Joestar",
-    narr: ["Você era o jóquei mais famoso do país, até levar um tiro na coluna. Desde então as suas pernas não se mexem. Em cima da sua égua, a Slow Dancer, você ainda corre como qualquer um.", "Na largada, você conhece o Gyro Zeppeli, que veio de Nápoles. A família dele guarda um segredo: a Rotação. Você toca na bola de aço do Gyro e, por um segundo, fica de pé.", "Você decide seguir o Gyro até Nova York."],
-    gyro: "Quer aprender a Rotação? Então treina todo dia. Nyo-ho!"},
-  {art: "hands", title: "O Tusk",
-    narr: ["Na Palma do Diabo, no deserto do Arizona, o braço esquerdo do Cadáver Santo entra no seu corpo. Você desperta um Stand: o Tusk. Ele gira as suas unhas e dispara como balas.", "Aqui, cada unha só dispara quando o dedo dela acha a tecla sem você olhar. Cada dedo cuida das suas teclas, e cada lição nova ensina mais um dedo a disparar."]},
-  {art: "🏆", title: "A corrida",
-    narr: ["Cada lição concluída leva a Slow Dancer alguns quilômetros mais perto de Nova York.", "No fim de cada etapa, um rival da série corre contra você: Sandman, Diego, Hot Pants, Pocoloco e o próprio Valentine. Pelo caminho você junta as partes do Cadáver Santo, e o Tusk evolui até o ACT4."]},
-  {art: "💻", title: "E fora da corrida?",
-    narr: ["Quem digita sem olhar faz o trabalho da escola, conversa no jogo e escreve código com os olhos na tela. A cabeça fica na ideia, e não na procura da tecla.", "Você vai usar isso a vida inteira."],
-    gyro: "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais curto era o desvio."}
-];
+const PROLOGUE = TH.prologue.slides;
 // The last slide points to where the player is in the race.
 function whereSlide() {
   const lc = lessonCounts();
@@ -1685,7 +1553,7 @@ function renderSetup() {
     <div class="card"><h2>2. ${esc(t("setupName"))}</h2>
       <p class="sub" style="margin:0 0 10px">${esc(t("setupNameHint"))}</p>
       <input id="reg-name" class="input" maxlength="24" autocomplete="off" placeholder="Johnny Joestar" value="${esc(data.profile.name)}">
-      <p style="margin:12px 0 0">🏇 ${esc(t("setupNumber", {n: JOHNNY_NUMBER}))}</p></div>
+      <p style="margin:12px 0 0">🏇 ${esc(t("setupNumber", {n: TH.hero.number}))}</p></div>
     <div class="type-actions"><button class="btn primary" data-go="finish">${esc(t("setupGo"))}</button></div>
     ${setup.needLayout ? `<p style="text-align:center;color:var(--err)">${esc(t("setupNeedLayout"))}</p>` : ""}`;
   $("#reg-name").addEventListener("input", e => { data.profile.name = e.target.value.trim(); });
