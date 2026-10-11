@@ -753,6 +753,11 @@ function loadData() {
   if (!LAYOUTS[out.settings.layout]) out.settings.layout = "intl";
   return out;
 }
+// ?reset erases the saved progress for demos, and drops itself from the address so a reload keeps the new progress.
+if (new URLSearchParams(location.search).has("reset")) {
+  try { localStorage.removeItem(STORE_KEY); } catch (e) { /* storage unavailable */ }
+  history.replaceState(null, "", location.pathname);
+}
 let data = loadData();
 let S = data.settings;
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) { /* storage unavailable */ } }
