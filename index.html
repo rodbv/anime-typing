@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Type Dojo</title>
+<title>Steel Ball Type</title>
 <style>
 :root{
-  --bg:#100e17;--panel:#1b1826;--panel2:#262236;--line:#36304a;--text:#efeaf7;--muted:#958eaa;
-  --accent:#4dd0e1;--accent2:#ffd54f;--ok:#7bd88f;--err:#ff5c6c;--fix:#ffb38a;
+  --bg:#14100b;--panel:#1f1912;--panel2:#2b2319;--line:#3e3327;--text:#f4ede3;--muted:#ab9d8a;
+  --accent:#f2b84b;--accent2:#7fd1c7;--ok:#7bd88f;--err:#ff5c6c;--fix:#ffb38a;
   --f0:#f48fb1;--f1:#ffcc80;--f2:#a5d6a7;--f3:#90caf9;--f8:#b0bec5;
 }
 [data-series=jojo]{--accent:#c39bff;--accent2:#ffd54f;--bg:#120d1c}
@@ -136,6 +136,15 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 @keyframes insist{from{transform:scale(1)}to{transform:scale(1.18)}}
 .hint.insist{color:var(--accent2);font-size:20px;font-weight:800}
 .menu{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+.map{display:block;width:100%;height:auto}
+.stage-h{margin:22px 0 10px;color:var(--accent);text-transform:none;letter-spacing:0;font-size:16px}
+.race-tag{font-size:12px;color:var(--accent2);font-weight:700}
+.stage-tag{font-size:13px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.narr{font-style:italic;color:var(--muted);margin:6px 0}
+.bubble{background:var(--panel2);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;margin:8px 0}
+.bubble.rival{border-left-color:var(--err)}
+.input{all:unset;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:18px;min-width:240px}
+.input:focus{border-color:var(--accent)}
 @media (max-width:640px){
   .big{grid-template-columns:repeat(2,1fr)}
   .textbox{font-size:20px}
@@ -149,20 +158,12 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 <div class="wrap">
   <header>
     <div>
-      <div class="logo">TYPE <span>DOJO</span></div>
+      <div class="logo">STEEL BALL <span>TYPE</span></div>
       <div class="sub" data-i18n="subtitle"></div>
     </div>
     <div class="controls">
       <div class="ctl"><span data-i18n="keyboard"></span>
         <div class="seg" data-set="layout"><button data-val="intl">US Intl</button><button data-val="us">US</button><button data-val="abnt">ABNT2</button></div>
-      </div>
-      <div class="ctl"><span data-i18n="language"></span>
-        <div class="seg" data-set="lang"><button data-val="pt">PT</button><button data-val="en">EN</button></div>
-      </div>
-      <div class="ctl"><span data-i18n="theme"></span>
-        <div class="seg" data-set="series">
-          <button data-val="mix" data-i18n="mix"></button><button data-val="jojo">JoJo</button><button data-val="eva">Eva</button><button data-val="aot">AoT</button><button data-val="soul">Soul Eater</button>
-        </div>
       </div>
     </div>
   </header>
@@ -181,7 +182,7 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 
   <section class="view" id="v-lessons">
     <p class="tip" data-i18n="lessonTip"></p>
-    <div class="grid" id="lesson-grid"></div>
+    <div id="lesson-grid"></div>
   </section>
 
   <section class="view" id="v-free">
@@ -431,6 +432,25 @@ const T = {
     footer: "Progress is saved in this browser."
   }
 };
+Object.assign(T.pt, {
+  subtitle: "A corrida de digitação de San Diego a Nova York",
+  tabLessons: "Etapas", tabFree: "Treino livre", tabStats: "Ficha",
+  freeIntro: "Treino do Gyro: palavras da corrida contra o relógio.",
+  quoteIntro: "Digite falas da corrida. Maiúsculas e pontuação contam.",
+  freeLimited: "Por enquanto, o treino livre usa só as teclas que você já sabe: {k}. Todas as letras liberam depois da lição {n}.",
+  lessonTip: "Cada lição é um trecho da corrida. Termine as lições para avançar no mapa.",
+  acc1Lesson: "Acentos: ´ e ~", acc2Lesson: "Acentos: ^, ` e Ç",
+  homeStart: "Largar: lição 1", homeContinue: "Continuar a corrida: lição {n}",
+  racerTag: "Corredor nº {n} · {name}", gyroTip: "Dica do Gyro", kmOf: "{a} de {b}",
+  collSummary: "{n} de {t} conquistados.",
+  collGroups: {race: "Partes do Cadáver Santo", tusk: "Tusk", goal: "Metas"},
+  setupTitle: "Inscrição na Steel Ball Run",
+  setupIntro: "Antes da largada, vamos descobrir o seu teclado e preencher a sua inscrição.",
+  setupName: "Seu nome", setupNameHint: "Ele aparece na tela inicial e na classificação.",
+  setupNumber: "Seu número de corredor: {n}",
+  in_rv: ["Revisão: todas as teclas que você já aprendeu nesta parte da corrida.", "Tente não olhar para o teclado. Olhe para a trilha."],
+  footer: "O progresso fica salvo neste navegador."
+});
 const t = (k, vars) => {
   let s = T[S.lang][k] ?? T.en[k] ?? k;
   if (vars && typeof s === "string") for (const [a, b] of Object.entries(vars)) s = s.split("{" + a + "}").join(b);
@@ -438,141 +458,77 @@ const t = (k, vars) => {
 };
 
 /* ---------- content ---------- */
-const SERIES = {
-  jojo: {
-    label: "JoJo", deco: "ゴゴゴゴ",
-    names: "Jotaro Joseph Jonathan Josuke Giorno Jolyne Dio Diavolo Kakyoin Polnareff Avdol Iggy Speedwagon Bucciarati Mista Narancia Abbacchio Kira Rohan Okuyasu Koichi Caesar Kars Wamuu Esidisi Zeppeli",
-    terms: {
-      en: "stand ora muda hamon menacing pose vampire mask stone star platinum world bizarre adventure dream golden wind diamond crazy echoes zipper hermit purple killer queen",
-      pt: "stand ora muda hamon ameaça pose vampiro máscara pedra estrela platina mundo bizarro aventura sonho vento dourado diamante louco eco zíper eremita roxo assassino rainha"
-    },
-    quotes: {
-      en: [
-        ["Yare yare daze.", "Jotaro"],
-        ["Oh? You're approaching me?", "Dio"],
-        ["It was me, Dio!", "Dio"],
-        ["I, Giorno Giovanna, have a dream.", "Giorno"],
-        ["I reject my humanity, JoJo!", "Dio"],
-        ["Ora ora ora ora ora!", "Jotaro"],
-        ["Muda muda muda muda!", "Dio"],
-        ["The World! Stop time!", "Dio"],
-        ["Arrivederci.", "Bucciarati"],
-        ["Even Speedwagon is afraid!", "Speedwagon"],
-        ["The hymn of humanity is the hymn of courage.", "Zeppeli"]
-      ],
-      pt: [
-        ["Yare yare daze.", "Jotaro"],
-        ["Oh? Você está se aproximando de mim?", "Dio"],
-        ["Era eu, Dio!", "Dio"],
-        ["Eu, Giorno Giovanna, tenho um sonho.", "Giorno"],
-        ["Eu rejeito a minha humanidade, JoJo!", "Dio"],
-        ["Ora ora ora ora ora!", "Jotaro"],
-        ["Muda muda muda muda!", "Dio"],
-        ["The World! Pare o tempo!", "Dio"],
-        ["Arrivederci.", "Bucciarati"],
-        ["Até o Speedwagon está com medo!", "Speedwagon"],
-        ["O hino da humanidade é o hino da coragem.", "Zeppeli"]
-      ]
-    }
-  },
-  eva: {
-    label: "Evangelion", deco: "NERV",
-    names: "Shinji Asuka Rei Misato Gendo Kaworu Ritsuko Toji Kensuke Hikari Kaji Fuyutsuki Maya Shigeru Makoto PenPen Yui Sachiel Ramiel Zeruel Lilith Adam NERV SEELE MAGI Melchior Balthasar Casper",
-    terms: {
-      en: "angel pilot robot unit entry plug sync ratio field lance child father mother impact berserk geofront umbilical cable launch",
-      pt: "anjo piloto robô unidade cápsula sincronia taxa campo lança criança pai mãe impacto fúria geofront cabo umbilical lançar"
-    },
-    quotes: {
-      en: [
-        ["I mustn't run away. I mustn't run away. I mustn't run away.", "Shinji"],
-        ["Anta baka? Are you stupid?", "Asuka"],
-        ["I don't know what I should do at a time like this.", "Rei"],
-        ["Why don't you try smiling?", "Shinji"],
-        ["Pattern blue! It's an Angel!", "NERV"],
-        ["Thank you, Father. Goodbye, Mother. And to all the children, congratulations!", "Shinji"],
-        ["Congratulations!", "NERV"],
-        ["Evangelion Unit-01, launch!", "Misato"],
-        ["If you're going to do it, do it now. If not, leave!", "Gendo"],
-        ["Singing is good. Song is the greatest thing the culture of the Lilim has made.", "Kaworu"]
-      ],
-      pt: [
-        ["Eu não posso fugir. Eu não posso fugir. Eu não posso fugir.", "Shinji"],
-        ["Anta baka? Você é idiota?", "Asuka"],
-        ["Eu não sei o que fazer num momento como este.", "Rei"],
-        ["Por que você não tenta sorrir?", "Shinji"],
-        ["Padrão azul! É um Anjo!", "NERV"],
-        ["Obrigado, pai. Adeus, mãe. E a todas as crianças, parabéns!", "Shinji"],
-        ["Parabéns!", "NERV"],
-        ["Evangelion Unidade 01, lançar!", "Misato"],
-        ["Se vai fazer, faça agora. Se não, vá embora!", "Gendo"],
-        ["Cantar é bom. A música é a maior criação da cultura dos Lilim.", "Kaworu"]
-      ]
-    }
-  },
-  aot: {
-    label: "Attack on Titan", deco: "自由",
-    names: "Eren Mikasa Armin Levi Erwin Hange Jean Connie Sasha Historia Ymir Reiner Bertholdt Annie Zeke Falco Gabi Pieck Porco Kenny Ackerman Marley Paradis Eldia Shiganshina Trost Maria Rose Sina",
-    terms: {
-      en: "titan wall scout survey corps gear blade wings freedom fight sea island hunter cadet garrison colossal armored beast cart jaw hammer rumbling tatakae potato",
-      pt: "titã muralha tropa exploração equipamento lâmina asas liberdade lutar mar ilha caçador cadete guarnição colossal blindado bestial carroça mandíbula martelo estrondo tatakae batata"
-    },
-    quotes: {
-      en: [
-        ["If you win, you live. If you lose, you die. If you don't fight, you can't win!", "Eren"],
-        ["Dedicate your hearts!", "Erwin"],
-        ["I'll wipe them out. Every single one of them!", "Eren"],
-        ["Someone who can't sacrifice anything can never change anything.", "Armin"],
-        ["This world is cruel, but it is also very beautiful.", "Mikasa"],
-        ["Give up on your dreams and die.", "Levi"],
-        ["Tatakae! Tatakae!", "Eren"],
-        ["We are born free. All of us.", "Eren"],
-        ["The only thing we're allowed to do is believe that we won't regret the choice we made.", "Levi"]
-      ],
-      pt: [
-        ["Se você vencer, você vive. Se perder, você morre. Se não lutar, não pode vencer!", "Eren"],
-        ["Dediquem seus corações!", "Erwin"],
-        ["Eu vou exterminar todos eles. Cada um deles!", "Eren"],
-        ["Quem não consegue sacrificar nada nunca consegue mudar nada.", "Armin"],
-        ["Este mundo é cruel, mas também é muito bonito.", "Mikasa"],
-        ["Desista dos seus sonhos e morra.", "Levi"],
-        ["Tatakae! Tatakae!", "Eren"],
-        ["Nós nascemos livres. Todos nós.", "Eren"],
-        ["A única coisa que podemos fazer é acreditar que não vamos nos arrepender da escolha que fizemos.", "Levi"]
-      ]
-    }
-  },
-  soul: {
-    label: "Soul Eater", deco: "死武専",
-    names: "Maka Soul Kid Liz Patty Black Star Tsubaki Stein Spirit Medusa Crona Ragnarok Asura Excalibur Blair Justin Sid Marie Arachne Eibon Shinigami Shibusen",
-    terms: {
-      en: "soul scythe meister weapon witch death moon madness chop symmetry academy resonance wavelength kishin star sun",
-      pt: "alma foice meister arma bruxa morte lua loucura golpe simetria academia ressonância onda kishin estrela sol"
-    },
-    quotes: {
-      en: [
-        ["Maka Chop!", "Maka"],
-        ["Soul Resonance!", "Maka and Soul"],
-        ["Witch Hunter!", "Maka and Soul"],
-        ["Yahoo! I am the great Black Star, the man who will surpass God!", "Black Star"],
-        ["It's not symmetrical! I'm garbage!", "Death the Kid"],
-        ["Symmetry is beauty.", "Death the Kid"],
-        ["Hiya! Heya! Hey there! What's up?", "Lord Death"],
-        ["That's so uncool.", "Soul"],
-        ["Let's go, Soul!", "Maka"]
-      ],
-      pt: [
-        ["Maka Chop!", "Maka"],
-        ["Ressonância de almas!", "Maka e Soul"],
-        ["Caçador de Bruxas!", "Maka e Soul"],
-        ["Yahoo! Eu sou o grande Black Star, o homem que vai superar Deus!", "Black Star"],
-        ["Não é simétrico! Eu sou um lixo!", "Death the Kid"],
-        ["Simetria é beleza.", "Death the Kid"],
-        ["Oi! Olá! E aí, tudo bem?", "Shinigami-sama"],
-        ["Isso não é nada cool.", "Soul"],
-        ["Vamos, Soul!", "Maka"]
-      ]
-    }
-  }
+const SBR = {
+  names: "Johnny Gyro Diego Valentine Lucy Steel Pocoloco Sandman Norisuke Ringo Wekapipo Magent Blackmore Zeppeli Joestar Brando Tusk Valkyrie",
+  terms: "cavalo corrida rotação bola aço unha deserto pradaria montanha cadáver santo sela rédea galope trilha etapa largada chegada chapéu poeira ferradura estribo dimensão guardanapo bandeira presidente trem ponte rio lago gelo neve fogueira acampamento mapa bússola cowboy rancho xerife vento sol areia pedra caminho",
+  quotes: [
+    ["Nyo-ho-ho!", "Gyro"],
+    ["Pizza mozzarella, pizza mozzarella, rella rella rella!", "Gyro"],
+    ["Eu ainda estou no negativo. Eu só quero voltar ao zero.", "Johnny"],
+    ["O caminho mais longo era o atalho.", "Gyro"],
+    ["Bem-vindo ao mundo dos homens.", "Ringo Roadagain"],
+    ["Quem pega o primeiro guardanapo decide a regra para todos.", "Valentine"],
+    ["Dojyaaan!", "Valentine"],
+    ["WRYYYYY!", "Diego"],
+    ["Tusk ACT4!", "Johnny"],
+    ["Hoje é meu dia de sorte!", "Pocoloco"],
+    ["Eu vou correr a pé até Nova York.", "Sandman"],
+    ["Gire, Johnny! Gire!", "Gyro"],
+    ["A rotação perfeita segue a proporção áurea.", "Gyro"],
+    ["Eu não sou o mais rápido. Sou o mais constante.", "Norisuke"],
+    ["Meu cavalo se chama Slow Dancer.", "Johnny"],
+    ["Valkyrie, vamos!", "Gyro"]
+  ]
+};
+
+const MAP_START = {pt: [60, 232], label: "San Diego", dy: 20};
+const STAGES = [
+  {lbl: "Etapa 1", place: "Praia de San Diego", from: "San Diego", to: "Igreja Santa Maria Novella", km: 15, pt: [76, 222]},
+  {lbl: "Etapa 2", place: "Deserto do Arizona", from: "Igreja Santa Maria Novella", to: "Monument Valley", km: 1200, pt: [175, 162], label: "Monument Valley", dy: 22},
+  {lbl: "Etapa 3", place: "Montanhas Rochosas", from: "Monument Valley", to: "Cañon City", km: 510, pt: [262, 150], label: "Cañon City", dy: -12},
+  {lbl: "Etapa 4", place: "Grandes Planícies", from: "Cañon City", to: "Kansas City", km: 1250, pt: [352, 166], label: "Kansas City", dy: 22},
+  {lbl: "Etapa 5", place: "Rio Mississippi", from: "Kansas City", to: "Chicago", km: 780, pt: [445, 128], label: "Chicago", dy: 22},
+  {lbl: "Etapa 6", place: "Tundra do Wisconsin", from: "Chicago", to: "Mackinaw City", km: 690, pt: [458, 70], label: "Mackinaw City", dy: -12},
+  {lbl: "Etapa 7", place: "Rumo ao leste", from: "Mackinaw City", to: "Filadélfia", km: 1300, pt: [548, 150], label: "Filadélfia", dy: 22},
+  {lbl: "Etapa 8", place: "Campos de Nova Jersey", from: "Filadélfia", to: "Union Beach", km: 140, pt: [570, 139]},
+  {lbl: "Etapa final", place: "Nova York", from: "Union Beach", to: "Trinity Church", km: 13, pt: [586, 122], label: "Nova York", dy: -12}
+];
+const TOTAL_KM = STAGES.reduce((a, st) => a + st.km, 0);
+
+const RIVALS = {
+  sandman: {nm: "Sandman", floor: 6, pre: "Eu corro a pé. Mesmo assim, chego antes de você.", win: "Você chegou na igreja antes do Sandman!", lose: "O Sandman venceu a primeira etapa, como na série. Ainda faltam quase 6.000 km."},
+  diego: {nm: "Diego Brando", floor: 8, pre: "Um paraplégico e um carrasco. Vocês não chegam ao Monument Valley.", win: "O Diego comeu poeira no Monument Valley.", lose: "O Diego venceu esta etapa na série também. A revanche vem na etapa 7."},
+  hotpants: {nm: "Hot Pants", floor: 10, pre: "Meu spray fecha qualquer ferida. E qualquer atalho também.", win: "Você passou a Hot Pants na descida das Rochosas!", lose: "A Hot Pants chegou primeiro em Cañon City."},
+  norisuke: {nm: "Norisuke Higashikata", floor: 11, pre: "Eu não sou o mais rápido. Sou o mais constante.", win: "Ritmo contra ritmo, e você venceu o Norisuke.", lose: "O Norisuke venceu com constância, como na série."},
+  pocoloco: {nm: "Pocoloco", floor: 12, pre: "Hoje é meu dia de sorte!", win: "Nem a sorte do Pocoloco segurou você.", lose: "A sorte do Pocoloco funcionou de novo."},
+  gyro: {nm: "Gyro Zeppeli", floor: 13, pre: "Nyo-ho! Nesta etapa eu não espero você, Johnny.", win: "Você venceu o seu próprio mestre na travessia do gelo.", lose: "O Gyro venceu a etapa 6, como na série. Nyo-ho-ho!"},
+  diego2: {nm: "Diego Brando", floor: 13, pre: "Com o Scary Monsters, eu vejo a corrida de cima.", win: "Revanche feita. O Diego chegou atrás na Filadélfia.", lose: "O Diego levou de novo. Ainda tem o final."},
+  valentine: {nm: "Funny Valentine", floor: 14, boss: true, pre: "Neste mundo, cada erro seu vira uma cópia que trabalha para mim.", win: "O D4C não alcançou você. Union Beach está logo ali.", lose: "O Valentine chegou antes. Mas a corrida continua."},
+  diego3: {nm: "Diego de outro mundo", floor: 14, boss: true, pre: "Eu vim de outro mundo para terminar esta corrida.", win: "Trinity Church! O Johnny cruzou a chegada.", lose: "O Diego de outro mundo chegou antes. Tente de novo: a chegada é sua."}
+};
+
+const STORY = {
+  fj: {narr: "Milhares de cavaleiros na areia de San Diego. A largada está perto.", gyro: "Antes de girar qualquer coisa, aprenda onde a mão descansa. Sinta o relevo no F e no J. Tudo começa ali."},
+  dk: {gyro: "O médio fica no D e no K. Depois de cada golpe, o dedo volta para casa."},
+  sl: {narr: "No deserto, o braço esquerdo do Cadáver Santo entra no corpo do Johnny. Tusk ACT1 desperta.", gyro: "Suas unhas giram e disparam, mas só dos dedos que você treinou. Anelar: S e L."},
+  a: {gyro: "O mindinho é o dedo mais fraco. No deserto a água é pouca, então economize movimento: só o mindinho se mexe."},
+  gh: {gyro: "O indicador estica para o lado, como a rédea que puxa o cavalo para o meio. Depois volta."},
+  r1: {gyro: "A linha base inteira de uma vez. Respire, Johnny. Galope constante."},
+  ei: {narr: "Na subida das Rochosas, o Tusk evolui para ACT2. O buraco da unha agora persegue o alvo.", gyro: "Agora os dedos sobem. O médio vai até o E e o I, e volta. A mão fica parada, como o cavaleiro firme na sela."},
+  ru: {gyro: "O indicador sobe até o R e o U, e volta para o F e o J."},
+  to: {narr: "As Grandes Planícies. Campo aberto até onde a vista alcança.", gyro: "Galope constante. O T é um esticão do indicador. O O é do anelar."},
+  nm: {gyro: "N e M ficam embaixo do J. O indicador desce e volta, sem levantar a mão."},
+  "c,": {gyro: "O C é do médio esquerdo e a vírgula é do médio direito. Ritmo vence pressa."},
+  qp: {narr: "O rio Mississippi corta o caminho.", gyro: "Para atravessar o Mississippi, até os mindinhos trabalham: Q e P."},
+  r2: {gyro: "A linha de cima inteira. Não olhe para as mãos, olhe para a trilha."},
+  acc1: {narr: "Neve e gelo no Wisconsin. O gelo engana: primeiro você pisa no acento, depois na letra.", gyro: "A tecla morta é como gelo fino. Aperte o acento, solte, e só então a letra."},
+  acc2: {gyro: "Chapéu no E (ê), crase no A (à) e o Ç. Mesmo jeito: primeiro o sinal, depois a letra."},
+  vb: {narr: "Tusk ACT3. O Johnny atira em si mesmo e entra no buraco do espaço.", gyro: "Linha de baixo. O indicador desce até o V e o B."},
+  "x.": {gyro: "O anelar desce até o X e até o ponto. Desce e volta."},
+  zwy: {gyro: "As letras raras: Z com o mindinho, W com o anelar e Y com o indicador direito. Quase lá, Johnny."},
+  r3: {narr: "Filadélfia. O presidente Valentine espera no caminho.", gyro: "Todas as letras. Respire e mantenha o galope."},
+  shift: {narr: "A Rotação de ouro do Gyro passa para o Johnny. Nasce o Tusk ACT4.", gyro: "Para a maiúscula, o mindinho da outra mão segura o Shift. As duas mãos juntas, como a rotação perfeita."},
+  quotes: {narr: "Os últimos 13 km: de Union Beach até a Trinity Church, em Nova York.", gyro: "Frases inteiras, com pontuação. Esta é a reta final."}
 };
 
 const COMMON = {
@@ -583,38 +539,47 @@ const COMMON = {
       "de que não uma para com por mais como mas foi ele das tem seu sua ser quando muito nos está eu também só pelo pela até isso ela entre era depois sem mesmo aos ter seus quem nas me esse eles estão você tinha foram essa num nem suas meu minha numa pelos elas havia seja qual será tenho lhe deles essas esses pelas este fosse dele tu te vocês meus minhas teu tua nosso nossa dela delas esta estes estas aquele aquela isto aquilo estou estamos estive esteve tive teve temos casa gato cachorro livro jogo tempo vida amigo herói espada coragem medo vencer lutar correr voar gigante muralha liberdade alma morte lua bruxa foice estrela robô piloto anjo sangue dia noite rosa hora sol mar céu terra rei rainha fogo água forte mundo poder sonho escola pai mãe irmão cidade rua carro porta janela mesa cadeira olho mão coração força chefe guerra paz grande pequeno novo velho bom mau feliz triste rápido lento"
 };
 
-const ACCENT_WORDS = "não mãe coração você também está já até herói robô céu água irmão titã lâmina máscara lança criança fúria exploração ressonância ameaça força avô três pé café pão mão ação lição João José Mário é à às pôr português música mágico último único fácil difícil número sábado próximo".split(" ");
+const ACCENT_WORDS = "não mão mãe pão são irmão coração ação lição canção mãos já lá pá pé fé só nó é até está café sofá aí país saída útil fácil difícil rápido música último único número sábado próximo herói céu água três você vovô avô pôr mês português lâmpada câmera à às força faça laço peça poço caça moço praça cabeça começo rotação galão estação".split(" ");
 
 const RANKS = [
-  [0, "Trainee Cadet", "Cadete em treino"], [10, "Scout Regiment", "Tropa de Exploração"], [15, "Stand User", "Usuário de Stand"],
-  [20, "Eva Pilot", "Piloto de Eva"], [25, "Two-Star Meister", "Meister duas estrelas"], [30, "Stardust Crusader", "Cruzado das Estrelas"],
-  [40, "Ackerman", "Ackerman"], [50, "Death Scythe", "Death Scythe"], [60, "Sync Ratio 400%", "Sincronia 400%"], [75, "ZA WARUDO", "ZA WARUDO"]
+  [0, "Novato da largada", "Novato da largada"], [10, "Cavaleiro", "Cavaleiro"], [15, "Competidor", "Competidor"],
+  [20, "Top 100", "Top 100"], [25, "Top 10", "Top 10"], [30, "Rotação", "Rotação"],
+  [40, "Rotação de ouro", "Rotação de ouro"], [50, "Proporção áurea", "Proporção áurea"], [60, "Rotação infinita", "Rotação infinita"]
 ];
+
+const stageRaceId = si => { const ls = LESSON_DEFS.filter(L => L.stage === si); return ls[ls.length - 1].id; };
+const stageCleared = si => (progress()[stageRaceId(si)]?.stars || 0) >= 1;
+const podiums = () => LESSON_DEFS.filter(L => L.race && (progress()[L.id]?.place || 9) <= 3).length;
+const missionsDone = () => Object.values(data.days || {}).filter(d => d.done).length;
+const daysTrained = () => Object.values(data.days || {}).filter(d => d.ms > 0).length;
 
 /* Goals that unlock collection items. ctx = {run, m, cleared, stars3, totalLessons, lessons, totals} */
 const ACHIEVEMENTS = [
-  {id: "hierophant", s: "jojo", ic: "🍈", nm: "Hierophant Green", d: {pt: "Conclua 3 lições", en: "Clear 3 lessons"}, ok: c => c.cleared >= 3},
-  {id: "hermit", s: "jojo", ic: "🍇", nm: "Hermit Purple", d: {pt: "Conclua 8 lições", en: "Clear 8 lessons"}, ok: c => c.cleared >= 8},
-  {id: "chariot", s: "jojo", ic: "⚔️", nm: "Silver Chariot", d: {pt: "Corrida livre com 95% de precisão e 15 PPM", en: "Free run at 95% accuracy and 15 WPM"}, ok: c => c.run.mode === "free" && c.m.acc >= 95 && c.m.wpm >= 15},
-  {id: "gold", s: "jojo", ic: "🐞", nm: "Gold Experience", d: {pt: "3 estrelas em 5 lições", en: "3 stars on 5 lessons"}, ok: c => c.stars3 >= 5},
-  {id: "starplat", s: "jojo", ic: "⭐", nm: "Star Platinum", d: {pt: "Corrida livre: 30 PPM com 95%", en: "Free run: 30 WPM at 95%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 30 && c.m.acc >= 95},
-  {id: "theworld", s: "jojo", ic: "⏱️", nm: "The World", d: {pt: "Corrida livre: 40 PPM com 96%", en: "Free run: 40 WPM at 96%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 40 && c.m.acc >= 96},
+  {id: "ball", s: "race", ic: "⚪", nm: "Bola de aço", d: {pt: "Termine a etapa 1"}, ok: () => stageCleared(0)},
+  {id: "larm", s: "race", ic: "💪", nm: "Braço esquerdo", d: {pt: "Termine a etapa 2"}, ok: () => stageCleared(1)},
+  {id: "eyes", s: "race", ic: "👁️", nm: "Olhos", d: {pt: "Termine a etapa 3"}, ok: () => stageCleared(2)},
+  {id: "heart", s: "race", ic: "❤️", nm: "Coração", d: {pt: "Termine a etapa 4"}, ok: () => stageCleared(3)},
+  {id: "spine", s: "race", ic: "🦴", nm: "Coluna", d: {pt: "Termine a etapa 5"}, ok: () => stageCleared(4)},
+  {id: "rarm", s: "race", ic: "🤚", nm: "Braço direito", d: {pt: "Termine a etapa 6"}, ok: () => stageCleared(5)},
+  {id: "ears", s: "race", ic: "👂", nm: "Orelhas", d: {pt: "Termine a etapa 7"}, ok: () => stageCleared(6)},
+  {id: "legs", s: "race", ic: "🦵", nm: "Pernas", d: {pt: "Termine a etapa 8"}, ok: () => stageCleared(7)},
+  {id: "corpse", s: "race", ic: "🏁", nm: "Cadáver completo", d: {pt: "Chegue à Trinity Church"}, ok: () => stageCleared(8)},
 
-  {id: "unit00", s: "eva", ic: "🔵", nm: "Eva Unit-00", d: {pt: "Complete sua primeira frase", en: "Finish your first quote"}, ok: c => c.run.mode === "quote"},
-  {id: "unit01", s: "eva", ic: "🟣", nm: "Eva Unit-01", d: {pt: "Sincronia 100%: uma lição sem nenhum erro", en: "100% sync: a lesson with zero mistakes"}, ok: c => c.run.mode === "lesson" && c.m.errors === 0 && c.run.pos >= 50},
-  {id: "unit02", s: "eva", ic: "🔴", nm: "Eva Unit-02", d: {pt: "Uma frase com 25 PPM e 95%", en: "A quote at 25 WPM and 95%"}, ok: c => c.run.mode === "quote" && c.m.wpm >= 25 && c.m.acc >= 95},
-  {id: "mark06", s: "eva", ic: "⚪", nm: "Mark.06", d: {pt: "3 estrelas na lição de acentos", en: "3 stars on the accents lesson"}, ok: c => (c.lessons.acc?.stars || 0) >= 3},
+  {id: "act1", s: "tusk", ic: "💅", nm: "Tusk ACT1", d: {pt: "Conclua a lição S L, no deserto"}, ok: c => (c.lessons.sl?.stars || 0) >= 1},
+  {id: "act2", s: "tusk", ic: "🌀", nm: "Tusk ACT2", d: {pt: "Conclua a lição E I, nas Rochosas"}, ok: c => (c.lessons.ei?.stars || 0) >= 1},
+  {id: "act3", s: "tusk", ic: "🕳️", nm: "Tusk ACT3", d: {pt: "Conclua a lição V B"}, ok: c => (c.lessons.vb?.stars || 0) >= 1},
+  {id: "act4", s: "tusk", ic: "♾️", nm: "Tusk ACT4", d: {pt: "Conclua a lição de Shift"}, ok: c => (c.lessons.shift?.stars || 0) >= 1},
 
-  {id: "cart", s: "aot", ic: "🐎", nm: "Cart Titan", d: {pt: "Termine 10 rodadas", en: "Finish 10 runs"}, ok: c => c.totals.runs >= 10},
-  {id: "armored", s: "aot", ic: "🛡️", nm: "Armored Titan", d: {pt: "Digite 5.000 letras no total", en: "Type 5,000 characters in total"}, ok: c => c.totals.chars >= 5000},
-  {id: "attack", s: "aot", ic: "👊", nm: "Attack Titan", d: {pt: "Conclua a revisão de todas as letras", en: "Clear the all-letters review"}, ok: c => (c.lessons.r3?.stars || 0) >= 1},
-  {id: "colossal", s: "aot", ic: "🔥", nm: "Colossal Titan", d: {pt: "Corrida livre: 35 PPM com 90%", en: "Free run: 35 WPM at 90%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 35 && c.m.acc >= 90},
-  {id: "founding", s: "aot", ic: "👑", nm: "Founding Titan", d: {pt: "Conclua todas as lições", en: "Clear every lesson"}, ok: c => c.cleared >= c.totalLessons},
-
-  {id: "soul", s: "soul", ic: "🌙", nm: "Soul Eater", d: {pt: "Termine sua primeira rodada", en: "Finish your first run"}, ok: c => c.totals.runs >= 1},
-  {id: "excalibur", s: "soul", ic: "🗡️", nm: "Excalibur", d: {pt: "Corrida livre de 60 s com 100% de precisão", en: "60 s free run with 100% accuracy"}, ok: c => c.run.mode === "free" && c.run.limit >= 60 && c.m.acc === 100 && c.m.wpm >= 10},
-  {id: "ragnarok", s: "soul", ic: "🩸", nm: "Ragnarok", d: {pt: "Termine uma corrida livre de 120 s", en: "Finish a 120 s free run"}, ok: c => c.run.mode === "free" && c.run.limit >= 120},
-  {id: "deathscythe", s: "soul", ic: "💀", nm: "Death Scythe", d: {pt: "Colete 99 almas: termine 99 rodadas", en: "Collect 99 souls: finish 99 runs"}, ok: c => c.totals.runs >= 99}
+  {id: "golden", s: "goal", ic: "🌻", nm: "Proporção áurea", d: {pt: "Uma lição com 100% de precisão"}, ok: c => c.run.mode === "lesson" && c.m.acc === 100 && c.run.pos >= 40},
+  {id: "gallop", s: "goal", ic: "🐎", nm: "Galope constante", d: {pt: "Nota A de ritmo numa rodada"}, ok: c => c.m.rhythm === "A"},
+  {id: "slowdancer", s: "goal", ic: "🐴", nm: "Slow Dancer", d: {pt: "Treine em 5 dias diferentes"}, ok: () => daysTrained() >= 5},
+  {id: "valkyrie", s: "goal", ic: "🏇", nm: "Valkyrie", d: {pt: "Suba ao pódio em 3 corridas"}, ok: () => podiums() >= 3},
+  {id: "lucky", s: "goal", ic: "🍀", nm: "Sorte do Pocoloco", d: {pt: "1º lugar na corrida contra o Pocoloco"}, ok: c => (c.lessons.r2?.place || 9) === 1},
+  {id: "nyoho", s: "goal", ic: "😆", nm: "Nyo-ho-ho!", d: {pt: "Cumpra a primeira missão do dia"}, ok: () => missionsDone() >= 1},
+  {id: "pizza", s: "goal", ic: "🍕", nm: "Pizza mozzarella", d: {pt: "Cumpra 5 missões do dia"}, ok: () => missionsDone() >= 5},
+  {id: "camp", s: "goal", ic: "🔥", nm: "Fogueira do acampamento", d: {pt: "Cumpra 15 missões do dia"}, ok: () => missionsDone() >= 15},
+  {id: "spin", s: "goal", ic: "⚙️", nm: "Rotação", d: {pt: "Treino livre: 25 PPM com 95%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 25 && c.m.acc >= 95},
+  {id: "infinite", s: "goal", ic: "💫", nm: "Rotação infinita", d: {pt: "Treino livre: 35 PPM com 95%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 35 && c.m.acc >= 95}
 ];
 
 /* ---------- keyboard layouts ---------- */
@@ -687,7 +652,8 @@ const STORE_KEY = "typedojo:v1";
 const DEFAULTS = {
   settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
-  best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: []
+  best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: [],
+  profile: {name: "", number: 0}, days: {}, bestStreak: 0
 };
 function loadData() {
   let d = null;
@@ -700,6 +666,9 @@ function loadData() {
   out.keys = {...base.keys, ...(d.keys || {})};
   out.best = {...base.best, ...(d.best || {})};
   out.totals = {...base.totals, ...(d.totals || {})};
+  out.profile = {...base.profile, ...(d.profile || {})};
+  out.days = d.days || {};
+  out.settings.lang = "pt";
   if (!LAYOUTS[out.settings.layout]) out.settings.layout = "intl";
   return out;
 }
@@ -709,17 +678,22 @@ function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
 
 /* ---------- lessons ---------- */
 const LESSON_DEFS = [
-  {id: "fj", k: "fj"}, {id: "dk", k: "dk"}, {id: "sl", k: "sl"}, {id: "a", k: {intl: "a;", us: "a;", abnt: "aç"}}, {id: "gh", k: "gh"}, {id: "r1", review: "home"},
-  {id: "ei", k: "ei"}, {id: "ru", k: "ru"}, {id: "to", k: "to"}, {id: "nm", k: "nm"}, {id: "wy", k: "wy"}, {id: "qp", k: "qp"}, {id: "r2", review: "mid"},
-  {id: "vb", k: "vb"}, {id: "c,", k: "c,"}, {id: "x.", k: "x."}, {id: "z", k: "z"}, {id: "r3", review: "all"},
-  {id: "shift", shift: true}, {id: "acc", accents: true}, {id: "quotes", quotes: true}
+  {id: "fj", k: "fj", stage: 0}, {id: "dk", k: "dk", stage: 0, race: "sandman"},
+  {id: "sl", k: "sl", stage: 1}, {id: "a", k: {intl: "a;", us: "a;", abnt: "aç"}, stage: 1}, {id: "gh", k: "gh", stage: 1}, {id: "r1", review: "home", stage: 1, race: "diego"},
+  {id: "ei", k: "ei", stage: 2}, {id: "ru", k: "ru", stage: 2, race: "hotpants"},
+  {id: "to", k: "to", stage: 3}, {id: "nm", k: "nm", stage: 3}, {id: "c,", k: "c,", stage: 3, race: "norisuke"},
+  {id: "qp", k: "qp", stage: 4}, {id: "r2", review: "mid", stage: 4, race: "pocoloco"},
+  {id: "acc1", accents: 1, stage: 5}, {id: "acc2", accents: 2, stage: 5, race: "gyro"},
+  {id: "vb", k: "vb", stage: 6}, {id: "x.", k: "x.", stage: 6}, {id: "zwy", k: "zwy", stage: 6, race: "diego2"},
+  {id: "r3", review: "all", stage: 7, race: "valentine"},
+  {id: "shift", shift: true, stage: 8}, {id: "quotes", quotes: true, stage: 8, race: "diego3"}
 ];
 const lessonKeys = L => !L.k ? "" : (typeof L.k === "string" ? L.k : L.k[S.layout]);
 function lessonTitle(L) {
   if (L.k) return [...lessonKeys(L)].map(c => c.toUpperCase()).join(" ");
   if (L.review) return t("rv_" + L.review);
   if (L.shift) return t("shiftLesson");
-  if (L.accents) return t("accLesson");
+  if (L.accents) return t(L.accents === 1 ? "acc1Lesson" : "acc2Lesson");
   return t("quotesLesson");
 }
 function allowedUpTo(idx) {
@@ -743,11 +717,9 @@ function starsFor(wpm, acc) {
   return 0;
 }
 
-function seriesList() { return S.series === "mix" ? Object.keys(SERIES) : [S.series]; }
 function wordPools(accents) {
-  const themed = [], common = [];
-  for (const k of seriesList()) themed.push(...SERIES[k].names.split(" "), ...SERIES[k].terms[S.lang].split(" "));
-  common.push(...COMMON[S.lang].split(" "));
+  const themed = [...SBR.names.split(" "), ...SBR.terms.split(" ")];
+  const common = COMMON[S.lang].split(" ");
   // A word that would lose an accent or a Ç on this layout is dropped, so no misspelled word shows up.
   const clean = a => uniq(a.filter(w => w && sanitize(w, accents) === w.normalize("NFC")));
   return {themed: clean(themed), common: clean(common)};
@@ -758,11 +730,7 @@ function drill(letters, focus) {
   for (let i = 0; i < len; i++) s += Math.random() < 0.6 ? pick(focus) : pick(letters);
   return s;
 }
-function allQuotes() {
-  const out = [];
-  for (const k of seriesList()) for (const q of SERIES[k].quotes[S.lang]) out.push([q[0], q[1], k]);
-  return out;
-}
+function allQuotes() { return SBR.quotes.map(q => [q[0], q[1]]); }
 function lessonText(idx) {
   const L = LESSON_DEFS[idx];
   if (L.quotes) {
@@ -907,8 +875,8 @@ let resetArmed = false;
 const sink = $("#sink");
 
 function applyTheme() {
-  document.documentElement.dataset.series = S.series;
-  $("#deco").textContent = S.series === "mix" ? "" : SERIES[S.series].deco;
+  document.documentElement.dataset.series = "sbr";
+  $("#deco").textContent = "回転";
 }
 function applyI18n() {
   document.documentElement.lang = S.lang === "pt" ? "pt-BR" : "en";
@@ -944,18 +912,59 @@ function showView(v) {
 function starRow(n) {
   return `<span class="stars">${[1, 2, 3].map(i => i <= n ? "★" : '<span class="off">★</span>').join("")}</span>`;
 }
-function renderLessons() {
-  const g = $("#lesson-grid");
-  const nx = nextLessonIdx();
-  g.innerHTML = LESSON_DEFS.map((L, i) => {
-    const p = progress()[L.id];
-    const locked = !isUnlocked(i);
-    const keys = L.k ? `<div class="keys">${[...lessonKeys(L)].map(c => `<span class="cap">${esc(c.toUpperCase())}</span>`).join("")}</div>` : `<div class="title">${esc(lessonTitle(L))}</div>`;
-    const best = p ? ` · ${p.wpm} ${t("wpm")}` : "";
-    const foot = locked ? `<span class="sub">${esc(t("preview"))}</span>` : `<span>${starRow(p?.stars || 0)}<span class="sub">${best}</span></span>`;
-    return `<button class="lesson${locked ? " locked" : ""}${i === nx && !locked ? " next" : ""}" data-i="${i}" title="${esc(locked ? t("lockedTip") : t("passRule"))}">
-      <span class="n">${t("lesson")} ${i + 1}${locked ? " 🔒" : ""}</span>${keys}${foot}</button>`;
+const lessonsInStage = si => LESSON_DEFS.filter(L => L.stage === si);
+const lessonDone = L => (progress()[L.id]?.stars || 0) >= 1;
+const fmtKm = n => Math.round(n).toLocaleString("pt-BR") + " km";
+function kmTraveled() {
+  return STAGES.reduce((km, st, si) => {
+    const ls = lessonsInStage(si);
+    return km + st.km * ls.filter(lessonDone).length / ls.length;
+  }, 0);
+}
+function currentStageIdx() {
+  const i = STAGES.findIndex((st, si) => lessonsInStage(si).some(L => !lessonDone(L)));
+  return i === -1 ? STAGES.length - 1 : i;
+}
+function mapSvg() {
+  const pts = [MAP_START.pt, ...STAGES.map(st => st.pt)];
+  const si = STAGES.findIndex((st, i) => lessonsInStage(i).some(L => !lessonDone(L)));
+  let pos, done;
+  if (si === -1) { pos = pts[pts.length - 1]; done = pts; }
+  else {
+    const ls = lessonsInStage(si), frac = ls.filter(lessonDone).length / ls.length;
+    const a = pts[si], b = pts[si + 1];
+    pos = [a[0] + (b[0] - a[0]) * frac, a[1] + (b[1] - a[1]) * frac];
+    done = [...pts.slice(0, si + 1), pos];
+  }
+  const line = ps => ps.map(q => q.map(v => v.toFixed(1)).join(",")).join(" ");
+  const places = [MAP_START, ...STAGES];
+  const dots = places.map((pl, i) => {
+    const reached = i === 0 || stageCleared(i - 1);
+    return `<circle cx="${pl.pt[0]}" cy="${pl.pt[1]}" r="5" style="fill:${reached ? "var(--accent)" : "var(--panel2)"};stroke:var(--accent)"/>` +
+      (pl.label ? `<text x="${pl.pt[0]}" y="${pl.pt[1] + pl.dy}" text-anchor="middle" style="fill:var(--muted);font:600 11px system-ui,sans-serif">${esc(pl.label)}</text>` : "");
   }).join("");
+  return `<svg class="map" viewBox="20 30 600 230" role="img" aria-label="mapa da corrida">
+    <polyline points="${line(pts)}" style="fill:none;stroke:var(--line);stroke-width:3;stroke-dasharray:6 6"/>
+    <polyline points="${line(done)}" style="fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round"/>
+    ${dots}
+    <g transform="translate(${pos[0].toFixed(1)},${(pos[1] - 6).toFixed(1)}) scale(-1,1)"><text text-anchor="middle" style="font-size:26px">🐎</text></g>
+  </svg>`;
+}
+function lessonCard(L, i, nx) {
+  const p = progress()[L.id];
+  const locked = !isUnlocked(i);
+  const keys = L.k ? `<div class="keys">${[...lessonKeys(L)].map(c => `<span class="cap">${esc(c.toUpperCase())}</span>`).join("")}</div>` : `<div class="title">${esc(lessonTitle(L))}</div>`;
+  const best = p ? ` · ${p.wpm} ${t("wpm")}` : "";
+  const race = L.race ? `<span class="race-tag">🏁 ${esc(RIVALS[L.race].nm)}</span>` : "";
+  const foot = locked ? `<span class="sub">${esc(t("preview"))}</span>` : `<span>${starRow(p?.stars || 0)}<span class="sub">${best}</span></span>`;
+  return `<button class="lesson${locked ? " locked" : ""}${i === nx && !locked ? " next" : ""}" data-i="${i}" title="${esc(locked ? t("lockedTip") : t("passRule"))}">
+    <span class="n">${t("lesson")} ${i + 1}${locked ? " 🔒" : ""}</span>${keys}${race}${foot}</button>`;
+}
+function renderLessons() {
+  const nx = nextLessonIdx();
+  $("#lesson-grid").innerHTML = `<div class="card">${mapSvg()}<p class="sub" style="text-align:center;margin:4px 0 0">${esc(t("kmOf", {a: fmtKm(kmTraveled()), b: fmtKm(TOTAL_KM)}))}</p></div>` +
+    STAGES.map((st, si) => `<h2 class="stage-h">${esc(st.lbl)}: ${esc(st.from)} → ${esc(st.to)} · ${fmtKm(st.km)}</h2>
+      <div class="grid">${LESSON_DEFS.map((L, i) => L.stage === si ? lessonCard(L, i, nx) : "").join("")}</div>`).join("");
 }
 $("#lesson-grid").addEventListener("click", e => {
   const b = e.target.closest(".lesson");
@@ -1023,7 +1032,7 @@ function renderRun() {
   $("#text-inner").innerHTML = "";
   $("#text-inner").style.transform = "";
   appendText(run.text);
-  $("#attrib").textContent = run.mode === "quote" ? `${run.quote[1]} · ${SERIES[run.quote[2]].label}` : "";
+  $("#attrib").textContent = run.mode === "quote" ? run.quote[1] : "";
   $("#results").hidden = true;
   $("#typing-area").hidden = false;
   $("#type-actions").hidden = false;
@@ -1373,13 +1382,14 @@ document.querySelectorAll(".seg[data-set]").forEach(seg => {
 function renderCollection() {
   const got = ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length;
   $("#coll-summary").textContent = t("collSummary", {n: got, t: ACHIEVEMENTS.length});
-  $("#collection").innerHTML = Object.keys(SERIES).map(s => `
-    <div class="coll-series"><h2>${esc(t("seriesTitles")[s])}</h2><div class="coll">
-    ${ACHIEVEMENTS.filter(a => a.s === s).map(a => {
+  const groups = t("collGroups");
+  $("#collection").innerHTML = Object.keys(groups).map(g => `
+    <div class="coll-series"><h2>${esc(groups[g])}</h2><div class="coll">
+    ${ACHIEVEMENTS.filter(a => a.s === g).map(a => {
       const u = data.unlocked[a.id];
       return `<div class="item ${u ? "got" : "locked"}"><span class="ic">${a.ic}</span><div>
-        <div class="nm">${esc(a.nm)}${u ? "" : " 🔒"}</div><div class="ds">${esc(a.d[S.lang])}</div>
-        ${u ? `<div class="ds">${new Date(u).toLocaleDateString(S.lang === "pt" ? "pt-BR" : "en")}</div>` : ""}</div></div>`;
+        <div class="nm">${esc(a.nm)}${u ? "" : " 🔒"}</div><div class="ds">${esc(a.d.pt)}</div>
+        ${u ? `<div class="ds">${new Date(u).toLocaleDateString("pt-BR")}</div>` : ""}</div></div>`;
     }).join("")}</div></div>`).join("");
 }
 
@@ -1552,6 +1562,7 @@ function lessonIntro(L) {
     return {title: t("accLesson"), bullets: tipList("in_acc_us"), hi: [], reach: []};
   }
   if (L.quotes) return {title: t("quotesLesson"), bullets: tipList(S.layout === "intl" ? "in_q_intl" : "in_q"), hi: [",", ".", "!", "?", "shiftL", "shiftR"], reach: []};
+  if (L.review) return {title: lessonTitle(L), bullets: tipList("in_rv"), hi: [], reach: []};
   if (!L.k) return null;
   const g = keyGeometry(), keys = [...lessonKeys(L)], bullets = [], reach = [];
   for (const k of keys) {
@@ -1567,9 +1578,17 @@ function lessonIntro(L) {
   return {title: `${t("newKeys")}: ${keys.map(keyName).join(" ")}`, bullets, hi: keys, reach};
 }
 const introSeen = new Set();
+function storyHtml(L) {
+  const st = STORY[L.id] || {}, stage = STAGES[L.stage], rival = L.race ? RIVALS[L.race] : null;
+  return `<div class="stage-tag">${esc(stage.lbl)}: ${esc(stage.from)} → ${esc(stage.to)}</div>` +
+    (st.narr ? `<p class="narr">${esc(st.narr)}</p>` : "") +
+    (st.gyro ? `<div class="bubble"><b>Gyro:</b> ${esc(st.gyro)}</div>` : "") +
+    (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}:</b> ${esc(rival.pre)}</div>` : "");
+}
 function renderIntro() {
   const I = run.intro;
-  $("#intro").innerHTML = `<h2 class="rt">${esc(I.title)}</h2>${handsSvg({hi: I.hi, reach: I.reach})}
+  $("#intro").innerHTML = `${storyHtml(LESSON_DEFS[run.lessonIdx])}
+    <h2 class="rt" style="margin-top:16px">${esc(I.title)}</h2>${handsSvg({hi: I.hi, reach: I.reach})}
     <div class="legend">${legendHtml()}</div>
     <ul class="tips">${I.bullets.map(b => `<li>${esc(b)}</li>`).join("")}</ul>
     <div class="type-actions"><button class="btn primary" id="intro-go">${esc(run.started ? t("backToTyping") : t("gotIt"))}</button></div>`;
@@ -1604,27 +1623,28 @@ function startNext() {
   if (i >= 0 && isUnlocked(i)) startRun("lesson", {lessonIdx: i});
 }
 function renderHome() {
-  const lc = lessonCounts(), nx = Math.max(0, nextLessonIdx());
+  const lc = lessonCounts(), nx = Math.max(0, nextLessonIdx()), stg = STAGES[currentStageIdx()];
   const [cur] = rankFor(bestOverall());
   const got = ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length;
   const first = lc.cleared === 0 && data.totals.runs === 0;
-  const modes = [["lessons", "tabLessons", "modeLessons"], ["free", "tabFree", "modeFree"], ["quotes", "tabQuotes", "modeQuotes"], ["collection", "tabCollection", "modeCollection"]];
+  const prof = data.profile;
   $("#home").innerHTML = `
     <div class="card hero">
-      <h1>${esc(t("homeTitle"))}</h1>
-      <p class="sub" style="font-size:16px;margin:0 0 14px">${esc(t("homeSub"))}</p>
+      <div class="sub">${esc(t("racerTag", {n: prof.number || 1, name: prof.name || "Johnny Joestar"}))}</div>
+      <h1>${esc(stg.lbl)}: ${esc(stg.place)}</h1>
+      <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stg.from)} → ${esc(stg.to)} · ${esc(t("kmOf", {a: fmtKm(kmTraveled()), b: fmtKm(TOTAL_KM)}))}</p>
       <button class="btn primary" data-go="start">${esc(first ? t("homeStart") : t("homeContinue", {n: nx + 1}))} ${esc(t("enterHint"))}</button>
       <div class="chips" style="margin-top:14px">
         <span class="chip">${esc(t("rank"))}: <b style="font-size:14px">${esc(rankName(cur))}</b></span>
-        <span class="chip">${esc(t("tabLessons"))}: <b style="font-size:14px">${lc.cleared}/${LESSON_DEFS.length}</b></span>
         <span class="chip">${esc(t("tabCollection"))}: <b style="font-size:14px">${got}/${ACHIEVEMENTS.length}</b></span>
       </div>
     </div>
-    <div class="card"><h2>${esc(t("homeHandsTitle"))}</h2>${handsSvg({hi: ["f", "j"]})}
-      <div class="legend">${legendHtml()}</div>
-      <ul class="tips">${tipList("homeTips").map(x => `<li>${esc(x)}</li>`).join("")}</ul>
-    </div>
-    <div class="grid">${modes.map(([v, title, desc]) => `<button class="lesson" data-go="${v}"><span class="title">${esc(t(title))}</span><span class="sub">${esc(t(desc))}</span></button>`).join("")}</div>`;
+    <div id="mission-slot"></div>
+    <div class="card">${mapSvg()}</div>
+    <div class="card"><h2>${esc(t("gyroTip"))}</h2>
+      ${first ? handsSvg({hi: ["f", "j"]}) + `<div class="legend">${legendHtml()}</div>` : ""}
+      <p style="margin:8px 0 0">${esc(pick(tipList("homeTips")))}</p>
+    </div>`;
 }
 $("#home").addEventListener("click", e => {
   const b = e.target.closest("[data-go]");
@@ -1637,6 +1657,7 @@ $("#btn-tip").addEventListener("click", () => openTip());
 /* ---------- first-run setup ---------- */
 let setup = {step: 1, layout: null, msg: ""};
 function renderSetup() {
+  if (!data.profile.number) data.profile.number = 1 + rnd(3852);
   const names = t("layoutNames");
   let detect;
   if (setup.layout) detect = `<p><b>✓ ${esc(t("setupDetected", {name: names[setup.layout]}))}</b></p>`;
@@ -1647,17 +1668,17 @@ function renderSetup() {
       ${setup.msg ? `<p style="color:var(--err)">${esc(setup.msg)}</p>` : ""}`;
   }
   const layoutBtns = ["intl", "us", "abnt"].map(l => `<button class="btn small${setup.layout === l ? " primary" : ""}" data-layout="${l}">${esc(names[l])}</button>`).join(" ");
-  const themes = ["mix", ...Object.keys(SERIES)].map(k => `<button class="lesson${S.series === k ? " next" : ""}" data-set="series" data-val="${k}">
-      <span class="title">${esc(k === "mix" ? t("mix") : SERIES[k].label)}</span><span class="sub">${esc(k === "mix" ? "JoJo · Eva · AoT · Soul Eater" : SERIES[k].deco)}</span></button>`).join("");
   $("#setup").innerHTML = `
     <div class="card hero"><h1>${esc(t("setupTitle"))}</h1><p class="sub" style="font-size:16px;margin:0">${esc(t("setupIntro"))}</p></div>
     <div class="card"><h2>1. ${esc(t("keyboard"))}</h2>${detect}
       <p class="sub" style="margin:12px 0 6px">${esc(t("setupManual"))}</p><div style="display:flex;gap:8px;flex-wrap:wrap">${layoutBtns}</div></div>
-    <div class="card"><h2>2. ${esc(t("setupLang"))}</h2>
-      <div class="seg" data-set="lang"><button data-set="lang" data-val="pt">Português</button><button data-set="lang" data-val="en">English</button></div></div>
-    <div class="card"><h2>3. ${esc(t("setupTheme"))}</h2><div class="grid">${themes}</div></div>
+    <div class="card"><h2>2. ${esc(t("setupName"))}</h2>
+      <p class="sub" style="margin:0 0 10px">${esc(t("setupNameHint"))}</p>
+      <input id="reg-name" class="input" maxlength="24" autocomplete="off" placeholder="Johnny Joestar" value="${esc(data.profile.name)}">
+      <p style="margin:12px 0 0">🏇 ${esc(t("setupNumber", {n: data.profile.number}))}</p></div>
     <div class="type-actions"><button class="btn primary" data-go="finish">${esc(t("setupGo"))}</button></div>
     ${setup.needLayout ? `<p style="text-align:center;color:var(--err)">${esc(t("setupNeedLayout"))}</p>` : ""}`;
+  $("#reg-name").addEventListener("input", e => { data.profile.name = e.target.value.trim(); });
 }
 function chooseLayout(l) {
   setup.layout = l;
@@ -1671,6 +1692,10 @@ function finishSetup() {
   showView("home");
 }
 function handleSetupKey(e) {
+  if (e.target && e.target.tagName === "INPUT") {
+    if (e.key === "Enter") { e.preventDefault(); finishSetup(); }
+    return;
+  }
   if (e.key === "Enter") { e.preventDefault(); finishSetup(); return; }
   if (setup.layout || !(e.key.length === 1 || e.key === "Dead")) return;
   e.preventDefault();
