@@ -8,10 +8,10 @@ Fonte das etapas: [JoJo Wiki, Steel Ball Run (Race)](https://jojowiki.com/Steel_
 
 - **Quilômetros:** cada lição concluída avança o Johnny no mapa. A distância de cada lição é a distância da etapa dividida pelo número de lições dela. O mapa dos Estados Unidos mostra a rota e onde ele está.
 - **Tusk evolui por fase do curso:**
-  - ACT1: linha base.
-  - ACT2: linha de cima.
-  - ACT3: linha de baixo.
-  - ACT4: Shift e frases.
+  - ACT1: linha base (lição S L, na Palma do Diabo).
+  - ACT2: linha de cima completa (lição Q P, no Mississippi, contra o Sandman).
+  - ACT3: linha de baixo (lição V B, em Gettysburg, contra o Axl RO).
+  - ACT4: todas as letras (revisão geral, contra o Valentine na etapa 8).
 - **Corrida no fim de cada etapa:** a última lição da etapa tem um rival. O rival aparece como um cursor fantasma no texto, digitando na velocidade dele.
   - Chegar antes do fantasma dá o 1º lugar. Até 10 s depois dá o 2º. Até 20 s depois dá o 3º. Depois disso, ele chega fora do pódio.
   - A lição passa pela precisão (90%), mesmo sem pódio. Perder a corrida não trava a viagem.
@@ -51,7 +51,7 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 ### Etapa 2: deserto do Arizona até o Monument Valley, 1.200 km
 
 **L3: S L** (Tusk ACT1 desperta)
-- Narrador: No deserto, o braço esquerdo do Cadáver Santo entra no corpo do Johnny. Tusk ACT1 desperta.
+- Narrador: Na Palma do Diabo, no deserto do Arizona, o braço esquerdo do Cadáver Santo entra no corpo do Johnny. Tusk ACT1 desperta.
 - Gyro: Suas unhas giram e disparam, mas só dos dedos que você treinou. Anelar: S e L.
 
 **L4: A e ; (ABNT2: A e Ç)**
@@ -62,18 +62,18 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 
 **L6: revisão da linha base** (corrida contra o Diego Brando, 8 PPM)
 - Diego: Um paraplégico e um carrasco. Vocês não chegam ao Monument Valley.
-- Se ele vencer: O Diego comeu poeira no Monument Valley.
+- Se ele vencer: O Diego e o Silver Bullet comeram poeira no Monument Valley.
 - Se ele perder: O Diego venceu esta etapa na série também. A revanche vem na etapa 7.
 
 ### Etapa 3: Montanhas Rochosas até Cañon City, 510 km
 
-**L7: E I** (Tusk ACT2)
-- Narrador: Na subida das Rochosas, o Tusk evolui para ACT2. O buraco da unha agora persegue o alvo.
+**L7: E I**
+- Narrador: A subida das Montanhas Rochosas. A trilha fica estreita e o ar fica frio.
 - Gyro: Agora os dedos sobem. O médio vai até o E e o I, e volta. A mão fica parada, como o cavaleiro firme na sela.
 
 **L8: R U** (corrida contra a Hot Pants, 10 PPM)
 - Gyro: O indicador sobe até o R e o U.
-- Hot Pants: Meu spray fecha qualquer ferida. E qualquer atalho também.
+- Hot Pants: Com o Cream Starter eu fecho qualquer ferida. E qualquer atalho também.
 
 ### Etapa 4: Grandes Planícies até Kansas City, 1.250 km
 
@@ -84,16 +84,17 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 - Gyro: N e M ficam embaixo do J. O indicador desce e volta, sem levantar a mão.
 
 **L11: C e vírgula** (corrida contra o Norisuke Higashikata, 12 PPM)
-- Norisuke: Eu não sou o mais rápido. Sou o mais constante.
+- Norisuke: Eu e o Hono vamos no nosso ritmo.
 - Gyro: Ritmo vence pressa. O Norisuke ganhou esta etapa assim.
 
 ### Etapa 5: Kansas City até Chicago, rio Mississippi, 780 km
 
-**L12: Q P**
+**L12: Q P** (Tusk ACT2)
+- Narrador: No rio Mississippi, contra o Sandman e o In a Silent Way, o Tusk evolui para ACT2. O buraco da unha agora persegue o alvo.
 - Gyro: Para atravessar o Mississippi, até os mindinhos trabalham: Q e P.
 
 **L13: revisão da linha de cima** (corrida contra o Pocoloco, 13 PPM)
-- Pocoloco: Hoje é meu dia de sorte!
+- Pocoloco: Eu sou um sortudo em cinco bilhões!
 - Se ele vencer: Nem a sorte do Pocoloco segurou você.
 
 ### Etapa 6: tundra do Wisconsin até Mackinaw City, 690 km
@@ -109,7 +110,7 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 ### Etapa 7: Mackinaw City até a Filadélfia, 1.300 km
 
 **L16: V B** (Tusk ACT3)
-- Narrador: Tusk ACT3. O Johnny atira em si mesmo e entra no buraco do espaço.
+- Narrador: Em Gettysburg, contra o Axl RO, o Johnny atira em si mesmo e entra no buraco: Tusk ACT3.
 - Gyro: Linha de baixo. O indicador desce até o V e o B.
 
 **L17: X e ponto**
@@ -121,26 +122,27 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 
 ### Etapa 8: Filadélfia até Union Beach, 140 km
 
-**L19: revisão de todas as letras** (duelo contra o Valentine, 18 PPM)
+**L19: revisão de todas as letras** (duelo contra o Valentine, 18 PPM, Tusk ACT4)
+- Narrador: Contra o Valentine, a Slow Dancer corre no Retângulo de Ouro e o Johnny acerta a Rotação de ouro. Nasce o Tusk ACT4.
 - Valentine: Neste mundo, cada erro seu vira uma cópia que trabalha para mim.
 - Gyro: Todas as letras. Respire e mantenha o galope.
 
 ### Etapa final: Union Beach até a Trinity Church, Nova York, 13 km
 
-**L20: maiúsculas com Shift** (Tusk ACT4)
-- Narrador: A Rotação de ouro do Gyro passa para o Johnny. Nasce o Tusk ACT4.
+**L20: maiúsculas com Shift**
+- Narrador: Os barcos atravessam a baía de Raritan. A última etapa começa em Coney Island.
 - Gyro: Para a maiúscula, o mindinho da outra mão segura o Shift. As duas mãos juntas, como a rotação perfeita.
 
 **L21: frases com pontuação** (corrida final contra o Diego de outro mundo, 20 PPM)
 - Diego: Eu vim de outro mundo para terminar esta corrida.
-- Se ele vencer: Trinity Church. O Johnny cruzou a chegada.
+- Se ele vencer: Trinity Church! Desta vez o Johnny cruza a chegada.
 
 ## Coleção
 
 | Item | Meta |
 |---|---|
 | Bola de aço | concluir a etapa 1 |
-| 8 partes do Cadáver Santo | uma por etapa concluída, da 2 à final (a ordem não segue a série à risca) |
+| Partes do Cadáver Santo | uma por etapa concluída, da 2 à 8, na ordem da série: braço esquerdo, olhos, coluna, coração, braço direito com orelhas e pernas, tronco e cabeça. A etapa final completa o cadáver |
 | Proporção áurea | uma lição com 100% de precisão |
 | Galope constante | uma rodada com nota de ritmo A |
 | Slow Dancer | treinar em 5 dias diferentes |
@@ -150,7 +152,7 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 ## Decisões
 
 1. **Só Steel Ball Run:** a tela inicial, as lições, a corrida livre, as frases e a coleção usam só Steel Ball Run. O seletor de anime e o de idioma saem. A versão com vários animes fica no branch `v1-multi-anime`.
-2. **Personagem:** ele joga como o Johnny. Na primeira vez, escreve o nome dele na inscrição da corrida e recebe um número de corredor. O nome aparece na tela inicial e na classificação.
+2. **Personagem:** ele joga como o Johnny. Na primeira vez, escreve o nome dele na inscrição da corrida. O número de corredor é o 939, o mesmo do Johnny, e a égua é a Slow Dancer. O nome aparece na tela inicial e na classificação.
 3. **Fantasma ajustado:** o rival corre 10% acima da média das 3 últimas rodadas dele com 90% ou mais de precisão (20% acima nas duas últimas corridas). Cada rival tem um piso, de 6 PPM (Sandman) a 14 PPM (Diego de outro mundo).
 4. **Três trechos por lição:** aquecimento (drill de âncora, da tecla base até a nova), palavras (palavras reais com a tecla nova) e mistura. Cada trecho tem cerca de 50 caracteres. Entre os trechos aparece um aviso rápido com os quilômetros, sem parar a digitação.
 5. **Avanço:** passar uma vez libera a próxima lição. Lição comum pede 90% de precisão. Corrida de fim de etapa pede 93%.
