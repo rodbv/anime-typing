@@ -10,6 +10,7 @@ Jogue em https://rodbv.github.io/jojo-typing/
 - **Corridas:** a última lição de cada etapa é uma corrida contra um rival da história. O rival aparece como um cursor fantasma que digita no ritmo dele. A velocidade do rival acompanha a velocidade recente do jogador.
 - **Missão diária:** cada dia propõe a próxima lição, uma revisão da tecla mais fraca e um treino livre ou uma frase.
 - **Coleção e Ficha:** as lições concluídas liberam as partes do Cadáver Santo e os ACTs do Tusk. A aba Ficha mostra um hexágono de atributos e a classificação nas corridas.
+- **Compartilhar no Zap:** o botão na tela inicial mostra um QR code. No celular, o código abre um diário do dia com o progresso, as conquistas novas e a posição na corrida, e um botão manda o link pelo WhatsApp. Os dados ficam no próprio link, sem servidor.
 - **Ajuda de teclado:** o teclado na tela aparece nas lições de tecla nova. Nas outras partes, a dica espera uma pausa ou um erro.
 
 ## Teclados
@@ -34,4 +35,4 @@ Se você detém direitos sobre esse material e quer que ele saia daqui, abra uma
 
 ## Licença
 
-O código está sob a [licença MIT](LICENSE). A licença cobre só o código e o texto originais deste repositório. Ela não cobre o material de JoJo's Bizarre Adventure citado acima.
+O código está sob a [licença MIT](LICENSE). O app inclui a biblioteca [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), de Kazuhiko Arase, também sob a licença MIT. A licença cobre só o código e o texto originais deste repositório. Ela não cobre o material de JoJo's Bizarre Adventure citado acima.
