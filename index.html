@@ -1439,7 +1439,8 @@ function finish() {
     next: () => startRun("lesson", {lessonIdx: run.lessonIdx + 1}),
     nextq: () => startRun("quote", {preview: run.preview}),
     again: () => restart(),
-    back: () => goBack()
+    back: () => goBack(),
+    share: () => openShare()
   };
   run.primary = actions[btns[0][0]];
 
@@ -1459,7 +1460,7 @@ function finish() {
     </div>
     ${unlockHtml}
     <h2 style="margin-top:14px">${esc(t("missed"))}</h2>${missHtml}
-    <div class="type-actions">${btns.map(([id, label, primary]) => `<button class="btn${primary ? " primary" : ""}" data-act="${id}">${esc(label)}${primary ? " " + esc(t("enterHint")) : ""}</button>`).join("")}</div>`;
+    <div class="type-actions">${btns.map(([id, label, primary]) => `<button class="btn${primary ? " primary" : ""}" data-act="${id}">${esc(label)}${primary ? " " + esc(t("enterHint")) : ""}</button>`).join("")}${run.preview ? "" : `<button class="btn" data-act="share">📲 Compartilhar no Zap</button>`}</div>`;
   r.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => actions[b.dataset.act]()));
   $("#typing-area").hidden = true;
   $("#type-actions").hidden = true;
@@ -2371,9 +2372,12 @@ const startQuote = () => startRun("quote", {preview: !quotesUnlocked()});
 window.addEventListener("pagehide", save);
 applyTheme();
 applyI18n();
-const cardParam = new URLSearchParams(location.search).get("card");
-if (cardParam) showCard(cardParam);
-else showView("prologue");
+const params = new URLSearchParams(location.search);
+if (params.get("card")) showCard(params.get("card"));
+else {
+  showView("prologue");
+  if (params.has("qr")) openShare();
+}
 </script>
 </body>
 </html>
