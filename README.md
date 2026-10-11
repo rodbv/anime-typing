@@ -2,7 +2,7 @@
 
 Treino de digitação por toque em português, contado como a corrida Steel Ball Run de JoJo's Bizarre Adventure. O jogador é o Johnny Joestar, e cada lição concluída leva o cavalo dele de San Diego a Nova York.
 
-Jogue em https://rodbv.github.io/anime-typing/
+Jogue em https://rodbv.github.io/jojo-typing/
 
 ## Como funciona
 
