@@ -1,8 +1,6 @@
 {
   "subtitle": "Treino de digitação com anime",
   "keyboard": "Teclado",
-  "language": "Idioma",
-  "theme": "Tema",
   "mix": "Mistura",
   "tabLessons": "Lições",
   "tabFree": "Corrida livre",
@@ -19,7 +17,6 @@
   "rv_mid": "Revisão: linha de cima, N e M",
   "rv_all": "Revisão: todas as letras",
   "shiftLesson": "Maiúsculas com Shift",
-  "accLesson": "Acentos: ´ ~ ^ ` e Ç",
   "quotesLesson": "Frases com pontuação",
   "freeIntro": "Digite palavras do tema contra o relógio.",
   "quoteIntro": "Digite falas famosas das séries. Maiúsculas e pontuação contam.",
@@ -52,7 +49,6 @@
     "Polegar"
   ],
   "cleared": "Lição concluída!",
-  "failed": "Quase! Você precisa de 90% de precisão e 10 PPM.",
   "timeUp": "Tempo!",
   "quoteDone": "Frase completa!",
   "newRecord": "NOVO RECORDE!",
@@ -93,18 +89,9 @@
   "date": "Data",
   "mode": "Modo",
   "collSummary": "{n} de {t} conquistados.",
-  "seriesTitles": {
-    "jojo": "Stands (JoJo)",
-    "eva": "Evas (Evangelion)",
-    "aot": "Titãs (Attack on Titan)",
-    "soul": "Armas (Soul Eater)"
-  },
   "tabHome": "Início",
-  "homeTitle": "Aprenda a digitar sem olhar",
-  "homeSub": "Lições curtas com palavras de JoJo, Evangelion, Attack on Titan e Soul Eater. Bata as metas para desbloquear Stands, Evas, Titãs e armas.",
   "homeStart": "Começar a primeira lição",
   "homeContinue": "Continuar: lição {n}",
-  "homeHandsTitle": "Onde ficam os dedos",
   "homeTips": [
     "Os indicadores descansam no F e no J. Passe o dedo e sinta o relevo dessas teclas.",
     "Cada dedo cuida das teclas da sua cor.",
@@ -114,10 +101,6 @@
     "Costas retas, pés no chão, pulsos soltos.",
     "Primeiro acerte. A velocidade vem com o treino."
   ],
-  "modeLessons": "Aprenda tecla por tecla, com dicas de dedo.",
-  "modeFree": "Palavras do tema contra o relógio.",
-  "modeQuotes": "Falas famosas das séries.",
-  "modeCollection": "Stands, Evas, Titãs e armas para desbloquear.",
   "newKeys": "Teclas novas",
   "gotIt": "Entendi, começar (Enter)",
   "showTip": "Ver dica",
@@ -145,18 +128,6 @@
     "Letra da mão esquerda (como D): Shift direito. Letra da mão direita (como J): Shift esquerdo.",
     "Solte o Shift logo depois da letra."
   ],
-  "in_acc_intl": [
-    "No US Internacional, o acento é uma tecla morta: nada aparece até você apertar a letra.",
-    "' e depois A faz á. ~ e depois A faz ã. Shift+6 (^) e depois E faz ê.",
-    "Para o Ç, segure AltGr e aperte a vírgula.",
-    "Para escrever só o apóstrofo, aperte ' e depois Espaço."
-  ],
-  "in_acc_abnt": [
-    "No ABNT2, o acento é uma tecla morta: nada aparece até você apertar a letra.",
-    "´ e depois A faz á. ~ e depois A faz ã.",
-    "Shift + ~ faz ^ (para ê). Shift + ´ faz ` (para à).",
-    "O Ç tem tecla própria, no mindinho direito."
-  ],
   "in_q": [
     "Vírgula e ponto ficam na linha de baixo, na mão direita.",
     "! e ? precisam do Shift.",
@@ -183,8 +154,6 @@
   "setupWrong2": "Essa não é a tecla. Procure a de aspas simples ', à direita do ;.",
   "setupDetected": "Teclado: {name}.",
   "setupManual": "Ou escolha você mesmo:",
-  "setupLang": "Idioma das lições",
-  "setupTheme": "Anime favorito",
   "setupGo": "Começar (Enter)",
   "setupNeedLayout": "Primeiro aperte as teclas acima ou escolha o teclado.",
   "layoutNames": {

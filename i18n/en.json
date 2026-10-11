@@ -1,8 +1,6 @@
 {
   "subtitle": "Touch typing training, anime style",
   "keyboard": "Keyboard",
-  "language": "Language",
-  "theme": "Theme",
   "mix": "Mix",
   "tabLessons": "Lessons",
   "tabFree": "Free run",
@@ -19,7 +17,6 @@
   "rv_mid": "Review: top row, N and M",
   "rv_all": "Review: all letters",
   "shiftLesson": "Capitals with Shift",
-  "accLesson": "Accents: ´ ~ ^ ` and Ç",
   "quotesLesson": "Quotes with punctuation",
   "freeIntro": "Type themed words against the clock.",
   "quoteIntro": "Type famous lines from the series. Capitals and punctuation count.",
@@ -52,7 +49,6 @@
     "Thumb"
   ],
   "cleared": "Lesson cleared!",
-  "failed": "Almost! You need 90% accuracy and 10 WPM.",
   "timeUp": "Time!",
   "quoteDone": "Quote complete!",
   "newRecord": "NEW RECORD!",
@@ -93,18 +89,9 @@
   "date": "Date",
   "mode": "Mode",
   "collSummary": "{n} of {t} unlocked. Reach the goals to awaken Stands, Evas, Titans and weapons.",
-  "seriesTitles": {
-    "jojo": "Stands (JoJo)",
-    "eva": "Evas (Evangelion)",
-    "aot": "Titans (Attack on Titan)",
-    "soul": "Weapons (Soul Eater)"
-  },
   "tabHome": "Home",
-  "homeTitle": "Learn to type without looking",
-  "homeSub": "Short lessons with words from JoJo, Evangelion, Attack on Titan and Soul Eater. Reach the goals to unlock Stands, Evas, Titans and weapons.",
   "homeStart": "Start the first lesson",
   "homeContinue": "Continue: lesson {n}",
-  "homeHandsTitle": "Where your fingers go",
   "homeTips": [
     "Your index fingers rest on F and J. Feel the bump on those keys.",
     "Each finger owns the keys of its color.",
@@ -114,10 +101,6 @@
     "Sit up straight, feet on the floor, relaxed wrists.",
     "Accuracy first. Speed comes with practice."
   ],
-  "modeLessons": "Learn key by key, with finger hints.",
-  "modeFree": "Themed words against the clock.",
-  "modeQuotes": "Famous lines from the series.",
-  "modeCollection": "Stands, Evas, Titans and weapons to unlock.",
   "newKeys": "New keys",
   "gotIt": "Got it, start (Enter)",
   "showTip": "Show tip",
@@ -145,18 +128,6 @@
     "Left-hand letter (like D): right Shift. Right-hand letter (like J): left Shift.",
     "Release Shift right after the letter."
   ],
-  "in_acc_intl": [
-    "On US International, the accent is a dead key: nothing appears until you press the letter.",
-    "' then A makes á. ~ then A makes ã. Shift+6 (^) then E makes ê.",
-    "For Ç, hold AltGr and press the comma.",
-    "To type only the apostrophe, press ' then Space."
-  ],
-  "in_acc_abnt": [
-    "On ABNT2, the accent is a dead key: nothing appears until you press the letter.",
-    "´ then A makes á. ~ then A makes ã.",
-    "Shift + ~ makes ^ (for ê). Shift + ´ makes ` (for à).",
-    "Ç has its own key, under the right pinky."
-  ],
   "in_q": [
     "Comma and period sit on the bottom row, right hand.",
     "! and ? need Shift.",
@@ -183,8 +154,6 @@
   "setupWrong2": "That is not the key. Look for the single quote ', right after ;.",
   "setupDetected": "Keyboard: {name}.",
   "setupManual": "Or choose it yourself:",
-  "setupLang": "Lesson language",
-  "setupTheme": "Favorite anime",
   "setupGo": "Start (Enter)",
   "setupNeedLayout": "First press the keys above or choose your keyboard.",
   "layoutNames": {

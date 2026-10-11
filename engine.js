@@ -239,7 +239,7 @@ function sanitize(str, accents) {
 /* ---------- storage ---------- */
 const STORE_KEY = TH.storeKey;
 const DEFAULTS = {
-  settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
+  settings: {layout: "intl", lang: "pt", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
   best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: [],
   profile: {name: ""}, days: {}, bestStreak: 0
@@ -545,7 +545,6 @@ let resetArmed = false;
 const sink = $("#sink");
 
 function applyTheme() {
-  document.documentElement.dataset.series = "sbr";
   for (const [k, v] of Object.entries(TH.look.colors)) document.documentElement.style.setProperty("--" + k, v);
   $("#logo").innerHTML = `${esc(TH.look.logo[0])} <span>${esc(TH.look.logo[1])}</span>`;
   $("#deco").textContent = TH.look.deco;
@@ -1096,7 +1095,7 @@ function renderCollection() {
   $("#coll-summary").textContent = t("collSummary", {n: got, t: ACHIEVEMENTS.length});
   const groups = t("collGroups");
   $("#collection").innerHTML = Object.keys(groups).map(g => `
-    <div class="coll-series"><h2>${esc(groups[g])}</h2><div class="coll">
+    <div class="coll-group"><h2>${esc(groups[g])}</h2><div class="coll">
     ${ACHIEVEMENTS.filter(a => a.s === g).map(a => {
       const u = data.unlocked[a.id];
       return `<div class="item ${u ? "got" : "locked"}"><span class="ic">${a.ic}</span><div>

@@ -1096,7 +1096,7 @@
 === view collection ===
 <p class="tip" id="coll-summary">6 de 23 conquistados.</p>
 <div id="collection">
-<div class="coll-series">
+<div class="coll-group">
 <h2>Partes do Cadáver Santo</h2>
 <div class="coll">
 <div class="item got">
@@ -1166,7 +1166,7 @@
 </div>
 </div>
 </div>
-<div class="coll-series">
+<div class="coll-group">
 <h2>Tusk</h2>
 <div class="coll">
 <div class="item got">
@@ -1200,7 +1200,7 @@
 </div>
 </div>
 </div>
-<div class="coll-series">
+<div class="coll-group">
 <h2>Metas</h2>
 <div class="coll">
 <div class="item got">

@@ -3,10 +3,6 @@
   --accent:#f2b84b;--accent2:#7fd1c7;--ok:#7bd88f;--err:#ff5c6c;--fix:#ffb38a;
   --f0:#f48fb1;--f1:#ffcc80;--f2:#a5d6a7;--f3:#90caf9;--f8:#b0bec5;
 }
-[data-series=jojo]{--accent:#c39bff;--accent2:#ffd54f;--bg:#120d1c}
-[data-series=eva]{--accent:#9be15d;--accent2:#b06ce0;--bg:#110c19}
-[data-series=aot]{--accent:#e2a76f;--accent2:#6fbf73;--bg:#14110e}
-[data-series=soul]{--accent:#ff5c5c;--accent2:#ffe066;--bg:#0e0d10}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
@@ -102,7 +98,7 @@ td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
 th{color:var(--muted);font-weight:600}
 .toggle{display:flex;align-items:center;gap:8px;margin:8px 0;cursor:pointer}
 .stack{display:flex;flex-direction:column;gap:12px}
-.coll-series{margin-bottom:18px}
+.coll-group{margin-bottom:18px}
 .coll{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 .item{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center}
 .item .ic{font-size:36px;line-height:1}
