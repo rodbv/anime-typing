@@ -90,7 +90,7 @@ nav.tabs button.on{color:var(--text);border-color:var(--accent)}
 .legend{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;color:var(--muted);font-size:13px;margin-top:8px}
 .type-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
 .results h2.rt{font-size:26px;text-transform:none;letter-spacing:0;color:var(--text);margin:0 0 12px}
-.big{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.big{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin:12px 0}
 .stat{background:var(--panel2);border-radius:12px;padding:12px;text-align:center}
 .stat b{display:block;font-size:34px;font-variant-numeric:tabular-nums;line-height:1.2}
 .stat span{color:var(--muted);font-size:13px}
@@ -160,6 +160,9 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 .week i.done{background:var(--accent)}
 .week i.part{background:color-mix(in srgb,var(--accent) 35%,transparent)}
 .camp{background:color-mix(in srgb,var(--accent) 16%,var(--panel2));border:1px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:12px}
+.hex{display:block;width:100%;max-width:340px;margin:0 auto;height:auto}
+.sheet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:center}
+@media (max-width:640px){.sheet{grid-template-columns:1fr}}
 @media (max-width:640px){
   .big{grid-template-columns:repeat(2,1fr)}
   .textbox{font-size:20px}
@@ -490,6 +493,11 @@ Object.assign(T.pt, {
   breakMsg: "Você já treinou 20 minutos hoje. Que tal uma pausa? Beba água e alongue as mãos.",
   showKbBtn: "Mostrar teclado", hideKbBtn: "Esconder teclado",
   showKb: "Mostrar o teclado nas lições de tecla nova",
+  rhythm: "Ritmo",
+  sheetTitle: "Ficha do Stand", noStand: "O Stand ainda não despertou",
+  stPower: "Poder", stSpeed: "Velocidade", stRange: "Alcance", stDurability: "Resistência", stPrecision: "Precisão", stPotential: "Potencial",
+  stPowerV: "{n} letras seguidas sem erro", stRangeV: "{n}% da corrida", stDurabilityV: "treinou {n} dos últimos 7 dias", stPotentialV: "o Tusk ainda evolui",
+  raceTable: "Classificação: {p} pontos", stage: "Etapa", rival: "Rival", placeCol: "Colocação",
   footer: "O progresso fica salvo neste navegador."
 });
 const t = (k, vars) => {
@@ -1072,7 +1080,7 @@ function newRun(mode, o = {}) {
   const r = {mode, lessonIdx: o.lessonIdx ?? null, quote: o.quote ?? null, preview: !!o.preview, text: "", pos: 0, started: 0, ended: 0,
     keystrokes: 0, correct: 0, errors: 0, errAt: new Set(), miss: {}, done: false, els: [], curEl: null,
     limit: mode === "free" ? Number(S.time) : 0, nextEls: [], bannerShown: false, primary: null,
-    pausedMs: 0, pauseStart: 0, lastKey: 0, menuOpen: false, errCount: {}};
+    pausedMs: 0, pauseStart: 0, lastKey: 0, menuOpen: false, errCount: {}, gaps: [], lastOk: 0, streak: 0, bestStreak: 0};
   if (mode === "lesson") {
     const L = LESSON_DEFS[r.lessonIdx];
     const parts = lessonParts(r.lessonIdx);
@@ -1207,7 +1215,8 @@ function metrics() {
     ms,
     wpm: run.started ? Math.round(run.pos / 5 / minutes) : 0,
     acc: tried ? Math.floor((tried - run.errAt.size) / tried * 100) : 100,
-    errors: run.errAt.size
+    errors: run.errAt.size,
+    rhythm: rhythmGrade(run.gaps)
   };
 }
 function updateChips() {
@@ -1242,6 +1251,11 @@ function typeChar(ch) {
   run.keystrokes++;
   if (ch === exp) {
     run.correct++;
+    const now = Date.now();
+    if (run.lastOk && now - run.lastOk < 2000) run.gaps.push(now - run.lastOk);
+    run.lastOk = now;
+    run.streak = run.errAt.has(run.pos) ? 0 : run.streak + 1;
+    run.bestStreak = Math.max(run.bestStreak, run.streak);
     $("#kb").classList.remove("insist");
     $("#hint").classList.remove("insist");
     el.classList.remove("cur", "bad");
@@ -1262,6 +1276,7 @@ function typeChar(ch) {
     setCursor();
   } else {
     run.errors++;
+    run.streak = 0;
     el.classList.add("bad");
     run.errCount[run.pos] = (run.errCount[run.pos] || 0) + 1;
     clearTimeout(run.helpTimer);
@@ -1360,6 +1375,7 @@ function finish() {
   const mission = updateMission(m);
   let fresh = [];
   if (!run.preview) {
+    data.bestStreak = Math.max(data.bestStreak || 0, run.bestStreak);
     data.totals.runs++;
     data.totals.chars += run.pos;
     data.history.push({t: Date.now(), mode: run.mode, wpm: m.wpm, acc: m.acc, layout: S.layout,
@@ -1406,6 +1422,7 @@ function finish() {
       <div class="stat"><b>${m.acc}%</b><span>${esc(t("accuracy"))}</span></div>
       <div class="stat"><b>${Math.round(m.ms / 1000)}s</b><span>${esc(t("time"))}</span></div>
       <div class="stat"><b>${m.errors}</b><span>${esc(t("errors"))}</span></div>
+      <div class="stat"><b>${m.rhythm}</b><span>${esc(t("rhythm"))}</span></div>
     </div>
     ${unlockHtml}
     <h2 style="margin-top:14px">${esc(t("missed"))}</h2>${missHtml}
@@ -1531,7 +1548,7 @@ function renderStats() {
     .map(([c, s]) => [c, s.m / (s.h + s.m)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 8);
   const loc = S.lang === "pt" ? "pt-BR" : "en";
 
-  $("#stats").innerHTML = `
+  $("#stats").innerHTML = tuskCardHtml() + raceTableHtml() + `
     <div class="statgrid">
       <div class="card"><h2>${esc(t("rank"))}</h2><b>${esc(rankName(cur))}</b>
         <div class="bar"><i style="width:${pct}%"></i></div>
@@ -1970,6 +1987,66 @@ $("#btn-kb").addEventListener("click", () => {
   scheduleHelp();
   focusSink();
 });
+
+/* ---------- Stand sheet ---------- */
+// Rhythm grade from the spread of the gaps between correct keys: a steady gallop has similar gaps.
+function rhythmGrade(gaps) {
+  if (gaps.length < 20) return "-";
+  const mean = gaps.reduce((a, g) => a + g, 0) / gaps.length;
+  const sd = Math.sqrt(gaps.reduce((a, g) => a + (g - mean) ** 2, 0) / gaps.length);
+  const cv = sd / mean;
+  return cv < 0.35 ? "A" : cv < 0.5 ? "B" : cv < 0.65 ? "C" : cv < 0.8 ? "D" : "E";
+}
+const gradeOf = (v, cuts) => { const g = ["A", "B", "C", "D"].find((_, i) => v >= cuts[i]); return g || "E"; };
+const tuskAct = () => ["shift", "vb", "ei", "sl"].map((id, i) => lessonDone(LESSON_DEFS[lessonIndexOf(id)]) ? 4 - i : 0).find(n => n) || 0;
+function standStats() {
+  const hist = data.history;
+  const fast = hist.filter(h => h.acc >= 90).reduce((a, h) => Math.max(a, h.wpm), 0);
+  const last = hist.slice(-10), acc = last.length ? Math.round(last.reduce((a, h) => a + h.acc, 0) / last.length) : 0;
+  const cleared = Math.round(lessonCounts().cleared / LESSON_DEFS.length * 100);
+  let days = 0;
+  for (let i = 0; i < 7; i++) { const dt = new Date(); dt.setDate(dt.getDate() - i); if (data.days[dayKey(dt)]?.ms > 0) days++; }
+  const streak = data.bestStreak || 0;
+  return [
+    {nm: t("stPower"), g: gradeOf(streak, [200, 120, 60, 25]), v: t("stPowerV", {n: streak})},
+    {nm: t("stSpeed"), g: gradeOf(fast, [30, 22, 15, 10]), v: `${fast} ${t("wpm")}`},
+    {nm: t("stRange"), g: gradeOf(cleared, [95, 70, 45, 20]), v: t("stRangeV", {n: cleared})},
+    {nm: t("stDurability"), g: gradeOf(days, [6, 5, 3, 1]), v: t("stDurabilityV", {n: days})},
+    {nm: t("stPrecision"), g: last.length ? gradeOf(acc, [97, 94, 90, 85]) : "E", v: last.length ? `${acc}%` : "-"},
+    {nm: t("stPotential"), g: "A", v: t("stPotentialV")}
+  ];
+}
+function hexSvg(stats) {
+  const cx = 160, cy = 150, R = 95, val = {A: 5, B: 4, C: 3, D: 2, E: 1};
+  const at = (i, r) => { const a = -Math.PI / 2 + i * Math.PI / 3; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+  const ring = r => [0, 1, 2, 3, 4, 5].map(i => at(i, r).map(v => v.toFixed(1)).join(",")).join(" ");
+  const poly = stats.map((st, i) => at(i, R * (val[st.g] || 0) / 5).map(v => v.toFixed(1)).join(",")).join(" ");
+  const rings = [1, 2, 3, 4, 5].map(k => `<polygon points="${ring(R * k / 5)}" style="fill:none;stroke:var(--line)"/>`).join("");
+  const axes = stats.map((_, i) => { const [x, y] = at(i, R); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" style="stroke:var(--line)"/>`; }).join("");
+  const labels = stats.map((st, i) => {
+    const [x, y] = at(i, R + 28);
+    return `<text x="${x.toFixed(1)}" y="${(y - 2).toFixed(1)}" text-anchor="middle" style="fill:var(--muted);font:600 11px system-ui,sans-serif">${esc(st.nm)}</text>
+      <text x="${x.toFixed(1)}" y="${(y + 13).toFixed(1)}" text-anchor="middle" style="fill:var(--accent);font:800 15px system-ui,sans-serif">${st.g}</text>`;
+  }).join("");
+  return `<svg class="hex" viewBox="0 0 320 300" role="img" aria-label="ficha do Stand">${rings}${axes}
+    <polygon points="${poly}" style="fill:color-mix(in srgb,var(--accent) 35%,transparent);stroke:var(--accent);stroke-width:2"/>${labels}</svg>`;
+}
+function tuskCardHtml() {
+  const act = tuskAct(), stats = standStats();
+  return `<div class="card" style="margin-bottom:12px"><h2>${esc(t("sheetTitle"))}</h2>
+    <div class="sheet"><div>${hexSvg(stats)}</div><div>
+      <div style="font-size:24px;font-weight:900;margin-bottom:8px">${esc(act ? `Tusk ACT${act}` : t("noStand"))}</div>
+      <table>${stats.map(st => `<tr><td>${esc(st.nm)}</td><td><b>${st.g}</b></td><td class="sub">${esc(st.v)}</td></tr>`).join("")}</table>
+    </div></div></div>`;
+}
+function raceTableHtml() {
+  const rows = LESSON_DEFS.filter(L => L.race).map(L => {
+    const pl = progress()[L.id]?.place;
+    return `<tr><td>${esc(STAGES[L.stage].lbl)}</td><td>${esc(RIVALS[L.race].nm)}</td><td>${pl ? (pl <= 3 ? `${pl}º` : esc(t("noPodium"))) : "-"}</td></tr>`;
+  }).join("");
+  return `<div class="card" style="margin-bottom:12px"><h2>${esc(t("raceTable", {p: racePoints()}))}</h2>
+    <table><tr><th>${esc(t("stage"))}</th><th>${esc(t("rival"))}</th><th>${esc(t("placeCol"))}</th></tr>${rows}</table></div>`;
+}
 
 /* ---------- pause, focus mode and locks ---------- */
 let toastTimer = null;
