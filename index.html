@@ -266,6 +266,7 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
     <div class="card results" id="results" hidden></div>
     <div class="type-actions" id="type-actions">
       <button class="btn" id="btn-tip" data-i18n="showTip"></button>
+      <button class="btn" id="btn-kb"></button>
       <button class="btn" id="btn-pause" data-i18n="pauseBtn"></button>
     </div>
   </section>
@@ -487,6 +488,8 @@ Object.assign(T.pt, {
   campText: "O Gyro acendeu a fogueira do acampamento. Bom trabalho hoje, {name}. Amanhã a corrida continua.",
   seeYou: "Até amanhã", keepTraining: "Continuar treinando",
   breakMsg: "Você já treinou 20 minutos hoje. Que tal uma pausa? Beba água e alongue as mãos.",
+  showKbBtn: "Mostrar teclado", hideKbBtn: "Esconder teclado",
+  showKb: "Mostrar o teclado nas lições de tecla nova",
   footer: "O progresso fica salvo neste navegador."
 });
 const t = (k, vars) => {
@@ -1132,7 +1135,6 @@ function renderRun() {
   $("#typing-area").hidden = false;
   $("#type-actions").hidden = false;
   $("#banner").hidden = true;
-  $("#kb-wrap").hidden = !S.showKb;
   $("#menu").hidden = true;
   $("#focus-overlay").hidden = true;
   $(".type-top .chips").hidden = run.mode === "lesson";
@@ -1166,7 +1168,7 @@ function setCursor() {
     const lh = parseFloat(getComputedStyle($("#text-inner")).lineHeight) || 40;
     $("#text-inner").style.transform = `translateY(${-Math.max(0, el.offsetTop - lh)}px)`;
   }
-  highlightNext();
+  scheduleHelp();
 }
 function keyName(c) {
   if (c === " ") return t("space");
@@ -1262,6 +1264,8 @@ function typeChar(ch) {
     run.errors++;
     el.classList.add("bad");
     run.errCount[run.pos] = (run.errCount[run.pos] || 0) + 1;
+    clearTimeout(run.helpTimer);
+    highlightNext();
     if (run.errCount[run.pos] >= 3) { $("#kb").classList.add("insist"); $("#hint").classList.add("insist"); }
     if (!run.errAt.has(run.pos)) {
       run.errAt.add(run.pos);
@@ -1932,6 +1936,40 @@ function startGyro() {
   const i = id ? LESSON_DEFS.findIndex(L => L.id === id) : Math.max(0, nextLessonIdx() - 1);
   startRun("lesson", {lessonIdx: i});
 }
+
+/* ---------- keyboard help on demand ---------- */
+const partIndex = () => { const b = run.bounds || []; return run.pos >= (b[1] ?? Infinity) ? 2 : run.pos >= (b[0] ?? Infinity) ? 1 : 0; };
+const newKeyLesson = () => run.mode === "lesson" && (() => { const L = LESSON_DEFS[run.lessonIdx]; return !!(L.k || L.accents || L.shift); })();
+// New keys are taught with full help during the warm-up, then the help waits for a pause or a mistake.
+function helpPolicy() {
+  const fresh = newKeyLesson();
+  const kb = run.kbMode === "show" || (run.kbMode !== "hide" && fresh && S.showKb);
+  const delay = run.kbMode === "show" || (fresh && partIndex() === 0) ? 0 : fresh ? 1200 : 1500;
+  return {kb, delay};
+}
+function clearHighlight() {
+  run.nextEls.forEach(e => e.classList.remove("next", "next2"));
+  run.nextEls = [];
+  $("#hint").innerHTML = "";
+}
+function scheduleHelp() {
+  clearTimeout(run.helpTimer);
+  clearHighlight();
+  const pol = helpPolicy();
+  $("#kb-wrap").hidden = !pol.kb;
+  $("#btn-kb").textContent = t(pol.kb ? "hideKbBtn" : "showKbBtn");
+  if (pol.delay === 0) highlightNext();
+  else {
+    const r = run;
+    run.helpTimer = setTimeout(() => { if (run === r && !r.done) highlightNext(); }, pol.delay);
+  }
+}
+$("#btn-kb").addEventListener("click", () => {
+  if (!run) return;
+  run.kbMode = $("#kb-wrap").hidden ? "show" : "hide";
+  scheduleHelp();
+  focusSink();
+});
 
 /* ---------- pause, focus mode and locks ---------- */
 let toastTimer = null;
