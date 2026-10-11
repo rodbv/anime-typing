@@ -147,6 +147,9 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 .input:focus{border-color:var(--accent)}
 .toast{position:absolute;top:8px;right:12px;background:var(--accent);color:#111;font:700 14px system-ui,sans-serif;padding:4px 12px;border-radius:99px;animation:toast 1.4s ease-out}
 @keyframes toast{0%{opacity:0;transform:translateY(-6px)}15%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+.c.ghost{box-shadow:inset 0 3px 0 var(--accent2)}
+.c.ghost.cur{box-shadow:inset 0 3px 0 var(--accent2),inset 0 -3px 0 var(--accent)}
+.meter .ghostmark{position:absolute;top:0;bottom:0;width:4px;margin-left:-2px;background:var(--accent2);border-radius:2px}
 @media (max-width:640px){
   .big{grid-template-columns:repeat(2,1fr)}
   .textbox{font-size:20px}
@@ -224,7 +227,7 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
     </div>
     <div class="meters" id="meters">
       <div class="meter-label"><span data-i18n="progressLabel"></span><span id="m-prog-txt"></span></div>
-      <div class="meter"><i id="m-prog"></i></div>
+      <div class="meter"><i id="m-prog"></i><span class="ghostmark" id="m-ghost" hidden></span></div>
       <div id="m-acc-wrap">
         <div class="meter-label"><span data-i18n="accuracy"></span><span id="m-acc-txt"></span></div>
         <div class="meter acc" id="m-acc-bar"><i id="m-acc"></i><span class="goal" style="left:80%"></span></div>
@@ -459,6 +462,9 @@ Object.assign(T.pt, {
   in_acc2_intl: ["Shift+6 (^) e depois E faz ê.", "` (a tecla à esquerda do 1) e depois A faz à.", "Para o Ç, segure AltGr e aperte a vírgula."],
   in_acc1_abnt: ["No ABNT2, o acento é uma tecla morta: nada aparece até você apertar a letra.", "´ e depois A faz á. ~ e depois A faz ã."],
   in_acc2_abnt: ["Shift + ~ faz ^ (para ê). Shift + ´ faz ` (para à).", "O Ç tem tecla própria, no mindinho direito."],
+  raceRule: "Corrida contra {nm}: o fantasma corre a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
+  place: "{n}º lugar!", noPodium: "Fora do pódio",
+  aheadBy: "Você chegou {s} s antes de {nm}.", behindBy: "{nm} chegou {s} s antes.",
   footer: "O progresso fica salvo neste navegador."
 });
 const t = (k, vars) => {
@@ -1053,6 +1059,7 @@ function newRun(mode, o = {}) {
   }
   else if (mode === "free") r.text = freeChunk(80);
   else { r.quote = r.quote || pick(allQuotes()); r.text = sanitize(r.quote[0], S.layout !== "us"); }
+  if (mode === "lesson" && LESSON_DEFS[r.lessonIdx].race) r.race = makeRace(LESSON_DEFS[r.lessonIdx]);
   return r;
 }
 function startRun(mode, o) {
@@ -1070,7 +1077,8 @@ function goBack() {
   showView({lesson: "lessons", free: "free", quote: "quotes"}[m]);
 }
 function runLabel() {
-  if (run.mode === "lesson") return `${t("lesson")} ${run.lessonIdx + 1} · ${lessonTitle(LESSON_DEFS[run.lessonIdx])}${run.preview ? " · " + t("preview") : ""}`;
+  if (run.mode === "lesson") return `${t("lesson")} ${run.lessonIdx + 1} · ${lessonTitle(LESSON_DEFS[run.lessonIdx])}` +
+    (run.race ? ` · 🏁 ${run.race.nm} (${run.race.wpm} ${t("wpm")})` : "") + (run.preview ? " · " + t("preview") : "");
   if (run.mode === "free") return `${t("tabFree")} · ${run.limit} s`;
   return t("tabQuotes") + (run.preview ? " · " + t("preview") : "");
 }
@@ -1110,6 +1118,7 @@ function renderRun() {
   $("#m-acc-wrap").hidden = run.mode !== "lesson";
   $("#hint").classList.remove("insist");
   $("#kb").classList.remove("insist");
+  $("#m-ghost").hidden = !run.race;
   kb = buildKb($("#kb"));
   updateChips();
   setCursor();
@@ -1190,6 +1199,7 @@ function updateChips() {
   $("#m-acc").style.width = Math.max(0, (m.acc - 50) * 2) + "%";
   $("#m-acc-txt").textContent = m.acc + "%";
   $("#m-acc-bar").classList.toggle("low", m.acc < 90);
+  updateGhost();
 }
 function bumpKey(base, ok) {
   const ks = data.keys[S.layout];
@@ -1303,10 +1313,15 @@ function finish() {
     const st = starsFor(m.wpm, m.acc, run.lessonIdx);
     const prev = progress()[L.id];
     record = !run.preview && !!prev && st >= 1 && m.wpm > prev.wpm;
-    if (!run.preview) progress()[L.id] = {stars: Math.max(st, prev?.stars || 0), wpm: Math.max(m.wpm, prev?.wpm || 0), acc: Math.max(m.acc, prev?.acc || 0)};
+    if (!run.preview) progress()[L.id] = {stars: Math.max(st, prev?.stars || 0), wpm: Math.max(m.wpm, prev?.wpm || 0), acc: Math.max(m.acc, prev?.acc || 0), place: prev?.place, last: Date.now()};
     run.passed = st >= 1;
+    if (run.race) {
+      const place = racePlace(m.ms);
+      if (run.passed && !run.preview) progress()[L.id].place = Math.min(progress()[L.id].place || 9, place);
+      extra += raceResultHtml(place, m.ms);
+    }
     title = run.preview ? t("previewDone") : run.passed ? t("cleared") : t("failedAcc", {n: passAcc(L)});
-    extra = `<div style="font-size:28px">${starRow(st)}</div>`;
+    extra = `<div style="font-size:28px">${starRow(st)}</div>` + extra;
   } else {
     const prev = data.best[run.mode];
     record = !run.preview && prev > 0 && m.wpm > prev;
@@ -1654,7 +1669,8 @@ function storyHtml(L) {
   return `<div class="stage-tag">${esc(stage.lbl)}: ${esc(stage.from)} → ${esc(stage.to)}</div>` +
     (st.narr ? `<p class="narr">${esc(st.narr)}</p>` : "") +
     (st.gyro ? `<div class="bubble"><b>Gyro:</b> ${esc(st.gyro)}</div>` : "") +
-    (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}:</b> ${esc(rival.pre)}</div>` : "");
+    (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}:</b> ${esc(rival.pre)}</div>` : "") +
+    (rival && run && run.race ? `<p class="sub">🏁 ${esc(t("raceRule", {nm: rival.nm, wpm: run.race.wpm}))}</p>` : "");
 }
 function renderIntro() {
   const I = run.intro;
@@ -1784,6 +1800,36 @@ $("#setup").addEventListener("click", e => {
   else if (b.dataset.set) setSetting(b.dataset.set, b.dataset.val);
   else if (b.dataset.go === "finish") finishSetup();
 });
+
+/* ---------- races ---------- */
+const PLACE_POINTS = [0, 10, 6, 4, 1];
+// The rival ghost runs a little above the racer's recent speed, never below the rival's floor.
+function makeRace(L) {
+  const rival = RIVALS[L.race];
+  const recent = data.history.filter(h => h.acc >= 90).slice(-3);
+  const avg = recent.length ? recent.reduce((a, h) => a + h.wpm, 0) / recent.length : 0;
+  const wpm = Math.max(rival.floor, Math.round(avg * (rival.boss ? 1.2 : 1.1)));
+  return {id: L.race, nm: rival.nm, wpm, cps: wpm * 5 / 60};
+}
+function updateGhost() {
+  if (!run || !run.race) return;
+  const idx = Math.min(run.text.length - 1, Math.floor(activeMs() / 1000 * run.race.cps));
+  if (run.ghostEl) run.ghostEl.classList.remove("ghost");
+  run.ghostEl = run.els[idx];
+  if (run.ghostEl) run.ghostEl.classList.add("ghost");
+  $("#m-ghost").style.left = (idx / run.text.length * 100).toFixed(1) + "%";
+}
+function racePlace(ms) {
+  const diff = ms - run.text.length / run.race.cps * 1000;
+  return diff <= 0 ? 1 : diff <= 10000 ? 2 : diff <= 20000 ? 3 : 4;
+}
+function raceResultHtml(place, ms) {
+  const rival = RIVALS[run.race.id];
+  const secs = Math.abs(Math.round((ms - run.text.length / run.race.cps * 1000) / 1000));
+  const gap = place === 1 ? t("aheadBy", {s: secs, nm: rival.nm}) : t("behindBy", {s: secs, nm: rival.nm});
+  return `<div class="bubble${place === 1 ? "" : " rival"}"><b>🏁 ${esc(place <= 3 ? t("place", {n: place}) : t("noPodium"))}</b> · ${esc(gap)}<br>${esc(place === 1 ? rival.win : rival.lose)}</div>`;
+}
+const racePoints = () => LESSON_DEFS.reduce((a, L) => a + (L.race ? PLACE_POINTS[progress()[L.id]?.place || 0] || 0 : 0), 0);
 
 /* ---------- pause, focus mode and locks ---------- */
 let toastTimer = null;
