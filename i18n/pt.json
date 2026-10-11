@@ -260,5 +260,7 @@
   "ordinal": "{n}º",
   "runnerNo": " (nº {no})",
   "distOf": "{a} de {b}",
-  "missionDoneTitle": "Missão cumprida!"
+  "missionDoneTitle": "Missão cumprida!",
+  "mPlay": "Jogar ▶",
+  "mDone": "Feito"
 }

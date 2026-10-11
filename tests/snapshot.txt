@@ -748,13 +748,25 @@
 <h2>Missão do dia</h2>
 <ul class="mission">
 <li>
-<button data-go="start" class="ok">✅ Próximo trecho: lição 8 (R U)</button>
+<button data-go="start" class="ok">
+<span class="mnum">✓</span>
+<span class="mtxt">Próximo trecho: lição 8 (R U)</span>
+<span class="mgo">Feito</span>
+</button>
 </li>
 <li>
-<button data-go="review" class="">⬜ Treino do Gyro: refaça a lição 4 (A ;)</button>
+<button data-go="review" class="">
+<span class="mnum">2</span>
+<span class="mtxt">Treino do Gyro: refaça a lição 4 (A ;)</span>
+<span class="mgo">Jogar ▶</span>
+</button>
 </li>
 <li>
-<button data-go="free" class="">⬜ Uma rodada de treino livre ou uma frase</button>
+<button data-go="free" class="">
+<span class="mnum">3</span>
+<span class="mtxt">Uma rodada de treino livre ou uma frase</span>
+<span class="mgo">Jogar ▶</span>
+</button>
 </li>
 </ul>
 <div class="week">

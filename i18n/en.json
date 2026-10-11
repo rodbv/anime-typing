@@ -177,5 +177,7 @@
   "freeLimited": "For now, the free run uses only the keys you already know: {k}. All letters unlock after lesson {n}.",
   "quotesLocked": "Quotes unlock after lesson {n} (Capitals with Shift). Until then, you can preview them.",
   "previewBtn": "Preview (Enter)",
-  "footer": "Progress is saved in this browser."
+  "footer": "Progress is saved in this browser.",
+  "mPlay": "Play ▶",
+  "mDone": "Done"
 }

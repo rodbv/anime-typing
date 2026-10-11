@@ -1682,11 +1682,12 @@ function missionHtml() {
   const day = today();
   const idxOf = id => LESSON_DEFS.findIndex(L => L.id === id);
   const label = id => { const i = idxOf(id); return {n: i + 1, title: lessonTitle(LESSON_DEFS[i])}; };
-  const item = (ok, go, txt) => `<li><button data-go="${go}" class="${ok ? "ok" : ""}">${ok ? "✅" : "⬜"} ${esc(txt)}</button></li>`;
+  // A numbered step with a play label, so the row reads as something to start, not a box to tick.
+  const item = (n, ok, go, txt) => `<li><button data-go="${go}" class="${ok ? "ok" : ""}"><span class="mnum">${ok ? "✓" : n}</span><span class="mtxt">${esc(txt)}</span><span class="mgo">${esc(t(ok ? "mDone" : "mPlay"))}</span></button></li>`;
   return `<div class="card"><h2>${esc(t("missionTitle"))}</h2><ul class="mission">
-    ${item(day.next, "start", t("mNext", label(day.nextLesson)))}
-    ${item(day.review, "review", day.reviewLesson ? t("mReview", label(day.reviewLesson)) : t("mReviewAny"))}
-    ${item(day.free, "free", t("mFree"))}
+    ${item(1, day.next, "start", t("mNext", label(day.nextLesson)))}
+    ${item(2, day.review, "review", day.reviewLesson ? t("mReview", label(day.reviewLesson)) : t("mReviewAny"))}
+    ${item(3, day.free, "free", t("mFree"))}
   </ul>${day.done ? `<p style="margin:10px 0 0">🔥 ${esc(t("missionDoneHome"))}</p>` : ""}${weekHtml()}</div>`;
 }
 function startReview() {
