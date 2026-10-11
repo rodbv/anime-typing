@@ -5,11 +5,22 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 
+const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
+
+// jsdom has no fetch, so the loader's JSON files go into the page as globals, followed by the engine.
+function inlineLoader(attrs) {
+  const files = (/data-i18n="([^"]*)"/.exec(attrs)?.[1] || '').split(/\s+/).filter(Boolean);
+  const i18n = Object.fromEntries(files.map(f => [path.basename(f, '.json'), JSON.parse(read(f))]));
+  const theme = /data-theme="([^"]*)"/.exec(attrs)?.[1];
+  return `<script>window.I18N = ${JSON.stringify(i18n)};${theme ? ` window.THEME = ${read(theme)};` : ''}</script>\n<script>\n${read('engine.js')}\n</script>`;
+}
+
 // Inlines local scripts and stylesheets so jsdom runs the page without a server.
 function pageHtml(page = 'index.html') {
-  return fs.readFileSync(path.join(ROOT, page), 'utf8')
-    .replace(/<script src="([^"?]+)(\?[^"]*)?"><\/script>/g, (_, src) => `<script>\n${fs.readFileSync(path.join(ROOT, src), 'utf8')}\n</script>`)
-    .replace(/<link rel="stylesheet" href="([^"?]+)(\?[^"]*)?">/g, (_, href) => `<style>\n${fs.readFileSync(path.join(ROOT, href), 'utf8')}\n</style>`);
+  return read(page)
+    .replace(/<script src="loader\.js[^"]*"([^>]*)><\/script>/, (_, attrs) => inlineLoader(attrs))
+    .replace(/<script src="([^"?]+)(\?[^"]*)?"><\/script>/g, (_, src) => `<script>\n${read(src)}\n</script>`)
+    .replace(/<link rel="stylesheet" href="([^"?]+)(\?[^"]*)?">/g, (_, href) => `<style>\n${read(href)}\n</style>`);
 }
 
 // Same sequence on every run, so the snapshot test sees the same lesson texts.
