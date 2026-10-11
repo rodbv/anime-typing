@@ -322,7 +322,7 @@ const isLetter = c => /\p{L}/u.test(c);
 const T = {
   pt: {
     subtitle: "Treino de digitação com anime", keyboard: "Teclado", language: "Idioma", theme: "Tema", mix: "Mistura",
-    tabLessons: "Lições", tabFree: "Corrida livre", tabQuotes: "Frases", tabCollection: "Coleção", tabStats: "Progresso",
+    tabLessons: "Lições", tabFree: "Corrida livre", tabQuotes: "Frases", tabCollection: "Conquistas", tabStats: "Progresso",
     lessonTip: "Deixe os dedos na linha base: F e J têm um relevo para você achar sem olhar. Olhe para a tela, não para as mãos.",
     lesson: "Lição", passRule: "Para passar: 90% de precisão e 10 PPM",
     preview: "Prévia", lockedTip: "Bloqueada: clique para ver uma prévia. A prévia não conta para o progresso.",
@@ -1895,7 +1895,7 @@ function cardHtml(c) {
       <div><b>${esc(stg.lbl)}: ${esc(stg.place)}</b></div>
       <div class="kmbar"><i style="width:${(c.km / TOTAL_KM * 100).toFixed(1)}%"></i></div>
       <div class="sub">${esc(fmtKm(c.km))} de ${esc(fmtKm(TOTAL_KM))}</div>
-      <div class="big">${statBox(`${c.lc}/${LESSON_DEFS.length}`, "lições")}${statBox(c.act ? `ACT${c.act}` : "-", "Tusk")}${statBox(`${c.col}/${ACHIEVEMENTS.length}`, "coleção")}${statBox(c.pts, "pontos nas corridas")}</div>
+      <div class="big">${statBox(`${c.lc}/${LESSON_DEFS.length}`, "lições")}${statBox(c.act ? `ACT${c.act}` : "-", "Tusk")}${statBox(`${c.col}/${ACHIEVEMENTS.length}`, "conquistas")}${statBox(c.pts, "pontos nas corridas")}</div>
     </div>`;
 }
 function showCard(param) {

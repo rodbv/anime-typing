@@ -28,7 +28,7 @@ Fonte das etapas: [JoJo Wiki, Steel Ball Run (Race)](https://jojowiki.com/Steel_
   | Poder | maior sequência de letras sem erro |
   | Potencial | etapas que faltam |
 
-- **Coleção:** as partes do Cadáver Santo, uma por etapa concluída, mais itens por metas de precisão, ritmo e hábito.
+- **Conquistas:** as partes do Cadáver Santo, uma por etapa concluída, mais itens por metas de precisão, ritmo e hábito.
 
 ## Ordem das teclas
 
@@ -137,7 +137,7 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 - Diego: Eu vim de outro mundo para terminar esta corrida.
 - Se ele vencer: Trinity Church! Desta vez o Johnny cruza a chegada.
 
-## Coleção
+## Conquistas
 
 | Item | Meta |
 |---|---|
@@ -151,7 +151,7 @@ Esta ordem já inclui as mudanças do lote 2: W e Y vão para o fim, o C vem ant
 
 ## Decisões
 
-1. **Só Steel Ball Run:** a tela inicial, as lições, a corrida livre, as frases e a coleção usam só Steel Ball Run. O seletor de anime e o de idioma saem. A versão com vários animes fica no branch `v1-multi-anime`.
+1. **Só Steel Ball Run:** a tela inicial, as lições, a corrida livre, as frases e as conquistas usam só Steel Ball Run. O seletor de anime e o de idioma saem. A versão com vários animes fica no branch `v1-multi-anime`.
 2. **Personagem:** ele joga como o Johnny. Na primeira vez, escreve o nome dele na inscrição da corrida. O número de corredor é o 939, o mesmo do Johnny, e a égua é a Slow Dancer. O nome aparece na tela inicial e na classificação.
 3. **Fantasma ajustado:** o rival corre 10% acima da média das 3 últimas rodadas dele com 90% ou mais de precisão (20% acima nas duas últimas corridas). Cada rival tem um piso, de 6 PPM (Sandman) a 14 PPM (Diego de outro mundo).
 4. **Três trechos por lição:** aquecimento (drill de âncora, da tecla base até a nova), palavras (palavras reais com a tecla nova) e mistura. Cada trecho tem cerca de 50 caracteres. Entre os trechos aparece um aviso rápido com os quilômetros, sem parar a digitação.
