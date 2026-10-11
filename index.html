@@ -1,0 +1,1788 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type Dojo</title>
+<style>
+:root{
+  --bg:#100e17;--panel:#1b1826;--panel2:#262236;--line:#36304a;--text:#efeaf7;--muted:#958eaa;
+  --accent:#4dd0e1;--accent2:#ffd54f;--ok:#7bd88f;--err:#ff5c6c;--fix:#ffb38a;
+  --f0:#f48fb1;--f1:#ffcc80;--f2:#a5d6a7;--f3:#90caf9;--f8:#b0bec5;
+}
+[data-series=jojo]{--accent:#c39bff;--accent2:#ffd54f;--bg:#120d1c}
+[data-series=eva]{--accent:#9be15d;--accent2:#b06ce0;--bg:#110c19}
+[data-series=aot]{--accent:#e2a76f;--accent2:#6fbf73;--bg:#14110e}
+[data-series=soul]{--accent:#ff5c5c;--accent2:#ffe066;--bg:#0e0d10}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:radial-gradient(1200px 600px at 85% -10%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 60%),var(--bg);
+  background-color:var(--bg);color:var(--text);min-height:100vh;
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.deco{position:fixed;right:-2vw;bottom:-3vw;font-size:20vw;font-weight:900;color:var(--accent);opacity:.06;pointer-events:none;white-space:nowrap;line-height:1;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.logo{font-weight:900;font-size:28px;letter-spacing:.04em;line-height:1.1}
+.logo span{color:var(--accent)}
+.sub{color:var(--muted);font-size:14px}
+.controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.ctl{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{all:unset;cursor:pointer;padding:4px 12px;border-radius:999px;font-size:13px;color:var(--muted);font-weight:600}
+.seg button.on{background:var(--accent);color:#111}
+.seg button:focus-visible,.btn:focus-visible,.lesson:focus-visible,nav.tabs button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+nav.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
+nav.tabs button{all:unset;cursor:pointer;padding:10px 16px;color:var(--muted);font-weight:700;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs button.on{color:var(--text);border-color:var(--accent)}
+.view[hidden],[hidden]{display:none!important}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tip{color:var(--muted);margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.lesson{all:unset;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-height:92px;transition:transform .1s}
+.lesson:hover{transform:translateY(-2px);border-color:var(--accent)}
+.lesson.next{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 18px color-mix(in srgb,var(--accent) 30%,transparent)}
+.lesson.locked{opacity:.5}
+.lesson .n{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.lesson .keys{display:flex;gap:4px;flex-wrap:wrap}
+.lesson .title{font-weight:700}
+.cap{display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 6px;border-radius:6px;background:var(--panel2);border-bottom:2px solid var(--line);font-weight:800;font-family:ui-monospace,monospace}
+.stars{color:var(--accent2);letter-spacing:2px;font-size:15px}
+.stars .off{color:var(--line)}
+.btn{all:unset;cursor:pointer;padding:10px 18px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-weight:700;text-align:center}
+.btn.primary{background:var(--accent);color:#111;border-color:transparent}
+.btn.small{padding:6px 12px;font-size:13px}
+.intro{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.type-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+#type-label{font-weight:800;font-size:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 12px;font-size:13px;color:var(--muted)}
+.chip b{color:var(--text);font-size:18px;margin-right:4px;font-variant-numeric:tabular-nums}
+.banner{background:color-mix(in srgb,var(--accent2) 15%,var(--panel));border:1px solid var(--accent2);border-radius:10px;padding:8px 12px;margin-bottom:10px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.caps{color:var(--err);font-weight:700;text-align:center;margin-bottom:8px}
+.textbox{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px;height:calc(3 * 1.7em + 36px);overflow:hidden;font:26px/1.7 "JetBrains Mono","Fira Code","DejaVu Sans Mono",ui-monospace,monospace;cursor:text}
+#text-inner{position:relative;transition:transform .15s}
+#sink{position:absolute;top:0;left:0;width:1px;height:1px;opacity:0;border:0;padding:0;resize:none;overflow:hidden}
+.w{white-space:nowrap}
+.c{color:var(--muted);border-radius:3px}
+.c.sp{white-space:pre}
+.c.ok{color:var(--text)}
+.c.fixed{color:var(--fix)}
+.c.cur{background:color-mix(in srgb,var(--accent) 30%,transparent);box-shadow:inset 0 -3px 0 var(--accent);color:var(--text)}
+.c.bad{background:color-mix(in srgb,var(--err) 60%,transparent);color:#fff}
+.focus-overlay{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--panel) 80%,transparent);font:700 18px system-ui,sans-serif;color:var(--text)}
+.attrib{color:var(--muted);text-align:right;margin-top:6px;font-style:italic;min-height:1.5em}
+.hint{text-align:center;color:var(--muted);margin:8px 0;min-height:24px}
+.hint b{color:var(--text)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 8px;vertical-align:middle}
+.kb{display:flex;flex-direction:column;gap:5px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;user-select:none}
+.row{display:flex;gap:5px}
+.key{--fc:#4a4560;flex:var(--w) 1 0;min-width:0;height:44px;border-radius:7px;background:color-mix(in srgb,var(--fc) 16%,var(--panel2));border-bottom:3px solid color-mix(in srgb,var(--fc) 45%,var(--panel2));display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 15px/1.05 ui-monospace,monospace;color:var(--text);position:relative;transition:background .08s,transform .08s}
+.key.mod{font:600 11px system-ui,sans-serif;color:var(--muted)}
+.key .sh{font-size:10px;color:var(--muted)}
+.key.bump::after{content:"";position:absolute;bottom:7px;width:12px;height:2px;background:currentColor;opacity:.7;border-radius:2px}
+.key.next{background:var(--fc);color:#111;box-shadow:0 0 0 2px var(--accent),0 0 16px var(--accent);transform:translateY(-1px)}
+.key.next .sh{color:#333}
+.key.next2{box-shadow:0 0 0 2px var(--accent2);background:color-mix(in srgb,var(--fc) 55%,var(--panel2))}
+.key.next2::before{content:"2";position:absolute;top:2px;right:4px;font-size:9px;color:var(--accent2)}
+.key.press{transform:translateY(2px);filter:brightness(1.4)}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 14px;color:var(--muted);font-size:13px;margin-top:8px}
+.type-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.results h2.rt{font-size:26px;text-transform:none;letter-spacing:0;color:var(--text);margin:0 0 12px}
+.big{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.stat{background:var(--panel2);border-radius:12px;padding:12px;text-align:center}
+.stat b{display:block;font-size:34px;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{color:var(--muted);font-size:13px}
+.menacing{display:inline-block;color:var(--accent2);font-weight:900;animation:pulse .7s ease-in-out infinite alternate}
+@keyframes pulse{from{transform:scale(1) rotate(-2deg)}to{transform:scale(1.08) rotate(2deg)}}
+.unlock{display:flex;gap:12px;align-items:center;background:color-mix(in srgb,var(--accent2) 14%,var(--panel2));border:1px solid var(--accent2);border-radius:12px;padding:10px 14px;margin:8px 0}
+.unlock .ic{font-size:34px}
+.kchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+h2{font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px}
+.statgrid .card b{font-size:28px;display:block}
+.bar{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted);font-weight:600}
+.toggle{display:flex;align-items:center;gap:8px;margin:8px 0;cursor:pointer}
+.stack{display:flex;flex-direction:column;gap:12px}
+.coll-series{margin-bottom:18px}
+.coll{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center}
+.item .ic{font-size:36px;line-height:1}
+.item.locked .ic{filter:grayscale(1) brightness(.5)}
+.item.locked .nm{color:var(--muted)}
+.item.got{border-color:var(--accent2)}
+.item .nm{font-weight:800}
+.item .ds{font-size:13px;color:var(--muted)}
+footer{color:var(--muted);font-size:12px;text-align:center;margin:24px 0 8px}
+.hands{display:block;width:100%;height:auto;max-width:760px;margin:6px auto}
+.hero h1{margin:0 0 6px;font-size:30px;line-height:1.2}
+.tips{margin:12px 0 0;padding-left:20px}
+.tips li{margin:4px 0}
+.tipline{background:var(--panel2);border-radius:10px;padding:8px 12px}
+body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
+.meters{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.meter{position:relative;height:8px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .15s}
+.meter.acc i{background:var(--ok)}
+.meter.acc.low i{background:var(--err)}
+.meter .goal{position:absolute;top:0;bottom:0;width:2px;background:var(--text)}
+.meter-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.kb.insist .key.next{animation:insist .45s ease-in-out infinite alternate}
+@keyframes insist{from{transform:scale(1)}to{transform:scale(1.18)}}
+.hint.insist{color:var(--accent2);font-size:20px;font-weight:800}
+.menu{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+@media (max-width:640px){
+  .big{grid-template-columns:repeat(2,1fr)}
+  .textbox{font-size:20px}
+  .key{height:34px;font-size:12px}
+  .key .sh{display:none}
+}
+</style>
+</head>
+<body>
+<div class="deco" id="deco"></div>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="logo">TYPE <span>DOJO</span></div>
+      <div class="sub" data-i18n="subtitle"></div>
+    </div>
+    <div class="controls">
+      <div class="ctl"><span data-i18n="keyboard"></span>
+        <div class="seg" data-set="layout"><button data-val="intl">US Intl</button><button data-val="us">US</button><button data-val="abnt">ABNT2</button></div>
+      </div>
+      <div class="ctl"><span data-i18n="language"></span>
+        <div class="seg" data-set="lang"><button data-val="pt">PT</button><button data-val="en">EN</button></div>
+      </div>
+      <div class="ctl"><span data-i18n="theme"></span>
+        <div class="seg" data-set="series">
+          <button data-val="mix" data-i18n="mix"></button><button data-val="jojo">JoJo</button><button data-val="eva">Eva</button><button data-val="aot">AoT</button><button data-val="soul">Soul Eater</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-view="home" data-i18n="tabHome"></button>
+    <button data-view="lessons" data-i18n="tabLessons"></button>
+    <button data-view="free" data-i18n="tabFree"></button>
+    <button data-view="quotes" data-i18n="tabQuotes"></button>
+    <button data-view="collection" data-i18n="tabCollection"></button>
+    <button data-view="stats" data-i18n="tabStats"></button>
+  </nav>
+
+  <section class="view" id="v-setup"><div class="stack" id="setup"></div></section>
+  <section class="view" id="v-home"><div class="stack" id="home"></div></section>
+
+  <section class="view" id="v-lessons">
+    <p class="tip" data-i18n="lessonTip"></p>
+    <div class="grid" id="lesson-grid"></div>
+  </section>
+
+  <section class="view" id="v-free">
+    <div class="card intro">
+      <p style="margin:0" data-i18n="freeIntro"></p>
+      <p class="sub" style="margin:0" id="free-note"></p>
+      <div class="seg" data-set="time"><button data-val="30">30 s</button><button data-val="60">60 s</button><button data-val="120">120 s</button></div>
+      <button class="btn primary" id="btn-free" data-i18n="start"></button>
+    </div>
+  </section>
+
+  <section class="view" id="v-quotes">
+    <div class="card intro">
+      <p style="margin:0" data-i18n="quoteIntro"></p>
+      <p class="sub" style="margin:0" id="quote-note"></p>
+      <button class="btn primary" id="btn-quote"></button>
+    </div>
+  </section>
+
+  <section class="view" id="v-collection">
+    <p class="tip" id="coll-summary"></p>
+    <div id="collection"></div>
+  </section>
+
+  <section class="view" id="v-stats">
+    <div id="stats"></div>
+  </section>
+
+  <section class="view" id="v-type">
+    <div class="type-top">
+      <div id="type-label"></div>
+      <div class="chips">
+        <span class="chip" id="chip-wpm"><b id="s-wpm">0</b><span data-i18n="wpm"></span></span>
+        <span class="chip" id="chip-acc"><b id="s-acc">100</b>%</span>
+        <span class="chip" id="chip-time"><b id="s-time">0</b>s</span>
+      </div>
+    </div>
+    <div class="meters" id="meters">
+      <div class="meter-label"><span data-i18n="progressLabel"></span><span id="m-prog-txt"></span></div>
+      <div class="meter"><i id="m-prog"></i></div>
+      <div id="m-acc-wrap">
+        <div class="meter-label"><span data-i18n="accuracy"></span><span id="m-acc-txt"></span></div>
+        <div class="meter acc" id="m-acc-bar"><i id="m-acc"></i><span class="goal" style="left:80%"></span></div>
+      </div>
+    </div>
+    <div class="banner" id="banner" hidden><span id="banner-msg"></span>
+      <span><button class="btn small primary" id="banner-yes" data-i18n="switch"></button> <button class="btn small" id="banner-no">OK</button></span>
+    </div>
+    <div class="caps" id="caps" hidden data-i18n="capsOn"></div>
+    <div class="card results" id="intro" hidden></div>
+    <div class="card menu" id="menu" hidden></div>
+    <div id="typing-area">
+      <div class="textbox" id="textbox">
+        <textarea id="sink" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="typing input"></textarea>
+        <div id="text-inner"></div>
+        <div class="focus-overlay" id="focus-overlay" hidden data-i18n="clickToType"></div>
+      </div>
+      <div class="attrib" id="attrib"></div>
+      <div class="hint" id="hint"></div>
+      <div id="kb-wrap">
+        <div class="kb" id="kb"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+    <div class="card results" id="results" hidden></div>
+    <div class="type-actions" id="type-actions">
+      <button class="btn" id="btn-tip" data-i18n="showTip"></button>
+      <button class="btn" id="btn-pause" data-i18n="pauseBtn"></button>
+    </div>
+  </section>
+
+  <footer data-i18n="footer"></footer>
+</div>
+
+<script>
+"use strict";
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rnd = n => Math.floor(Math.random() * n);
+const pick = a => a[rnd(a.length)];
+const cap = w => w.charAt(0).toUpperCase() + w.slice(1);
+const uniq = a => [...new Set(a)];
+const isLetter = c => /\p{L}/u.test(c);
+
+/* ---------- i18n ---------- */
+const T = {
+  pt: {
+    subtitle: "Treino de digitação com anime", keyboard: "Teclado", language: "Idioma", theme: "Tema", mix: "Mistura",
+    tabLessons: "Lições", tabFree: "Corrida livre", tabQuotes: "Frases", tabCollection: "Coleção", tabStats: "Progresso",
+    lessonTip: "Deixe os dedos na linha base: F e J têm um relevo para você achar sem olhar. Olhe para a tela, não para as mãos.",
+    lesson: "Lição", passRule: "Para passar: 90% de precisão e 10 PPM",
+    preview: "Prévia", lockedTip: "Bloqueada: clique para ver uma prévia. A prévia não conta para o progresso.",
+    previewDone: "Fim da prévia. Esta rodada não conta para o progresso.",
+    rv_home: "Revisão: linha base", rv_mid: "Revisão: linha de cima, N e M", rv_all: "Revisão: todas as letras",
+    shiftLesson: "Maiúsculas com Shift", accLesson: "Acentos: ´ ~ ^ ` e Ç", quotesLesson: "Frases com pontuação",
+    freeIntro: "Digite palavras do tema contra o relógio.",
+    quoteIntro: "Digite falas famosas das séries. Maiúsculas e pontuação contam.",
+    start: "Começar (Enter)", wpm: "PPM", errors: "erros", restart: "Recomeçar", back: "Voltar",
+    capsOn: "Caps Lock está ligado", clickToType: "Clique aqui para digitar",
+    next: "Próxima", then: "depois", space: "Espaço",
+    fingers: ["mindinho esquerdo","anelar esquerdo","médio esquerdo","indicador esquerdo","indicador direito","médio direito","anelar direito","mindinho direito","polegar"],
+    legend: ["Mindinho","Anelar","Médio","Indicador","Polegar"],
+    cleared: "Lição concluída!", failed: "Quase! Você precisa de 90% de precisão e 10 PPM.",
+    timeUp: "Tempo!", quoteDone: "Frase completa!", newRecord: "NOVO RECORDE!",
+    missed: "Teclas que você errou", noMiss: "Nenhum erro!",
+    again: "De novo", nextLesson: "Próxima lição", nextQuote: "Próxima frase", enterHint: "(Enter)",
+    accuracy: "Precisão", time: "Tempo",
+    rank: "Patente", nextRank: "Próxima: {r} com {n} PPM",
+    unlocked: "DESBLOQUEADO!",
+    layoutHintAbnt: "Seu teclado parece ABNT2 (tem Ç).", layoutHintIntl: "Seu teclado parece US Internacional, com teclas mortas.", switch: "Trocar",
+    bestFree: "Melhor corrida livre", bestQuote: "Melhor frase", lessonsCleared: "Lições concluídas", starsTotal: "Estrelas",
+    history: "Últimas rodadas", weak: "Teclas mais difíceis", heat: "Mapa de erros (vermelho = mais erros)",
+    trend: "Evolução de PPM", noData: "Faça algumas rodadas para ver os dados.",
+    settings: "Ajustes", showKb: "Mostrar o teclado enquanto digita", accents: "Usar acentos nas frases e na corrida livre",
+    unlockAll: "Desbloquear todas as lições", reset: "Apagar progresso", resetConfirm: "Clique de novo para apagar tudo",
+    modes: {lesson: "Lição", free: "Corrida livre", quote: "Frase"}, date: "Data", mode: "Modo",
+    collSummary: "{n} de {t} desbloqueados. Bata as metas para despertar Stands, Evas, Titãs e armas.",
+    seriesTitles: {jojo: "Stands (JoJo)", eva: "Evas (Evangelion)", aot: "Titãs (Attack on Titan)", soul: "Armas (Soul Eater)"},
+    tabHome: "Início",
+    homeTitle: "Aprenda a digitar sem olhar",
+    homeSub: "Lições curtas com palavras de JoJo, Evangelion, Attack on Titan e Soul Eater. Bata as metas para desbloquear Stands, Evas, Titãs e armas.",
+    homeStart: "Começar a primeira lição", homeContinue: "Continuar: lição {n}",
+    homeHandsTitle: "Onde ficam os dedos",
+    homeTips: ["Os indicadores descansam no F e no J. Passe o dedo e sinta o relevo dessas teclas.", "Cada dedo cuida das teclas da sua cor.", "Os polegares ficam no Espaço.", "Depois de cada tecla, o dedo volta para a posição base.", "Olhe para a tela, não para as mãos.", "Costas retas, pés no chão, pulsos soltos.", "Primeiro acerte. A velocidade vem com o treino."],
+    modeLessons: "Aprenda tecla por tecla, com dicas de dedo.", modeFree: "Palavras do tema contra o relógio.", modeQuotes: "Falas famosas das séries.", modeCollection: "Stands, Evas, Titãs e armas para desbloquear.",
+    newKeys: "Teclas novas", gotIt: "Entendi, começar (Enter)", showTip: "Ver dica",
+    homeKeyLine: "{k}: {f}. Esta tecla é da posição base.",
+    reachLine: "{k}: {f}. O dedo sai do {h}, aperta o {k} e volta para o {h}.",
+    in_fj_t: "Posição base",
+    in_fj: ["Os indicadores descansam no F e no J. Essas teclas têm um relevo para você achar sem olhar.", "Os outros dedos ficam ao lado: A S D na mão esquerda, K L {p} na direita.", "Os polegares ficam no Espaço.", "Depois de cada tecla, o dedo volta para a posição base."],
+    in_a_t: "Linha base completa",
+    in_a: ["Mão esquerda: mindinho no A, anelar no S, médio no D, indicador no F.", "Mão direita: indicador no J, médio no K, anelar no L, mindinho no {p}.", "Cada dedo cuida das teclas da sua cor no teclado da tela."],
+    in_r1: ["Agora você conhece a linha base inteira.", "Tente não olhar nem para o teclado da tela. Você pode escondê-lo em Progresso, Ajustes."],
+    in_shift: ["Para fazer uma maiúscula, segure o Shift com o mindinho da outra mão.", "Letra da mão esquerda (como D): Shift direito. Letra da mão direita (como J): Shift esquerdo.", "Solte o Shift logo depois da letra."],
+    in_acc_intl: ["No US Internacional, o acento é uma tecla morta: nada aparece até você apertar a letra.", "' e depois A faz á. ~ e depois A faz ã. Shift+6 (^) e depois E faz ê.", "Para o Ç, segure AltGr e aperte a vírgula.", "Para escrever só o apóstrofo, aperte ' e depois Espaço."],
+    in_acc_abnt: ["No ABNT2, o acento é uma tecla morta: nada aparece até você apertar a letra.", "´ e depois A faz á. ~ e depois A faz ã.", "Shift + ~ faz ^ (para ê). Shift + ´ faz ` (para à).", "O Ç tem tecla própria, no mindinho direito."],
+    in_q: ["Vírgula e ponto ficam na linha de baixo, na mão direita.", "! e ? precisam do Shift.", "A maiúscula no começo da frase também usa o Shift."],
+    in_q_intl: ["Vírgula e ponto ficam na linha de baixo, na mão direita.", "! e ? precisam do Shift.", "A maiúscula no começo da frase também usa o Shift.", "Aspas e apóstrofo são teclas mortas: depois delas, aperte Espaço."],
+    in_x_gh: "G e H ficam no meio. Os indicadores esticam para o lado.",
+    in_x_ei: "Mova só o dedo. A mão fica parada.",
+    in_x_nm: "Na linha de baixo, o dedo desce e volta.",
+    in_x_qp: "Os mindinhos são os dedos mais fracos. Vá devagar.",
+    tipSlow: "Vá mais devagar. Primeiro acerte, depois acelere.",
+    tipRhythm: "Ótima precisão! Agora tente manter um ritmo constante, sem pausas.",
+    tipKey: "Você errou mais o {k}. Essa tecla é do {f}.",
+    setupTitle: "Bem-vindo ao Type Dojo!",
+    setupIntro: "Antes de começar, vamos descobrir o seu teclado e escolher o seu anime.",
+    setupStep1: "Aperte a tecla que fica logo à direita do L. No ABNT2 ela é o Ç, no US ela é o ;.",
+    setupStep2: "Agora aperte a tecla de aspas simples ', que fica logo à direita da tecla anterior.",
+    setupWrong1: "Essa não é a tecla. Procure a que fica logo à direita do L.",
+    setupWrong2: "Essa não é a tecla. Procure a de aspas simples ', à direita do ;.",
+    setupDetected: "Teclado: {name}.", setupManual: "Ou escolha você mesmo:",
+    setupLang: "Idioma das lições", setupTheme: "Anime favorito", setupGo: "Começar (Enter)",
+    setupNeedLayout: "Primeiro aperte as teclas acima ou escolha o teclado.",
+    layoutNames: {intl: "US Internacional (com teclas mortas)", us: "US (sem teclas mortas)", abnt: "ABNT2"},
+    redoSetup: "Configurar teclado de novo",
+    layoutHintUs: "Seu teclado parece US sem teclas mortas.",
+    in_acc_us: ["O teclado US sem teclas mortas não faz acentos.", "Nesta lição as palavras aparecem sem acento. Para treinar acentos, use o layout US Intl ou ABNT2."],
+    pauseBtn: "Pausar (Esc)", paused: "Pausado", resume: "Continuar (Enter)", exit: "Sair",
+    pausedOverlay: "Pausado. Clique aqui e aperte uma tecla para continuar.",
+    progressLabel: "Progresso", backToTyping: "Voltar a digitar (Enter)",
+    freeLimited: "Por enquanto, a corrida livre usa só as teclas que você já sabe: {k}. Todas as letras liberam depois da lição {n}.",
+    quotesLocked: "As frases liberam depois da lição {n} (Maiúsculas com Shift). Até lá, você pode ver uma prévia.",
+    previewBtn: "Ver prévia (Enter)",
+    footer: "O progresso fica salvo neste navegador."
+  },
+  en: {
+    subtitle: "Touch typing training, anime style", keyboard: "Keyboard", language: "Language", theme: "Theme", mix: "Mix",
+    tabLessons: "Lessons", tabFree: "Free run", tabQuotes: "Quotes", tabCollection: "Collection", tabStats: "Progress",
+    lessonTip: "Keep your fingers on the home row: F and J have a bump so you can find them without looking. Look at the screen, not at your hands.",
+    lesson: "Lesson", passRule: "To pass: 90% accuracy and 10 WPM",
+    preview: "Preview", lockedTip: "Locked: click to preview it. A preview does not count toward progress.",
+    previewDone: "Preview finished. This run does not count toward progress.",
+    rv_home: "Review: home row", rv_mid: "Review: top row, N and M", rv_all: "Review: all letters",
+    shiftLesson: "Capitals with Shift", accLesson: "Accents: ´ ~ ^ ` and Ç", quotesLesson: "Quotes with punctuation",
+    freeIntro: "Type themed words against the clock.",
+    quoteIntro: "Type famous lines from the series. Capitals and punctuation count.",
+    start: "Start (Enter)", wpm: "WPM", errors: "errors", restart: "Restart", back: "Back",
+    capsOn: "Caps Lock is on", clickToType: "Click here to type",
+    next: "Next", then: "then", space: "Space",
+    fingers: ["left pinky","left ring","left middle","left index","right index","right middle","right ring","right pinky","thumb"],
+    legend: ["Pinky","Ring","Middle","Index","Thumb"],
+    cleared: "Lesson cleared!", failed: "Almost! You need 90% accuracy and 10 WPM.",
+    timeUp: "Time!", quoteDone: "Quote complete!", newRecord: "NEW RECORD!",
+    missed: "Keys you missed", noMiss: "No mistakes!",
+    again: "Again", nextLesson: "Next lesson", nextQuote: "Next quote", enterHint: "(Enter)",
+    accuracy: "Accuracy", time: "Time",
+    rank: "Rank", nextRank: "Next: {r} at {n} WPM",
+    unlocked: "UNLOCKED!",
+    layoutHintAbnt: "Your keyboard looks like ABNT2 (it has Ç).", layoutHintIntl: "Your keyboard looks like US International, with dead keys.", switch: "Switch",
+    bestFree: "Best free run", bestQuote: "Best quote", lessonsCleared: "Lessons cleared", starsTotal: "Stars",
+    history: "Recent runs", weak: "Hardest keys", heat: "Error map (red = more mistakes)",
+    trend: "WPM trend", noData: "Finish a few runs to see data.",
+    settings: "Settings", showKb: "Show the keyboard while typing", accents: "Use accents in quotes and free run",
+    unlockAll: "Unlock all lessons", reset: "Reset progress", resetConfirm: "Click again to erase everything",
+    modes: {lesson: "Lesson", free: "Free run", quote: "Quote"}, date: "Date", mode: "Mode",
+    collSummary: "{n} of {t} unlocked. Reach the goals to awaken Stands, Evas, Titans and weapons.",
+    seriesTitles: {jojo: "Stands (JoJo)", eva: "Evas (Evangelion)", aot: "Titans (Attack on Titan)", soul: "Weapons (Soul Eater)"},
+    tabHome: "Home",
+    homeTitle: "Learn to type without looking",
+    homeSub: "Short lessons with words from JoJo, Evangelion, Attack on Titan and Soul Eater. Reach the goals to unlock Stands, Evas, Titans and weapons.",
+    homeStart: "Start the first lesson", homeContinue: "Continue: lesson {n}",
+    homeHandsTitle: "Where your fingers go",
+    homeTips: ["Your index fingers rest on F and J. Feel the bump on those keys.", "Each finger owns the keys of its color.", "Your thumbs rest on Space.", "After each key, the finger goes back to the home row.", "Look at the screen, not at your hands.", "Sit up straight, feet on the floor, relaxed wrists.", "Accuracy first. Speed comes with practice."],
+    modeLessons: "Learn key by key, with finger hints.", modeFree: "Themed words against the clock.", modeQuotes: "Famous lines from the series.", modeCollection: "Stands, Evas, Titans and weapons to unlock.",
+    newKeys: "New keys", gotIt: "Got it, start (Enter)", showTip: "Show tip",
+    homeKeyLine: "{k}: {f}. This key is on the home row.",
+    reachLine: "{k}: {f}. The finger leaves {h}, presses {k} and returns to {h}.",
+    in_fj_t: "Home position",
+    in_fj: ["Your index fingers rest on F and J. Those keys have a bump so you can find them without looking.", "The other fingers sit next to them: A S D on the left hand, K L {p} on the right.", "Your thumbs rest on Space.", "After each key, the finger goes back to the home row."],
+    in_a_t: "The full home row",
+    in_a: ["Left hand: pinky on A, ring on S, middle on D, index on F.", "Right hand: index on J, middle on K, ring on L, pinky on {p}.", "Each finger owns the keys of its color on the screen keyboard."],
+    in_r1: ["You now know the whole home row.", "Try not to look at the screen keyboard either. You can hide it in Progress, Settings."],
+    in_shift: ["To type a capital letter, hold Shift with the pinky of the other hand.", "Left-hand letter (like D): right Shift. Right-hand letter (like J): left Shift.", "Release Shift right after the letter."],
+    in_acc_intl: ["On US International, the accent is a dead key: nothing appears until you press the letter.", "' then A makes á. ~ then A makes ã. Shift+6 (^) then E makes ê.", "For Ç, hold AltGr and press the comma.", "To type only the apostrophe, press ' then Space."],
+    in_acc_abnt: ["On ABNT2, the accent is a dead key: nothing appears until you press the letter.", "´ then A makes á. ~ then A makes ã.", "Shift + ~ makes ^ (for ê). Shift + ´ makes ` (for à).", "Ç has its own key, under the right pinky."],
+    in_q: ["Comma and period sit on the bottom row, right hand.", "! and ? need Shift.", "The capital at the start of a sentence also uses Shift."],
+    in_q_intl: ["Comma and period sit on the bottom row, right hand.", "! and ? need Shift.", "The capital at the start of a sentence also uses Shift.", "Quotes and apostrophe are dead keys: press Space after them."],
+    in_x_gh: "G and H sit in the middle. The index fingers stretch sideways.",
+    in_x_ei: "Move only the finger. Keep the hand still.",
+    in_x_nm: "On the bottom row, the finger moves down and comes back.",
+    in_x_qp: "The pinkies are the weakest fingers. Go slowly.",
+    tipSlow: "Slow down. Hit the right key first, then go faster.",
+    tipRhythm: "Great accuracy! Now try to keep a steady rhythm, without pauses.",
+    tipKey: "You missed {k} the most. That key belongs to the {f}.",
+    setupTitle: "Welcome to Type Dojo!",
+    setupIntro: "Before you start, let's find out your keyboard and pick your anime.",
+    setupStep1: "Press the key right after L. On ABNT2 it is Ç, on US it is ;.",
+    setupStep2: "Now press the single quote key ', right after the previous key.",
+    setupWrong1: "That is not the key. Look for the one right after L.",
+    setupWrong2: "That is not the key. Look for the single quote ', right after ;.",
+    setupDetected: "Keyboard: {name}.", setupManual: "Or choose it yourself:",
+    setupLang: "Lesson language", setupTheme: "Favorite anime", setupGo: "Start (Enter)",
+    setupNeedLayout: "First press the keys above or choose your keyboard.",
+    layoutNames: {intl: "US International (with dead keys)", us: "US (no dead keys)", abnt: "ABNT2"},
+    redoSetup: "Set up the keyboard again",
+    layoutHintUs: "Your keyboard looks like US without dead keys.",
+    in_acc_us: ["The US keyboard without dead keys cannot type accents.", "In this lesson the words show up without accents. To practice accents, use the US Intl or ABNT2 layout."],
+    pauseBtn: "Pause (Esc)", paused: "Paused", resume: "Continue (Enter)", exit: "Exit",
+    pausedOverlay: "Paused. Click here and press a key to continue.",
+    progressLabel: "Progress", backToTyping: "Back to typing (Enter)",
+    freeLimited: "For now, the free run uses only the keys you already know: {k}. All letters unlock after lesson {n}.",
+    quotesLocked: "Quotes unlock after lesson {n} (Capitals with Shift). Until then, you can preview them.",
+    previewBtn: "Preview (Enter)",
+    footer: "Progress is saved in this browser."
+  }
+};
+const t = (k, vars) => {
+  let s = T[S.lang][k] ?? T.en[k] ?? k;
+  if (vars && typeof s === "string") for (const [a, b] of Object.entries(vars)) s = s.split("{" + a + "}").join(b);
+  return s;
+};
+
+/* ---------- content ---------- */
+const SERIES = {
+  jojo: {
+    label: "JoJo", deco: "ゴゴゴゴ",
+    names: "Jotaro Joseph Jonathan Josuke Giorno Jolyne Dio Diavolo Kakyoin Polnareff Avdol Iggy Speedwagon Bucciarati Mista Narancia Abbacchio Kira Rohan Okuyasu Koichi Caesar Kars Wamuu Esidisi Zeppeli",
+    terms: {
+      en: "stand ora muda hamon menacing pose vampire mask stone star platinum world bizarre adventure dream golden wind diamond crazy echoes zipper hermit purple killer queen",
+      pt: "stand ora muda hamon ameaça pose vampiro máscara pedra estrela platina mundo bizarro aventura sonho vento dourado diamante louco eco zíper eremita roxo assassino rainha"
+    },
+    quotes: {
+      en: [
+        ["Yare yare daze.", "Jotaro"],
+        ["Oh? You're approaching me?", "Dio"],
+        ["It was me, Dio!", "Dio"],
+        ["I, Giorno Giovanna, have a dream.", "Giorno"],
+        ["I reject my humanity, JoJo!", "Dio"],
+        ["Ora ora ora ora ora!", "Jotaro"],
+        ["Muda muda muda muda!", "Dio"],
+        ["The World! Stop time!", "Dio"],
+        ["Arrivederci.", "Bucciarati"],
+        ["Even Speedwagon is afraid!", "Speedwagon"],
+        ["The hymn of humanity is the hymn of courage.", "Zeppeli"]
+      ],
+      pt: [
+        ["Yare yare daze.", "Jotaro"],
+        ["Oh? Você está se aproximando de mim?", "Dio"],
+        ["Era eu, Dio!", "Dio"],
+        ["Eu, Giorno Giovanna, tenho um sonho.", "Giorno"],
+        ["Eu rejeito a minha humanidade, JoJo!", "Dio"],
+        ["Ora ora ora ora ora!", "Jotaro"],
+        ["Muda muda muda muda!", "Dio"],
+        ["The World! Pare o tempo!", "Dio"],
+        ["Arrivederci.", "Bucciarati"],
+        ["Até o Speedwagon está com medo!", "Speedwagon"],
+        ["O hino da humanidade é o hino da coragem.", "Zeppeli"]
+      ]
+    }
+  },
+  eva: {
+    label: "Evangelion", deco: "NERV",
+    names: "Shinji Asuka Rei Misato Gendo Kaworu Ritsuko Toji Kensuke Hikari Kaji Fuyutsuki Maya Shigeru Makoto PenPen Yui Sachiel Ramiel Zeruel Lilith Adam NERV SEELE MAGI Melchior Balthasar Casper",
+    terms: {
+      en: "angel pilot robot unit entry plug sync ratio field lance child father mother impact berserk geofront umbilical cable launch",
+      pt: "anjo piloto robô unidade cápsula sincronia taxa campo lança criança pai mãe impacto fúria geofront cabo umbilical lançar"
+    },
+    quotes: {
+      en: [
+        ["I mustn't run away. I mustn't run away. I mustn't run away.", "Shinji"],
+        ["Anta baka? Are you stupid?", "Asuka"],
+        ["I don't know what I should do at a time like this.", "Rei"],
+        ["Why don't you try smiling?", "Shinji"],
+        ["Pattern blue! It's an Angel!", "NERV"],
+        ["Thank you, Father. Goodbye, Mother. And to all the children, congratulations!", "Shinji"],
+        ["Congratulations!", "NERV"],
+        ["Evangelion Unit-01, launch!", "Misato"],
+        ["If you're going to do it, do it now. If not, leave!", "Gendo"],
+        ["Singing is good. Song is the greatest thing the culture of the Lilim has made.", "Kaworu"]
+      ],
+      pt: [
+        ["Eu não posso fugir. Eu não posso fugir. Eu não posso fugir.", "Shinji"],
+        ["Anta baka? Você é idiota?", "Asuka"],
+        ["Eu não sei o que fazer num momento como este.", "Rei"],
+        ["Por que você não tenta sorrir?", "Shinji"],
+        ["Padrão azul! É um Anjo!", "NERV"],
+        ["Obrigado, pai. Adeus, mãe. E a todas as crianças, parabéns!", "Shinji"],
+        ["Parabéns!", "NERV"],
+        ["Evangelion Unidade 01, lançar!", "Misato"],
+        ["Se vai fazer, faça agora. Se não, vá embora!", "Gendo"],
+        ["Cantar é bom. A música é a maior criação da cultura dos Lilim.", "Kaworu"]
+      ]
+    }
+  },
+  aot: {
+    label: "Attack on Titan", deco: "自由",
+    names: "Eren Mikasa Armin Levi Erwin Hange Jean Connie Sasha Historia Ymir Reiner Bertholdt Annie Zeke Falco Gabi Pieck Porco Kenny Ackerman Marley Paradis Eldia Shiganshina Trost Maria Rose Sina",
+    terms: {
+      en: "titan wall scout survey corps gear blade wings freedom fight sea island hunter cadet garrison colossal armored beast cart jaw hammer rumbling tatakae potato",
+      pt: "titã muralha tropa exploração equipamento lâmina asas liberdade lutar mar ilha caçador cadete guarnição colossal blindado bestial carroça mandíbula martelo estrondo tatakae batata"
+    },
+    quotes: {
+      en: [
+        ["If you win, you live. If you lose, you die. If you don't fight, you can't win!", "Eren"],
+        ["Dedicate your hearts!", "Erwin"],
+        ["I'll wipe them out. Every single one of them!", "Eren"],
+        ["Someone who can't sacrifice anything can never change anything.", "Armin"],
+        ["This world is cruel, but it is also very beautiful.", "Mikasa"],
+        ["Give up on your dreams and die.", "Levi"],
+        ["Tatakae! Tatakae!", "Eren"],
+        ["We are born free. All of us.", "Eren"],
+        ["The only thing we're allowed to do is believe that we won't regret the choice we made.", "Levi"]
+      ],
+      pt: [
+        ["Se você vencer, você vive. Se perder, você morre. Se não lutar, não pode vencer!", "Eren"],
+        ["Dediquem seus corações!", "Erwin"],
+        ["Eu vou exterminar todos eles. Cada um deles!", "Eren"],
+        ["Quem não consegue sacrificar nada nunca consegue mudar nada.", "Armin"],
+        ["Este mundo é cruel, mas também é muito bonito.", "Mikasa"],
+        ["Desista dos seus sonhos e morra.", "Levi"],
+        ["Tatakae! Tatakae!", "Eren"],
+        ["Nós nascemos livres. Todos nós.", "Eren"],
+        ["A única coisa que podemos fazer é acreditar que não vamos nos arrepender da escolha que fizemos.", "Levi"]
+      ]
+    }
+  },
+  soul: {
+    label: "Soul Eater", deco: "死武専",
+    names: "Maka Soul Kid Liz Patty Black Star Tsubaki Stein Spirit Medusa Crona Ragnarok Asura Excalibur Blair Justin Sid Marie Arachne Eibon Shinigami Shibusen",
+    terms: {
+      en: "soul scythe meister weapon witch death moon madness chop symmetry academy resonance wavelength kishin star sun",
+      pt: "alma foice meister arma bruxa morte lua loucura golpe simetria academia ressonância onda kishin estrela sol"
+    },
+    quotes: {
+      en: [
+        ["Maka Chop!", "Maka"],
+        ["Soul Resonance!", "Maka and Soul"],
+        ["Witch Hunter!", "Maka and Soul"],
+        ["Yahoo! I am the great Black Star, the man who will surpass God!", "Black Star"],
+        ["It's not symmetrical! I'm garbage!", "Death the Kid"],
+        ["Symmetry is beauty.", "Death the Kid"],
+        ["Hiya! Heya! Hey there! What's up?", "Lord Death"],
+        ["That's so uncool.", "Soul"],
+        ["Let's go, Soul!", "Maka"]
+      ],
+      pt: [
+        ["Maka Chop!", "Maka"],
+        ["Ressonância de almas!", "Maka e Soul"],
+        ["Caçador de Bruxas!", "Maka e Soul"],
+        ["Yahoo! Eu sou o grande Black Star, o homem que vai superar Deus!", "Black Star"],
+        ["Não é simétrico! Eu sou um lixo!", "Death the Kid"],
+        ["Simetria é beleza.", "Death the Kid"],
+        ["Oi! Olá! E aí, tudo bem?", "Shinigami-sama"],
+        ["Isso não é nada cool.", "Soul"],
+        ["Vamos, Soul!", "Maka"]
+      ]
+    }
+  }
+};
+
+const COMMON = {
+  en: "as ask all fall dad add lad sad salad flask glass half has had hall flash gas ash dash slash flag shall lass " +
+      "the and you that was for are with his they this have from one had word but not what all were when your can said there use each which she how their will other about out many then them these some her would make like him into time has look two more write see number way could people than first water been call who now find long down day did get come made may part over new sound take only little work know place year live back give most very after thing our just name good great where help through much before line right too mean old any same tell boy follow came want show also around form three small set put end does another well large must big even such because turn here why ask went men read need land different home move try kind hand picture again change off play spell air away animal house point page letter mother answer found study still learn should world high every near add food between own below country plant last school father keep tree never start city earth eye light thought head under story saw left few while along might close something seem next hard open example begin life always those both paper together got group often run important until children side feet car mile night walk white sea began grow took river four carry state once book hear stop without second later miss idea enough eat face watch far real almost let above girl sometimes mountain cut young talk soon list song being leave family",
+  pt: "asa sala fala falsa salsa já da das fada saga gala haja alfa lado jaula " +
+      "ala alas sal salada asas salas falas fadas sagas galas dada dadas alga algas laça faça rua ruas tia tio rio seu teu isso esse ideia terra gato sorte forte tudo todo tal fila filho olho ganha sombra caixa peixe deixa baixo lixo luxo eixo roxo bruxa taxa exato texto sexta fixo mexer puxar luz vez voz azul fazer zero dizer feliz paz zona rapaz cruz juiz zebra beleza certeza tristeza natureza dez doze treze vida bola bem boa vai voltar livro nuvem verde barco abrir bravo vento olhar casa cada coisa cedo cima cinco certo acima pouco faca fica boca que quem quando aqui porque pai por para pedra queijo quatro pequeno papel pato sapato jogo gelo hoje dado selo mala mola lago galho folha milho ilha chave chuva fruta jeito sujo nada nunca outro nova sete oito nove onze " +
+      "de que não uma para com por mais como mas foi ele das tem seu sua ser quando muito nos está eu também só pelo pela até isso ela entre era depois sem mesmo aos ter seus quem nas me esse eles estão você tinha foram essa num nem suas meu minha numa pelos elas havia seja qual será tenho lhe deles essas esses pelas este fosse dele tu te vocês meus minhas teu tua nosso nossa dela delas esta estes estas aquele aquela isto aquilo estou estamos estive esteve tive teve temos casa gato cachorro livro jogo tempo vida amigo herói espada coragem medo vencer lutar correr voar gigante muralha liberdade alma morte lua bruxa foice estrela robô piloto anjo sangue dia noite rosa hora sol mar céu terra rei rainha fogo água forte mundo poder sonho escola pai mãe irmão cidade rua carro porta janela mesa cadeira olho mão coração força chefe guerra paz grande pequeno novo velho bom mau feliz triste rápido lento"
+};
+
+const ACCENT_WORDS = "não mãe coração você também está já até herói robô céu água irmão titã lâmina máscara lança criança fúria exploração ressonância ameaça força avô três pé café pão mão ação lição João José Mário é à às pôr português música mágico último único fácil difícil número sábado próximo".split(" ");
+
+const RANKS = [
+  [0, "Trainee Cadet", "Cadete em treino"], [10, "Scout Regiment", "Tropa de Exploração"], [15, "Stand User", "Usuário de Stand"],
+  [20, "Eva Pilot", "Piloto de Eva"], [25, "Two-Star Meister", "Meister duas estrelas"], [30, "Stardust Crusader", "Cruzado das Estrelas"],
+  [40, "Ackerman", "Ackerman"], [50, "Death Scythe", "Death Scythe"], [60, "Sync Ratio 400%", "Sincronia 400%"], [75, "ZA WARUDO", "ZA WARUDO"]
+];
+
+/* Goals that unlock collection items. ctx = {run, m, cleared, stars3, totalLessons, lessons, totals} */
+const ACHIEVEMENTS = [
+  {id: "hierophant", s: "jojo", ic: "🍈", nm: "Hierophant Green", d: {pt: "Conclua 3 lições", en: "Clear 3 lessons"}, ok: c => c.cleared >= 3},
+  {id: "hermit", s: "jojo", ic: "🍇", nm: "Hermit Purple", d: {pt: "Conclua 8 lições", en: "Clear 8 lessons"}, ok: c => c.cleared >= 8},
+  {id: "chariot", s: "jojo", ic: "⚔️", nm: "Silver Chariot", d: {pt: "Corrida livre com 95% de precisão e 15 PPM", en: "Free run at 95% accuracy and 15 WPM"}, ok: c => c.run.mode === "free" && c.m.acc >= 95 && c.m.wpm >= 15},
+  {id: "gold", s: "jojo", ic: "🐞", nm: "Gold Experience", d: {pt: "3 estrelas em 5 lições", en: "3 stars on 5 lessons"}, ok: c => c.stars3 >= 5},
+  {id: "starplat", s: "jojo", ic: "⭐", nm: "Star Platinum", d: {pt: "Corrida livre: 30 PPM com 95%", en: "Free run: 30 WPM at 95%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 30 && c.m.acc >= 95},
+  {id: "theworld", s: "jojo", ic: "⏱️", nm: "The World", d: {pt: "Corrida livre: 40 PPM com 96%", en: "Free run: 40 WPM at 96%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 40 && c.m.acc >= 96},
+
+  {id: "unit00", s: "eva", ic: "🔵", nm: "Eva Unit-00", d: {pt: "Complete sua primeira frase", en: "Finish your first quote"}, ok: c => c.run.mode === "quote"},
+  {id: "unit01", s: "eva", ic: "🟣", nm: "Eva Unit-01", d: {pt: "Sincronia 100%: uma lição sem nenhum erro", en: "100% sync: a lesson with zero mistakes"}, ok: c => c.run.mode === "lesson" && c.m.errors === 0 && c.run.pos >= 50},
+  {id: "unit02", s: "eva", ic: "🔴", nm: "Eva Unit-02", d: {pt: "Uma frase com 25 PPM e 95%", en: "A quote at 25 WPM and 95%"}, ok: c => c.run.mode === "quote" && c.m.wpm >= 25 && c.m.acc >= 95},
+  {id: "mark06", s: "eva", ic: "⚪", nm: "Mark.06", d: {pt: "3 estrelas na lição de acentos", en: "3 stars on the accents lesson"}, ok: c => (c.lessons.acc?.stars || 0) >= 3},
+
+  {id: "cart", s: "aot", ic: "🐎", nm: "Cart Titan", d: {pt: "Termine 10 rodadas", en: "Finish 10 runs"}, ok: c => c.totals.runs >= 10},
+  {id: "armored", s: "aot", ic: "🛡️", nm: "Armored Titan", d: {pt: "Digite 5.000 letras no total", en: "Type 5,000 characters in total"}, ok: c => c.totals.chars >= 5000},
+  {id: "attack", s: "aot", ic: "👊", nm: "Attack Titan", d: {pt: "Conclua a revisão de todas as letras", en: "Clear the all-letters review"}, ok: c => (c.lessons.r3?.stars || 0) >= 1},
+  {id: "colossal", s: "aot", ic: "🔥", nm: "Colossal Titan", d: {pt: "Corrida livre: 35 PPM com 90%", en: "Free run: 35 WPM at 90%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 35 && c.m.acc >= 90},
+  {id: "founding", s: "aot", ic: "👑", nm: "Founding Titan", d: {pt: "Conclua todas as lições", en: "Clear every lesson"}, ok: c => c.cleared >= c.totalLessons},
+
+  {id: "soul", s: "soul", ic: "🌙", nm: "Soul Eater", d: {pt: "Termine sua primeira rodada", en: "Finish your first run"}, ok: c => c.totals.runs >= 1},
+  {id: "excalibur", s: "soul", ic: "🗡️", nm: "Excalibur", d: {pt: "Corrida livre de 60 s com 100% de precisão", en: "60 s free run with 100% accuracy"}, ok: c => c.run.mode === "free" && c.run.limit >= 60 && c.m.acc === 100 && c.m.wpm >= 10},
+  {id: "ragnarok", s: "soul", ic: "🩸", nm: "Ragnarok", d: {pt: "Termine uma corrida livre de 120 s", en: "Finish a 120 s free run"}, ok: c => c.run.mode === "free" && c.run.limit >= 120},
+  {id: "deathscythe", s: "soul", ic: "💀", nm: "Death Scythe", d: {pt: "Colete 99 almas: termine 99 rodadas", en: "Collect 99 souls: finish 99 runs"}, ok: c => c.totals.runs >= 99}
+];
+
+/* ---------- keyboard layouts ---------- */
+// keys: [base chars, shifted chars, finger per key]. Fingers: 0-3 left pinky..index, 4-7 right index..pinky, 8 thumb.
+const LAYOUTS = {
+  intl: {
+    rows: [
+      {keys: ["`1234567890-=", "~!@#$%^&*()_+", "0012334456777"], post: [["⌫", 2]]},
+      {pre: [["Tab", 2]], keys: ["qwertyuiop[]\\", "QWERTYUIOP{}|", "0123344567777"]},
+      {pre: [["Caps", 1.75]], keys: ["asdfghjkl;'", "ASDFGHJKL:\"", "01233445677"], post: [["Enter", 2.25]]},
+      {pre: [["Shift", 2.25, "shiftL"]], keys: ["zxcvbnm,./", "ZXCVBNM<>?", "0123344567"], post: [["Shift", 2.75, "shiftR"]]}
+    ],
+    dead: "'\"`~^",
+    marks: {"\u0301": "'", "\u0300": "`", "\u0303": "~", "\u0302": "^"},
+    altgr: {"ç": ","}
+  },
+  abnt: {
+    rows: [
+      {keys: ["'1234567890-=", "\"!@#$%¨&*()_+", "0012334456777"], post: [["⌫", 2]]},
+      {pre: [["Tab", 1.5]], keys: ["qwertyuiop´[", "QWERTYUIOP`{", "012334456777"], post: [["Enter", 1.5]]},
+      {pre: [["Caps", 1.75]], keys: ["asdfghjklç~]", "ASDFGHJKLÇ^}", "012334456777"], post: [["", 1.25]]},
+      {pre: [["Shift", 1.25, "shiftL"]], keys: ["\\zxcvbnm,.;/", "|ZXCVBNM<>:?", "001233445677"], post: [["Shift", 1.75, "shiftR"]]}
+    ],
+    dead: "´`~^¨",
+    marks: {"\u0301": "´", "\u0300": "`", "\u0303": "~", "\u0302": "^"},
+    altgr: {}
+  }
+};
+LAYOUTS.us = {rows: LAYOUTS.intl.rows, dead: "", marks: {}, altgr: {}};
+const ROW4 = {pre: [["Ctrl", 1.5], ["Alt", 1.5], ["", 9, "space"], ["AltGr", 1.5, "altgr"], ["Ctrl", 1.5]]};
+const FCOL = [0, 1, 2, 3, 3, 2, 1, 0, 8];
+
+const DIRECT = {};
+for (const [name, L] of Object.entries(LAYOUTS)) {
+  const s = new Set([" "]);
+  for (const r of L.rows) { for (const c of r.keys[0]) s.add(c); for (const c of r.keys[1]) s.add(c); }
+  for (const c of L.dead) s.delete(c);
+  DIRECT[name] = s;
+}
+
+// Key presses needed to produce ch on the current layout, or null if it cannot be typed.
+function strokes(ch, accents) {
+  const L = LAYOUTS[S.layout], D = DIRECT[S.layout];
+  if (D.has(ch)) return [{c: ch}];
+  if (L.dead.includes(ch)) return [{c: ch}, {c: " "}];
+  if (!accents) return null;
+  if (L.altgr[ch]) return [{c: L.altgr[ch], altgr: true}];
+  const n = ch.normalize("NFD");
+  if (n.length === 2 && L.marks[n[1]] && D.has(n[0])) return [{c: L.marks[n[1]]}, {c: n[0]}];
+  return null;
+}
+
+const REPL = {"\u2019": "'", "\u2018": "'", "\u201C": '"', "\u201D": '"', "\u2013": "-", "\u2014": "-", "\u2026": "..."};
+function sanitize(str, accents) {
+  let out = "";
+  for (const raw of str.normalize("NFC")) {
+    for (const c of (REPL[raw] ?? raw)) {
+      if (strokes(c, accents)) out += c;
+      else {
+        const b = c.normalize("NFD")[0];
+        if (strokes(b, false)) out += b;
+      }
+    }
+  }
+  return out.replace(/\s+/g, " ").trim();
+}
+
+/* ---------- storage ---------- */
+const STORE_KEY = "typedojo:v1";
+const DEFAULTS = {
+  settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
+  lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
+  best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: []
+};
+function loadData() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) { d = null; }
+  const base = structuredClone(DEFAULTS);
+  if (!d || typeof d !== "object") return base;
+  const out = {...base, ...d};
+  out.settings = {...base.settings, ...(d.settings || {})};
+  out.lessons = {...base.lessons, ...(d.lessons || {})};
+  out.keys = {...base.keys, ...(d.keys || {})};
+  out.best = {...base.best, ...(d.best || {})};
+  out.totals = {...base.totals, ...(d.totals || {})};
+  if (!LAYOUTS[out.settings.layout]) out.settings.layout = "intl";
+  return out;
+}
+let data = loadData();
+let S = data.settings;
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) { /* storage unavailable */ } }
+
+/* ---------- lessons ---------- */
+const LESSON_DEFS = [
+  {id: "fj", k: "fj"}, {id: "dk", k: "dk"}, {id: "sl", k: "sl"}, {id: "a", k: {intl: "a;", us: "a;", abnt: "aç"}}, {id: "gh", k: "gh"}, {id: "r1", review: "home"},
+  {id: "ei", k: "ei"}, {id: "ru", k: "ru"}, {id: "to", k: "to"}, {id: "nm", k: "nm"}, {id: "wy", k: "wy"}, {id: "qp", k: "qp"}, {id: "r2", review: "mid"},
+  {id: "vb", k: "vb"}, {id: "c,", k: "c,"}, {id: "x.", k: "x."}, {id: "z", k: "z"}, {id: "r3", review: "all"},
+  {id: "shift", shift: true}, {id: "acc", accents: true}, {id: "quotes", quotes: true}
+];
+const lessonKeys = L => !L.k ? "" : (typeof L.k === "string" ? L.k : L.k[S.layout]);
+function lessonTitle(L) {
+  if (L.k) return [...lessonKeys(L)].map(c => c.toUpperCase()).join(" ");
+  if (L.review) return t("rv_" + L.review);
+  if (L.shift) return t("shiftLesson");
+  if (L.accents) return t("accLesson");
+  return t("quotesLesson");
+}
+function allowedUpTo(idx) {
+  const s = new Set();
+  for (let i = 0; i <= idx; i++) for (const c of lessonKeys(LESSON_DEFS[i])) s.add(c);
+  return s;
+}
+const progress = () => data.lessons[S.layout];
+const isUnlocked = i => S.unlockAll || i === 0 || (progress()[LESSON_DEFS[i - 1].id]?.stars || 0) >= 1;
+function nextLessonIdx() {
+  for (let i = 0; i < LESSON_DEFS.length; i++) {
+    if (!isUnlocked(i)) return i - 1;
+    if (!(progress()[LESSON_DEFS[i].id]?.stars >= 1)) return i;
+  }
+  return LESSON_DEFS.length - 1;
+}
+function starsFor(wpm, acc) {
+  if (acc >= 97 && wpm >= 25) return 3;
+  if (acc >= 94 && wpm >= 18) return 2;
+  if (acc >= 90 && wpm >= 10) return 1;
+  return 0;
+}
+
+function seriesList() { return S.series === "mix" ? Object.keys(SERIES) : [S.series]; }
+function wordPools(accents) {
+  const themed = [], common = [];
+  for (const k of seriesList()) themed.push(...SERIES[k].names.split(" "), ...SERIES[k].terms[S.lang].split(" "));
+  common.push(...COMMON[S.lang].split(" "));
+  // A word that would lose an accent or a Ç on this layout is dropped, so no misspelled word shows up.
+  const clean = a => uniq(a.filter(w => w && sanitize(w, accents) === w.normalize("NFC")));
+  return {themed: clean(themed), common: clean(common)};
+}
+function drill(letters, focus) {
+  const len = 2 + rnd(4);
+  let s = "";
+  for (let i = 0; i < len; i++) s += Math.random() < 0.6 ? pick(focus) : pick(letters);
+  return s;
+}
+function allQuotes() {
+  const out = [];
+  for (const k of seriesList()) for (const q of SERIES[k].quotes[S.lang]) out.push([q[0], q[1], k]);
+  return out;
+}
+function lessonText(idx) {
+  const L = LESSON_DEFS[idx];
+  if (L.quotes) {
+    const qs = allQuotes().filter(q => q[0].length < 90).sort(() => Math.random() - 0.5).slice(0, 3);
+    return qs.map(q => sanitize(q[0], true)).join(" ");
+  }
+  if (L.accents) {
+    const words = uniq(ACCENT_WORDS.map(w => sanitize(w, true)));
+    const out = [], used = {};
+    while (out.join(" ").length < 130) {
+      const w = pick(words);
+      if (w === out[out.length - 1] || used[w] >= 2) continue;
+      used[w] = (used[w] || 0) + 1;
+      out.push(w);
+    }
+    return out.join(" ");
+  }
+  const allowed = allowedUpTo(idx);
+  const letters = [...allowed].filter(isLetter);
+  const puncts = [...allowed].filter(c => !isLetter(c));
+  const focusAll = L.k ? [...lessonKeys(L)] : letters;
+  const focusLetters = focusAll.filter(isLetter);
+  const focusPunct = focusAll.filter(c => !isLetter(c));
+  const {themed, common} = wordPools(false);
+  const fits = w => [...w.toLowerCase()].every(c => allowed.has(c));
+  const prep = w => L.shift ? w : w.toLowerCase();
+  const T1 = themed.filter(fits).map(prep);
+  const C1 = common.filter(fits).map(w => L.shift && Math.random() < 0.35 ? cap(w) : w);
+  const hasFocus = w => !L.k || [...w.toLowerCase()].some(c => focusLetters.includes(c));
+  const TF = T1.filter(hasFocus), CF = C1.filter(hasFocus);
+  // A short themed list would repeat the same name, so its share grows with its size.
+  const themedShare = list => Math.min(0.5, list.length / 12);
+  // Each word appears at most twice, so the new key is not always practiced inside the same word.
+  const used = {};
+  const fresh = list => {
+    for (let i = 0; list.length && i < 8; i++) { const w = pick(list); if ((used[w] || 0) < 2) return w; }
+    return null;
+  };
+  const choose = (themedList, commonList) => {
+    const useThemed = themedList.length && (Math.random() < themedShare(themedList) || !commonList.length);
+    return fresh(useThemed ? themedList : commonList) || fresh(useThemed ? commonList : themedList);
+  };
+  const tokens = [];
+  let guard = 0;
+  while (tokens.join(" ").length < 140 && guard++ < 500) {
+    const r = Math.random();
+    let w = null;
+    if (TF.length + CF.length >= 3 && r < (L.k ? 0.7 : 0.95)) w = choose(TF, CF);
+    else if (T1.length + C1.length >= 3 && r < 0.85) w = choose(T1, C1);
+    if (w) used[w] = (used[w] || 0) + 1;
+    else {
+      w = drill(letters, focusLetters.length ? focusLetters : letters);
+      if (L.shift && Math.random() < 0.4) w = cap(w);
+    }
+    if (focusPunct.length && Math.random() < 0.35) w += pick(focusPunct);
+    else if (puncts.length && Math.random() < 0.08) w += pick(puncts);
+    if (w === tokens[tokens.length - 1]) continue;
+    tokens.push(w);
+  }
+  return tokens.join(" ");
+}
+function freeChunk(n) {
+  const {themed, common} = wordPools(S.accents);
+  let T2 = themed.map(w => w.toLowerCase()), C2 = common.map(w => w.toLowerCase()), letters = null;
+  const lim = learnedLimit();
+  if (lim !== null) {
+    const allowed = new Set([...allowedUpTo(lim)].filter(isLetter));
+    letters = [...allowed];
+    const fits = w => [...w].every(c => allowed.has(c));
+    T2 = T2.filter(fits);
+    C2 = C2.filter(fits);
+  }
+  const out = [];
+  let guard = 0;
+  while (out.length < n && guard++ < n * 20) {
+    let w;
+    if (T2.length + C2.length < 4) w = drill(letters, letters);
+    else w = Math.random() < 0.5 && T2.length ? pick(T2) : pick(C2.length ? C2 : T2);
+    if (w !== out[out.length - 1]) out.push(w);
+  }
+  return out.join(" ");
+}
+
+/* ---------- keyboard rendering ---------- */
+function buildKb(el) {
+  el.innerHTML = "";
+  const kbd = {map: {}, keys: [], shiftL: null, shiftR: null, space: null, altgr: null};
+  const L = LAYOUTS[S.layout];
+  const mk = (cls, w) => {
+    const k = document.createElement("div");
+    k.className = "key " + cls;
+    k.style.setProperty("--w", w);
+    return k;
+  };
+  const special = (row, [label, w, id]) => {
+    const k = mk("mod", w);
+    k.textContent = label;
+    row.appendChild(k);
+    if (id === "space") { k.className = "key"; k.style.setProperty("--fc", "var(--f8)"); kbd.space = k; }
+    else if (id) kbd[id] = k;
+  };
+  for (const r of [...L.rows, ROW4]) {
+    const row = document.createElement("div");
+    row.className = "row";
+    (r.pre || []).forEach(s => special(row, s));
+    if (r.keys) {
+      const base = [...r.keys[0]], sh = [...r.keys[1]], fg = [...r.keys[2]].map(Number);
+      base.forEach((b, i) => {
+        const f = fg[i], k = mk("", 1);
+        k.style.setProperty("--fc", `var(--f${FCOL[f]})`);
+        if (isLetter(b) && b.toUpperCase() !== b) k.textContent = b.toUpperCase();
+        else {
+          const top = document.createElement("span"); top.className = "sh"; top.textContent = sh[i];
+          const bot = document.createElement("span"); bot.textContent = b;
+          k.append(top, bot);
+        }
+        if (b === "f" || b === "j") k.classList.add("bump");
+        row.appendChild(k);
+        kbd.map[b] = {el: k, f, shift: false, base: b};
+        if (!kbd.map[sh[i]]) kbd.map[sh[i]] = {el: k, f, shift: true, base: b};
+        kbd.keys.push({el: k, base: b});
+      });
+    }
+    (r.post || []).forEach(s => special(row, s));
+    el.appendChild(row);
+  }
+  kbd.map[" "] = {el: kbd.space, f: 8, shift: false, base: " "};
+  return kbd;
+}
+function legendHtml() {
+  const names = t("legend");
+  return [0, 1, 2, 3, 8].map((f, i) => `<span><span class="dot" style="background:var(--f${f})"></span>${esc(names[i])}</span>`).join("");
+}
+function renderLegend() { $("#legend").innerHTML = legendHtml(); }
+
+/* ---------- app state ---------- */
+let view = "lessons";
+let run = null;
+let kb = null;
+let composing = false;
+let resetArmed = false;
+const sink = $("#sink");
+
+function applyTheme() {
+  document.documentElement.dataset.series = S.series;
+  $("#deco").textContent = S.series === "mix" ? "" : SERIES[S.series].deco;
+}
+function applyI18n() {
+  document.documentElement.lang = S.lang === "pt" ? "pt-BR" : "en";
+  document.querySelectorAll("[data-i18n]").forEach(e => { e.textContent = t(e.dataset.i18n); });
+  renderLegend();
+}
+function syncSegs() {
+  document.querySelectorAll(".seg[data-set]").forEach(seg => {
+    const key = seg.dataset.set;
+    seg.querySelectorAll("button").forEach(b => b.classList.toggle("on", String(S[key]) === b.dataset.val));
+  });
+  document.querySelectorAll("#tabs button").forEach(b => {
+    const active = view === "type" ? (run ? {lesson: "lessons", free: "free", quote: "quotes"}[run.mode] : "") : view;
+    b.classList.toggle("on", b.dataset.view === active);
+  });
+}
+function showView(v) {
+  view = v;
+  document.querySelectorAll(".view").forEach(s => { s.hidden = s.id !== "v-" + v; });
+  $("#tabs").hidden = v === "setup";
+  document.body.classList.toggle("focus", v === "type");
+  if (v === "free") renderFreeNote();
+  if (v === "quotes") renderQuoteNote();
+  if (v === "setup") renderSetup();
+  if (v === "home") renderHome();
+  if (v === "lessons") renderLessons();
+  if (v === "stats") renderStats();
+  if (v === "collection") renderCollection();
+  syncSegs();
+}
+
+/* ---------- lessons view ---------- */
+function starRow(n) {
+  return `<span class="stars">${[1, 2, 3].map(i => i <= n ? "★" : '<span class="off">★</span>').join("")}</span>`;
+}
+function renderLessons() {
+  const g = $("#lesson-grid");
+  const nx = nextLessonIdx();
+  g.innerHTML = LESSON_DEFS.map((L, i) => {
+    const p = progress()[L.id];
+    const locked = !isUnlocked(i);
+    const keys = L.k ? `<div class="keys">${[...lessonKeys(L)].map(c => `<span class="cap">${esc(c.toUpperCase())}</span>`).join("")}</div>` : `<div class="title">${esc(lessonTitle(L))}</div>`;
+    const best = p ? ` · ${p.wpm} ${t("wpm")}` : "";
+    const foot = locked ? `<span class="sub">${esc(t("preview"))}</span>` : `<span>${starRow(p?.stars || 0)}<span class="sub">${best}</span></span>`;
+    return `<button class="lesson${locked ? " locked" : ""}${i === nx && !locked ? " next" : ""}" data-i="${i}" title="${esc(locked ? t("lockedTip") : t("passRule"))}">
+      <span class="n">${t("lesson")} ${i + 1}${locked ? " 🔒" : ""}</span>${keys}${foot}</button>`;
+  }).join("");
+}
+$("#lesson-grid").addEventListener("click", e => {
+  const b = e.target.closest(".lesson");
+  if (!b) return;
+  const i = Number(b.dataset.i);
+  startRun("lesson", {lessonIdx: i, preview: !isUnlocked(i)});
+});
+
+/* ---------- runs ---------- */
+function newRun(mode, o = {}) {
+  const r = {mode, lessonIdx: o.lessonIdx ?? null, quote: o.quote ?? null, preview: !!o.preview, text: "", pos: 0, started: 0, ended: 0,
+    keystrokes: 0, correct: 0, errors: 0, errAt: new Set(), miss: {}, done: false, els: [], curEl: null,
+    limit: mode === "free" ? Number(S.time) : 0, nextEls: [], bannerShown: false, primary: null,
+    pausedMs: 0, pauseStart: 0, lastKey: 0, menuOpen: false, errCount: {}};
+  if (mode === "lesson") {
+    const L = LESSON_DEFS[r.lessonIdx];
+    r.text = lessonText(r.lessonIdx);
+    r.intro = lessonIntro(L);
+    r.introOpen = !!r.intro && (!!o.forceIntro || (!(progress()[L.id]?.stars >= 1) && !introSeen.has(L.id)));
+    if (r.introOpen) introSeen.add(L.id);
+  }
+  else if (mode === "free") r.text = freeChunk(80);
+  else { r.quote = r.quote || pick(allQuotes()); r.text = sanitize(r.quote[0], S.accents); }
+  return r;
+}
+function startRun(mode, o) {
+  run = newRun(mode, o);
+  showView("type");
+  renderRun();
+}
+function restart() {
+  if (!run) return;
+  startRun(run.mode, {lessonIdx: run.lessonIdx, preview: run.preview, quote: run.mode === "quote" ? run.quote : null});
+}
+function goBack() {
+  const m = run ? run.mode : "lesson";
+  run = null;
+  showView({lesson: "lessons", free: "free", quote: "quotes"}[m]);
+}
+function runLabel() {
+  if (run.mode === "lesson") return `${t("lesson")} ${run.lessonIdx + 1} · ${lessonTitle(LESSON_DEFS[run.lessonIdx])}${run.preview ? " · " + t("preview") : ""}`;
+  if (run.mode === "free") return `${t("tabFree")} · ${run.limit} s`;
+  return t("tabQuotes") + (run.preview ? " · " + t("preview") : "");
+}
+function appendText(str) {
+  const inner = $("#text-inner");
+  let word = null;
+  for (const ch of str) {
+    const s = document.createElement("span");
+    s.className = "c";
+    s.textContent = ch;
+    if (ch === " ") {
+      s.classList.add("sp");
+      inner.append(s, document.createTextNode("\u200B"));
+      word = null;
+    } else {
+      if (!word) { word = document.createElement("span"); word.className = "w"; inner.appendChild(word); }
+      word.appendChild(s);
+    }
+    run.els.push(s);
+  }
+}
+function renderRun() {
+  $("#type-label").textContent = runLabel();
+  $("#text-inner").innerHTML = "";
+  $("#text-inner").style.transform = "";
+  appendText(run.text);
+  $("#attrib").textContent = run.mode === "quote" ? `${run.quote[1]} · ${SERIES[run.quote[2]].label}` : "";
+  $("#results").hidden = true;
+  $("#typing-area").hidden = false;
+  $("#type-actions").hidden = false;
+  $("#banner").hidden = true;
+  $("#kb-wrap").hidden = !S.showKb;
+  $("#menu").hidden = true;
+  $("#focus-overlay").hidden = true;
+  $(".type-top .chips").hidden = run.mode === "lesson";
+  $("#chip-acc").hidden = run.mode === "free";
+  $("#m-acc-wrap").hidden = run.mode !== "lesson";
+  $("#hint").classList.remove("insist");
+  $("#kb").classList.remove("insist");
+  kb = buildKb($("#kb"));
+  updateChips();
+  setCursor();
+  $("#btn-tip").hidden = !run.intro || run.introOpen;
+  $("#intro").hidden = !run.introOpen;
+  if (run.introOpen) {
+    $("#typing-area").hidden = true;
+    $("#type-actions").hidden = true;
+    renderIntro();
+  } else focusSink();
+}
+function focusSink() {
+  sink.value = "";
+  sink.focus({preventScroll: true});
+  $("#focus-overlay").hidden = true;
+}
+function setCursor() {
+  if (run.curEl) run.curEl.classList.remove("cur");
+  const el = run.els[run.pos];
+  if (el) {
+    el.classList.add("cur");
+    run.curEl = el;
+    const lh = parseFloat(getComputedStyle($("#text-inner")).lineHeight) || 40;
+    $("#text-inner").style.transform = `translateY(${-Math.max(0, el.offsetTop - lh)}px)`;
+  }
+  highlightNext();
+}
+function keyName(c) {
+  if (c === " ") return t("space");
+  return isLetter(c) ? c.toUpperCase() : c;
+}
+function highlightNext() {
+  run.nextEls.forEach(e => e.classList.remove("next", "next2"));
+  run.nextEls = [];
+  const ch = run.text[run.pos];
+  const st = ch != null ? strokes(ch, true) : null;
+  if (!st) { $("#hint").innerHTML = ""; return; }
+  const mark = (el, cls) => { if (el) { el.classList.add(cls); run.nextEls.push(el); } };
+  const labels = st.map((s, i) => {
+    const info = kb.map[s.c];
+    const cls = i === 0 ? "next" : "next2";
+    const parts = [];
+    if (s.altgr) { mark(kb.altgr, cls); parts.push("AltGr"); }
+    if (info) {
+      mark(info.el, cls);
+      if (info.shift) { mark(info.f <= 3 ? kb.shiftR : kb.shiftL, cls); parts.push("Shift"); }
+    }
+    parts.push(keyName(s.c));
+    return parts.join(" + ");
+  });
+  const first = kb.map[st[0].c];
+  const finger = first ? `<span class="dot" style="background:var(--f${FCOL[first.f]})"></span>${esc(t("fingers")[first.f])}` : "";
+  $("#hint").innerHTML = `${esc(t("next"))}: <b>${esc(labels.join(` ${t("then")} `))}</b> ${finger}`;
+}
+// Accuracy counts letters, not key presses: a letter is wrong once, however many tries it took.
+function metrics() {
+  let ms = activeMs();
+  if (run.mode === "free") ms = Math.min(ms, run.limit * 1000);
+  const minutes = Math.max(ms, 1000) / 60000;
+  const tried = run.pos + (run.errAt.has(run.pos) ? 1 : 0);
+  return {
+    ms,
+    wpm: run.started ? Math.round(run.pos / 5 / minutes) : 0,
+    acc: tried ? Math.floor((tried - run.errAt.size) / tried * 100) : 100,
+    errors: run.errAt.size
+  };
+}
+function updateChips() {
+  const m = metrics();
+  $("#s-wpm").textContent = m.wpm;
+  $("#s-acc").textContent = m.acc;
+  const secs = run.mode === "free" ? Math.max(0, Math.ceil(run.limit - m.ms / 1000)) : Math.floor(m.ms / 1000);
+  $("#s-time").textContent = secs;
+  const prog = run.mode === "free" ? Math.min(1, m.ms / (run.limit * 1000)) : run.pos / run.text.length;
+  $("#m-prog").style.width = (prog * 100).toFixed(1) + "%";
+  $("#m-prog-txt").textContent = run.mode === "free" ? `${secs} s` : `${Math.round(prog * 100)}%`;
+  // The accuracy bar spans 50% to 100%, so the 90% goal sits at 80% of its width.
+  $("#m-acc").style.width = Math.max(0, (m.acc - 50) * 2) + "%";
+  $("#m-acc-txt").textContent = m.acc + "%";
+  $("#m-acc-bar").classList.toggle("low", m.acc < 90);
+}
+function bumpKey(base, ok) {
+  const ks = data.keys[S.layout];
+  const s = ks[base] || (ks[base] = {h: 0, m: 0});
+  if (ok) s.h++; else s.m++;
+}
+function typeChar(ch) {
+  if (!run || run.done || run.introOpen || run.menuOpen || view !== "type") return;
+  if (!run.started) run.started = Date.now();
+  resume();
+  run.lastKey = Date.now();
+  const exp = run.text[run.pos];
+  const st = strokes(exp, true);
+  const base = (st && kb.map[st[0].c]?.base) || exp.toLowerCase();
+  const el = run.els[run.pos];
+  run.keystrokes++;
+  if (ch === exp) {
+    run.correct++;
+    $("#kb").classList.remove("insist");
+    $("#hint").classList.remove("insist");
+    el.classList.remove("cur", "bad");
+    el.classList.add(run.errAt.has(run.pos) ? "fixed" : "ok");
+    if (!run.errAt.has(run.pos)) bumpKey(base, true);
+    run.pos++;
+    if (run.mode === "free" && run.pos > run.text.length - 60) {
+      const more = " " + freeChunk(40);
+      run.text += more;
+      appendText(more);
+    }
+    if (run.pos >= run.text.length) { finish(); return; }
+    setCursor();
+  } else {
+    run.errors++;
+    el.classList.add("bad");
+    run.errCount[run.pos] = (run.errCount[run.pos] || 0) + 1;
+    if (run.errCount[run.pos] >= 3) { $("#kb").classList.add("insist"); $("#hint").classList.add("insist"); }
+    if (!run.errAt.has(run.pos)) {
+      run.errAt.add(run.pos);
+      bumpKey(base, false);
+      run.miss[exp] = (run.miss[exp] || 0) + 1;
+    }
+  }
+  updateChips();
+}
+function consumeSink() {
+  const v = sink.value;
+  sink.value = "";
+  for (const ch of v) if (ch !== "\n" && ch !== "\r") typeChar(ch);
+}
+sink.addEventListener("compositionstart", () => { composing = true; });
+sink.addEventListener("compositionend", () => { composing = false; consumeSink(); });
+sink.addEventListener("input", e => { if (!composing && !e.isComposing) consumeSink(); });
+sink.addEventListener("blur", () => {
+  if (view !== "type" || !run || run.done || run.introOpen || run.menuOpen) return;
+  if (run.started) pause("blur");
+  else showOverlay(false);
+});
+$("#textbox").addEventListener("click", () => { if (run && !run.done) focusSink(); });
+
+/* ---------- finishing ---------- */
+function bestOverall() {
+  const p = progress(), r1 = lessonIndexOf("r1");
+  const lessonBest = Math.max(0, ...LESSON_DEFS.filter((L, i) => i >= r1 && p[L.id]?.stars >= 1).map(L => p[L.id].wpm || 0));
+  return Math.max(data.best.free, data.best.quote, lessonBest);
+}
+function rankFor(w) {
+  let cur = RANKS[0], nxt = null;
+  for (let i = 0; i < RANKS.length; i++) if (w >= RANKS[i][0]) { cur = RANKS[i]; nxt = RANKS[i + 1] || null; }
+  return [cur, nxt];
+}
+const rankName = r => S.lang === "pt" ? r[2] : r[1];
+function lessonCounts() {
+  const p = progress();
+  let cleared = 0, stars3 = 0, stars = 0;
+  for (const L of LESSON_DEFS) {
+    const s = p[L.id]?.stars || 0;
+    if (s >= 1) cleared++;
+    if (s >= 3) stars3++;
+    stars += s;
+  }
+  return {cleared, stars3, stars};
+}
+function checkAchievements(m) {
+  const lc = lessonCounts();
+  const ctx = {run, m, cleared: lc.cleared, stars3: lc.stars3, totalLessons: LESSON_DEFS.length, lessons: progress(), totals: data.totals};
+  const fresh = [];
+  for (const a of ACHIEVEMENTS) {
+    if (data.unlocked[a.id]) continue;
+    let ok = false;
+    try { ok = a.ok(ctx); } catch (e) { ok = false; }
+    if (ok) { data.unlocked[a.id] = Date.now(); fresh.push(a); }
+  }
+  return fresh;
+}
+function finish() {
+  run.done = true;
+  run.ended = Date.now();
+  if (run.curEl) run.curEl.classList.remove("cur");
+  sink.blur();
+  $("#focus-overlay").hidden = true;
+  const m = metrics();
+  let title, record = false, extra = "";
+  run.passed = false;
+  if (run.mode === "lesson") {
+    const L = LESSON_DEFS[run.lessonIdx];
+    const st = starsFor(m.wpm, m.acc);
+    const prev = progress()[L.id];
+    record = !run.preview && !!prev && st >= 1 && m.wpm > prev.wpm;
+    if (!run.preview) progress()[L.id] = {stars: Math.max(st, prev?.stars || 0), wpm: Math.max(m.wpm, prev?.wpm || 0), acc: Math.max(m.acc, prev?.acc || 0)};
+    run.passed = st >= 1;
+    title = run.preview ? t("previewDone") : run.passed ? t("cleared") : t("failed");
+    extra = `<div style="font-size:28px">${starRow(st)}</div>`;
+  } else {
+    const prev = data.best[run.mode];
+    record = !run.preview && prev > 0 && m.wpm > prev;
+    if (!run.preview && m.wpm > prev) data.best[run.mode] = m.wpm;
+    title = run.preview ? t("previewDone") : run.mode === "free" ? t("timeUp") : t("quoteDone");
+    const [cur, nxt] = rankFor(bestOverall());
+    extra = `<p>${esc(t("rank"))}: <b>${esc(rankName(cur))}</b>${nxt ? " · " + esc(t("nextRank", {r: rankName(nxt), n: nxt[0]})) : ""}</p>`;
+  }
+  let fresh = [];
+  if (!run.preview) {
+    data.totals.runs++;
+    data.totals.chars += run.pos;
+    data.history.push({t: Date.now(), mode: run.mode, wpm: m.wpm, acc: m.acc, layout: S.layout,
+      label: run.mode === "lesson" ? String(run.lessonIdx + 1) : run.mode === "quote" ? run.quote[1] : run.limit + " s"});
+    if (data.history.length > 300) data.history.splice(0, data.history.length - 300);
+    fresh = checkAchievements(m);
+    save();
+  }
+
+  const missed = Object.entries(run.miss).sort((a, b) => b[1] - a[1]);
+  const missHtml = missed.length
+    ? `<div class="kchips">${missed.map(([c, n]) => `<span class="cap">${esc(c === " " ? "␣" : c)}<small style="margin-left:4px;color:var(--err)">${n}</small></span>`).join("")}</div>`
+    : `<p>${esc(t("noMiss"))}</p>`;
+  const unlockHtml = fresh.map(a => `<div class="unlock"><span class="ic">${a.ic}</span><div><span class="menacing">ゴゴゴ ${esc(t("unlocked"))}</span><br><b>${esc(a.nm)}</b> · <span class="sub">${esc(a.d[S.lang])}</span></div></div>`).join("");
+
+  const btns = [];
+  const hasNext = run.mode === "lesson" && run.passed && !run.preview && run.lessonIdx < LESSON_DEFS.length - 1;
+  if (hasNext) btns.push(["next", t("nextLesson"), true], ["again", t("again"), false]);
+  else if (run.mode === "quote") btns.push(["nextq", t("nextQuote"), true], ["again", t("again"), false]);
+  else btns.push(["again", t("again"), true]);
+  btns.push(["back", t("back") + " (Esc)", false]);
+  const actions = {
+    next: () => startRun("lesson", {lessonIdx: run.lessonIdx + 1}),
+    nextq: () => startRun("quote", {preview: run.preview}),
+    again: () => restart(),
+    back: () => goBack()
+  };
+  run.primary = actions[btns[0][0]];
+
+  const r = $("#results");
+  r.innerHTML = `
+    <h2 class="rt">${esc(title)} ${record ? `<span class="menacing">ゴゴゴ ${esc(t("newRecord"))}</span>` : ""}</h2>
+    ${extra}
+    ${resultTip(m, missed)}
+    <div class="big">
+      <div class="stat"><b>${m.wpm}</b><span>${esc(t("wpm"))}</span></div>
+      <div class="stat"><b>${m.acc}%</b><span>${esc(t("accuracy"))}</span></div>
+      <div class="stat"><b>${Math.round(m.ms / 1000)}s</b><span>${esc(t("time"))}</span></div>
+      <div class="stat"><b>${m.errors}</b><span>${esc(t("errors"))}</span></div>
+    </div>
+    ${unlockHtml}
+    <h2 style="margin-top:14px">${esc(t("missed"))}</h2>${missHtml}
+    <div class="type-actions">${btns.map(([id, label, primary]) => `<button class="btn${primary ? " primary" : ""}" data-act="${id}">${esc(label)}${primary ? " " + esc(t("enterHint")) : ""}</button>`).join("")}</div>`;
+  r.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => actions[b.dataset.act]()));
+  $("#typing-area").hidden = true;
+  $("#type-actions").hidden = true;
+  $("#menu").hidden = true;
+  r.hidden = false;
+}
+
+setInterval(() => {
+  if (view !== "type" || !run || run.done || !run.started) return;
+  if (!run.pauseStart && !run.menuOpen && !run.introOpen && Date.now() - run.lastKey > 5000) pause("idle");
+  updateChips();
+  if (run.mode === "free" && activeMs() >= run.limit * 1000) finish();
+}, 200);
+
+/* ---------- global keys ---------- */
+document.addEventListener("keydown", e => {
+  if (view === "setup") { handleSetupKey(e); return; }
+  if (view === "type" && run) {
+    if (run.introOpen) {
+      if (e.key === "Enter") { e.preventDefault(); closeIntro(); }
+      else if (e.key === "Escape") { e.preventDefault(); if (run.started) closeIntro(); else goBack(); }
+      return;
+    }
+    if (run.menuOpen) {
+      if (e.key === "Enter" || e.key === "Escape") { e.preventDefault(); closeMenu(); }
+      return;
+    }
+    if (e.key === "Escape") { e.preventDefault(); if (run.done) goBack(); else openMenu(); return; }
+    if (e.key === "Enter") { e.preventDefault(); if (run.done && run.primary) run.primary(); return; }
+    if (e.key === "Tab") { e.preventDefault(); return; }
+    if (run.done) return;
+    $("#caps").hidden = !(e.getModifierState && e.getModifierState("CapsLock"));
+    if (!run.bannerShown) {
+      let suggest = null;
+      if (S.layout !== "abnt" && (e.key === "ç" || e.key === "Ç") && e.code === "Semicolon") suggest = "abnt";
+      else if (S.layout === "abnt" && e.code === "Semicolon" && (e.key === ";" || e.key === ":")) suggest = "intl";
+      else if (S.layout === "intl" && e.code === "Quote" && (e.key === "'" || e.key === '"')) suggest = "us";
+      else if (S.layout === "us" && e.code === "Quote" && e.key === "Dead") suggest = "intl";
+      if (suggest) {
+        run.bannerShown = true;
+        run.suggest = suggest;
+        $("#banner-msg").textContent = t({abnt: "layoutHintAbnt", intl: "layoutHintIntl", us: "layoutHintUs"}[suggest]);
+        $("#banner").hidden = false;
+      }
+    }
+    if (e.key.length === 1 && kb) {
+      const info = kb.map[e.key];
+      if (info) { info.el.classList.add("press"); setTimeout(() => info.el.classList.remove("press"), 110); }
+    }
+    if (document.activeElement !== sink) focusSink();
+    return;
+  }
+  if (e.key === "Enter" && !(e.target.closest && e.target.closest("button"))) {
+    if (view === "free") startRun("free");
+    else if (view === "quotes") startQuote();
+    else if (view === "lessons" || view === "home") startNext();
+  }
+});
+
+$("#banner-yes").addEventListener("click", () => { setSetting("layout", run.suggest); });
+$("#banner-no").addEventListener("click", () => { $("#banner").hidden = true; focusSink(); });
+$("#btn-free").addEventListener("click", () => startRun("free"));
+$("#btn-quote").addEventListener("click", () => startQuote());
+$("#tabs").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  run = null;
+  showView(b.dataset.view);
+});
+
+/* ---------- settings ---------- */
+function setSetting(key, val) {
+  S[key] = key === "time" ? Number(val) : val;
+  save();
+  applyTheme();
+  applyI18n();
+  syncSegs();
+  if (view === "type" && run && !run.done) restart();
+  else if (view === "type" && run && run.done) goBack();
+  else showView(view);
+}
+document.querySelectorAll(".seg[data-set]").forEach(seg => {
+  seg.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (b) setSetting(seg.dataset.set, b.dataset.val);
+  });
+});
+
+/* ---------- collection ---------- */
+function renderCollection() {
+  const got = ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length;
+  $("#coll-summary").textContent = t("collSummary", {n: got, t: ACHIEVEMENTS.length});
+  $("#collection").innerHTML = Object.keys(SERIES).map(s => `
+    <div class="coll-series"><h2>${esc(t("seriesTitles")[s])}</h2><div class="coll">
+    ${ACHIEVEMENTS.filter(a => a.s === s).map(a => {
+      const u = data.unlocked[a.id];
+      return `<div class="item ${u ? "got" : "locked"}"><span class="ic">${a.ic}</span><div>
+        <div class="nm">${esc(a.nm)}${u ? "" : " 🔒"}</div><div class="ds">${esc(a.d[S.lang])}</div>
+        ${u ? `<div class="ds">${new Date(u).toLocaleDateString(S.lang === "pt" ? "pt-BR" : "en")}</div>` : ""}</div></div>`;
+    }).join("")}</div></div>`).join("");
+}
+
+/* ---------- stats ---------- */
+function sparkline(vals) {
+  if (vals.length < 2) return `<p class="sub">${esc(t("noData"))}</p>`;
+  const max = Math.max(...vals, 10), w = 300, h = 60;
+  const pts = vals.map((v, i) => `${(i / (vals.length - 1) * w).toFixed(1)},${(h - v / max * (h - 6) - 3).toFixed(1)}`).join(" ");
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="70" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2.5" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function renderStats() {
+  const lc = lessonCounts();
+  const best = bestOverall();
+  const [cur, nxt] = rankFor(best);
+  const pct = nxt ? Math.min(100, Math.round((best - cur[0]) / (nxt[0] - cur[0]) * 100)) : 100;
+  const hist = data.history.slice(-12).reverse();
+  const ks = data.keys[S.layout];
+  const weak = Object.entries(ks).filter(([c, s]) => c !== " " && s.h + s.m >= 10)
+    .map(([c, s]) => [c, s.m / (s.h + s.m)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const loc = S.lang === "pt" ? "pt-BR" : "en";
+
+  $("#stats").innerHTML = `
+    <div class="statgrid">
+      <div class="card"><h2>${esc(t("rank"))}</h2><b>${esc(rankName(cur))}</b>
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        <div class="sub">${nxt ? esc(t("nextRank", {r: rankName(nxt), n: nxt[0]})) : "MAX"}</div></div>
+      <div class="card"><h2>${esc(t("bestFree"))}</h2><b>${data.best.free} ${esc(t("wpm"))}</b></div>
+      <div class="card"><h2>${esc(t("bestQuote"))}</h2><b>${data.best.quote} ${esc(t("wpm"))}</b></div>
+      <div class="card"><h2>${esc(t("lessonsCleared"))}</h2><b>${lc.cleared} / ${LESSON_DEFS.length}</b><div class="sub">${esc(t("starsTotal"))}: ${lc.stars} / ${LESSON_DEFS.length * 3}</div></div>
+    </div>
+    <div class="stack">
+      <div class="card"><h2>${esc(t("trend"))}</h2>${sparkline(data.history.slice(-30).map(h => h.wpm))}</div>
+      <div class="card"><h2>${esc(t("heat"))}</h2><div class="kb" id="heat-kb" style="border:0;padding:0"></div>
+        <h2 style="margin-top:14px">${esc(t("weak"))}</h2>
+        ${weak.length ? `<div class="kchips">${weak.map(([c, r]) => `<span class="cap">${esc(c.toUpperCase())}<small style="margin-left:4px;color:var(--err)">${Math.round(r * 100)}%</small></span>`).join("")}</div>` : `<p class="sub">${esc(t("noData"))}</p>`}
+      </div>
+      <div class="card"><h2>${esc(t("history"))}</h2>
+        ${hist.length ? `<table><tr><th>${esc(t("date"))}</th><th>${esc(t("mode"))}</th><th>${esc(t("wpm"))}</th><th>%</th></tr>
+        ${hist.map(h => `<tr><td>${new Date(h.t).toLocaleString(loc, {dateStyle: "short", timeStyle: "short"})}</td><td>${esc(t("modes")[h.mode])} ${esc(h.label || "")}</td><td>${h.wpm}</td><td>${h.acc}</td></tr>`).join("")}</table>` : `<p class="sub">${esc(t("noData"))}</p>`}
+      </div>
+      <div class="card"><h2>${esc(t("settings"))}</h2>
+        <label class="toggle"><input type="checkbox" id="opt-kb" ${S.showKb ? "checked" : ""}> ${esc(t("showKb"))}</label>
+        <label class="toggle"><input type="checkbox" id="opt-acc" ${S.accents ? "checked" : ""}> ${esc(t("accents"))}</label>
+        <label class="toggle"><input type="checkbox" id="opt-unlock" ${S.unlockAll ? "checked" : ""}> ${esc(t("unlockAll"))}</label>
+        <button class="btn small" id="btn-redo" style="margin-top:8px">${esc(t("redoSetup"))}</button>
+        <button class="btn small" id="btn-reset" style="margin-top:8px">${esc(t("reset"))}</button>
+      </div>
+    </div>`;
+
+  const heat = buildKb($("#heat-kb"));
+  for (const {el, base} of heat.keys) {
+    const s = ks[base];
+    if (!s || s.h + s.m < 5) continue;
+    const rate = s.m / (s.h + s.m);
+    el.style.background = `color-mix(in srgb, var(--err) ${Math.round(Math.min(1, rate * 4) * 85)}%, var(--panel2))`;
+    el.title = `${base}: ${Math.round(rate * 100)}%`;
+  }
+  $("#opt-kb").addEventListener("change", e => { S.showKb = e.target.checked; save(); });
+  $("#opt-acc").addEventListener("change", e => { S.accents = e.target.checked; save(); });
+  $("#opt-unlock").addEventListener("change", e => { S.unlockAll = e.target.checked; save(); });
+  $("#btn-redo").addEventListener("click", () => { setup = {step: 1, layout: null, msg: ""}; showView("setup"); });
+  resetArmed = false;
+  $("#btn-reset").addEventListener("click", e => {
+    if (!resetArmed) { resetArmed = true; e.target.textContent = t("resetConfirm"); return; }
+    const keep = S;
+    data = structuredClone(DEFAULTS);
+    data.settings = keep;
+    S = data.settings;
+    save();
+    renderStats();
+  });
+}
+
+/* ---------- hand illustrations ---------- */
+const HOME = {intl: "asdfjkl;", us: "asdfjkl;", abnt: "asdfjklç"};
+let svgSeq = 0;
+function keyGeometry() {
+  const U = 36, G = 4, step = U + G;
+  const pos = {}, ids = {}, rects = [];
+  [...LAYOUTS[S.layout].rows, ROW4].forEach((r, ri) => {
+    let x = 0;
+    const y = ri * step;
+    const addSpecial = ([label, w, id]) => {
+      const rc = {x, y, w: w * step - G, h: U, label, special: id !== "space", f: id === "space" ? 8 : null};
+      rects.push(rc);
+      if (id) ids[id] = rc;
+      x += w * step;
+    };
+    (r.pre || []).forEach(addSpecial);
+    if (r.keys) {
+      const base = [...r.keys[0]], sh = [...r.keys[1]], fg = [...r.keys[2]].map(Number);
+      base.forEach((b, i) => {
+        const rc = {x, y, w: U, h: U, label: isLetter(b) && b.toUpperCase() !== b ? b.toUpperCase() : b, f: fg[i]};
+        rects.push(rc);
+        pos[b] = rc;
+        if (!pos[sh[i]]) pos[sh[i]] = rc;
+        x += step;
+      });
+    }
+    (r.post || []).forEach(addSpecial);
+  });
+  pos[" "] = ids.space;
+  return {pos, ids, rects, width: 15 * step - G, bottom: 5 * step - G};
+}
+const centerOf = rc => [rc.x + rc.w / 2, rc.y + rc.h / 2];
+function handShapes(g) {
+  const home = HOME[S.layout], sp = g.ids.space, out = [];
+  const hand = (fingers, thumbX, side) => {
+    const tips = fingers.map(f => centerOf(g.pos[home[f]]));
+    const px = tips.reduce((a, q) => a + q[0], 0) / tips.length;
+    const py = g.bottom + 52;
+    out.push(`<ellipse cx="${px}" cy="${py}" rx="78" ry="36" style="fill:var(--text);opacity:.12"/>`);
+    fingers.forEach((f, i) => {
+      const [tx, ty] = tips[i];
+      out.push(`<line x1="${px - 48 + i * 32}" y1="${py - 22}" x2="${tx}" y2="${ty}" style="stroke:var(--f${FCOL[f]});stroke-width:18;stroke-linecap:round;opacity:.45"/>`);
+      out.push(`<circle cx="${tx}" cy="${ty}" r="13" style="fill:var(--f${FCOL[f]});stroke:#111;stroke-width:1.5"/>`);
+    });
+    const ty = sp.y + sp.h / 2;
+    out.push(`<line x1="${px + side * 70}" y1="${py + 4}" x2="${thumbX}" y2="${ty}" style="stroke:var(--f8);stroke-width:18;stroke-linecap:round;opacity:.45"/>`);
+    out.push(`<circle cx="${thumbX}" cy="${ty}" r="11" style="fill:var(--f8);stroke:#111;stroke-width:1.5"/>`);
+  };
+  hand([0, 1, 2, 3], sp.x + sp.w * 0.42, 1);
+  hand([4, 5, 6, 7], sp.x + sp.w * 0.55, -1);
+  return out.join("");
+}
+// o.hi: chars or key ids to highlight; o.reach: [from, to] arrows.
+function handsSvg(o = {}) {
+  const g = keyGeometry(), mid = "arrow" + (++svgSeq), H = g.bottom + 90;
+  const look = k => g.pos[k] || g.ids[k];
+  const hiRects = new Set((o.hi || []).map(look).filter(Boolean));
+  let s = `<svg class="hands" viewBox="-6 -6 ${g.width + 12} ${H + 12}" role="img">
+    <defs><marker id="${mid}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent2)"/></marker></defs>`;
+  const tipRects = new Set(o.hands === false ? [] : [...HOME[S.layout]].map(k => g.pos[k]));
+  for (const rc of g.rects) {
+    const on = hiRects.has(rc);
+    const fill = rc.f == null ? (on ? "var(--accent)" : "var(--panel2)") : `color-mix(in srgb, var(--f${FCOL[rc.f]}) ${on ? 85 : 22}%, var(--panel2))`;
+    s += `<rect x="${rc.x}" y="${rc.y}" width="${rc.w}" height="${rc.h}" rx="5" style="fill:${fill};stroke:${on ? "var(--accent)" : "var(--line)"};stroke-width:${on ? 3 : 1}"/>`;
+  }
+  for (const k of ["f", "j"]) {
+    const rc = g.pos[k];
+    s += `<rect x="${rc.x + rc.w / 2 - 6}" y="${rc.y + rc.h - 6}" width="12" height="2" rx="1" style="fill:var(--text);opacity:.7"/>`;
+  }
+  if (o.hands !== false) s += handShapes(g);
+  for (const rc of g.rects) {
+    if (!rc.label) continue;
+    const dark = hiRects.has(rc) || tipRects.has(rc);
+    s += `<text x="${rc.x + rc.w / 2}" y="${rc.y + rc.h / 2 + 5}" text-anchor="middle" style="fill:${dark ? "#111" : "var(--text)"};font:${rc.special ? "600 10px system-ui,sans-serif" : "700 14px ui-monospace,monospace"}">${esc(rc.label)}</text>`;
+  }
+  for (const [a, b] of o.reach || []) {
+    const ra = look(a), rb = look(b);
+    if (!ra || !rb) continue;
+    const [x1, y1] = centerOf(ra), [x2, y2] = centerOf(rb);
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#${mid})" style="stroke:var(--accent2);stroke-width:3;stroke-dasharray:5 4"/>`;
+  }
+  return s + "</svg>";
+}
+function tipList(k) {
+  const p = HOME[S.layout][7].toUpperCase();
+  return (T[S.lang][k] || T.en[k] || []).map(x => x.split("{p}").join(p));
+}
+function lessonIntro(L) {
+  const homeAll = [...HOME[S.layout]];
+  if (L.id === "fj") return {title: t("in_fj_t"), bullets: tipList("in_fj"), hi: ["f", "j"], reach: []};
+  if (L.id === "a") return {title: t("in_a_t"), bullets: tipList("in_a"), hi: homeAll, reach: []};
+  if (L.id === "r1") return {title: t("rv_home"), bullets: tipList("in_r1"), hi: homeAll, reach: []};
+  if (L.shift) return {title: t("shiftLesson"), bullets: tipList("in_shift"), hi: ["shiftL", "shiftR"], reach: [[homeAll[0], "shiftL"], [homeAll[7], "shiftR"]]};
+  if (L.accents) {
+    if (S.layout === "intl") return {title: t("accLesson"), bullets: tipList("in_acc_intl"), hi: ["'", "~", "^", ",", "altgr"], reach: []};
+    if (S.layout === "abnt") return {title: t("accLesson"), bullets: tipList("in_acc_abnt"), hi: ["´", "~", "ç"], reach: []};
+    return {title: t("accLesson"), bullets: tipList("in_acc_us"), hi: [], reach: []};
+  }
+  if (L.quotes) return {title: t("quotesLesson"), bullets: tipList(S.layout === "intl" ? "in_q_intl" : "in_q"), hi: [",", ".", "!", "?", "shiftL", "shiftR"], reach: []};
+  if (!L.k) return null;
+  const g = keyGeometry(), keys = [...lessonKeys(L)], bullets = [], reach = [];
+  for (const k of keys) {
+    const rc = g.pos[k];
+    if (!rc) continue;
+    const h = HOME[S.layout][rc.f];
+    const vars = {k: keyName(k), f: t("fingers")[rc.f], h: keyName(h)};
+    if (h === k) bullets.push(t("homeKeyLine", vars));
+    else { bullets.push(t("reachLine", vars)); reach.push([h, k]); }
+  }
+  const extra = T[S.lang]["in_x_" + L.id];
+  if (extra) bullets.push(extra);
+  return {title: `${t("newKeys")}: ${keys.map(keyName).join(" ")}`, bullets, hi: keys, reach};
+}
+const introSeen = new Set();
+function renderIntro() {
+  const I = run.intro;
+  $("#intro").innerHTML = `<h2 class="rt">${esc(I.title)}</h2>${handsSvg({hi: I.hi, reach: I.reach})}
+    <div class="legend">${legendHtml()}</div>
+    <ul class="tips">${I.bullets.map(b => `<li>${esc(b)}</li>`).join("")}</ul>
+    <div class="type-actions"><button class="btn primary" id="intro-go">${esc(run.started ? t("backToTyping") : t("gotIt"))}</button></div>`;
+  $("#intro-go").addEventListener("click", closeIntro);
+}
+function closeIntro() {
+  run.introOpen = false;
+  $("#intro").hidden = true;
+  $("#typing-area").hidden = false;
+  $("#type-actions").hidden = false;
+  $("#btn-tip").hidden = false;
+  setCursor();
+  focusSink();
+  if (run.pauseStart) showOverlay(true);
+}
+function resultTip(m, missed) {
+  let s = "";
+  if (m.acc < 90) s = t("tipSlow");
+  else if (m.acc >= 97 && m.wpm < 15) s = t("tipRhythm");
+  const worst = missed.find(([c]) => c !== " ");
+  if (worst) {
+    const st = strokes(worst[0], true);
+    const info = st && kb.map[st[0].c];
+    if (info) s += (s ? " " : "") + t("tipKey", {k: keyName(worst[0]), f: t("fingers")[info.f]});
+  }
+  return s ? `<p class="tipline">💡 ${esc(s)}</p>` : "";
+}
+
+/* ---------- home view ---------- */
+function startNext() {
+  const i = nextLessonIdx();
+  if (i >= 0 && isUnlocked(i)) startRun("lesson", {lessonIdx: i});
+}
+function renderHome() {
+  const lc = lessonCounts(), nx = Math.max(0, nextLessonIdx());
+  const [cur] = rankFor(bestOverall());
+  const got = ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length;
+  const first = lc.cleared === 0 && data.totals.runs === 0;
+  const modes = [["lessons", "tabLessons", "modeLessons"], ["free", "tabFree", "modeFree"], ["quotes", "tabQuotes", "modeQuotes"], ["collection", "tabCollection", "modeCollection"]];
+  $("#home").innerHTML = `
+    <div class="card hero">
+      <h1>${esc(t("homeTitle"))}</h1>
+      <p class="sub" style="font-size:16px;margin:0 0 14px">${esc(t("homeSub"))}</p>
+      <button class="btn primary" data-go="start">${esc(first ? t("homeStart") : t("homeContinue", {n: nx + 1}))} ${esc(t("enterHint"))}</button>
+      <div class="chips" style="margin-top:14px">
+        <span class="chip">${esc(t("rank"))}: <b style="font-size:14px">${esc(rankName(cur))}</b></span>
+        <span class="chip">${esc(t("tabLessons"))}: <b style="font-size:14px">${lc.cleared}/${LESSON_DEFS.length}</b></span>
+        <span class="chip">${esc(t("tabCollection"))}: <b style="font-size:14px">${got}/${ACHIEVEMENTS.length}</b></span>
+      </div>
+    </div>
+    <div class="card"><h2>${esc(t("homeHandsTitle"))}</h2>${handsSvg({hi: ["f", "j"]})}
+      <div class="legend">${legendHtml()}</div>
+      <ul class="tips">${tipList("homeTips").map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+    </div>
+    <div class="grid">${modes.map(([v, title, desc]) => `<button class="lesson" data-go="${v}"><span class="title">${esc(t(title))}</span><span class="sub">${esc(t(desc))}</span></button>`).join("")}</div>`;
+}
+$("#home").addEventListener("click", e => {
+  const b = e.target.closest("[data-go]");
+  if (!b) return;
+  if (b.dataset.go === "start") startNext();
+  else showView(b.dataset.go);
+});
+$("#btn-tip").addEventListener("click", () => openTip());
+
+/* ---------- first-run setup ---------- */
+let setup = {step: 1, layout: null, msg: ""};
+function renderSetup() {
+  const names = t("layoutNames");
+  let detect;
+  if (setup.layout) detect = `<p><b>✓ ${esc(t("setupDetected", {name: names[setup.layout]}))}</b></p>`;
+  else {
+    const hiKey = setup.step === 1 ? HOME[S.layout][7] : "'";
+    detect = `<p><b>${esc(setup.step === 1 ? t("setupStep1") : t("setupStep2"))}</b></p>
+      ${handsSvg({hi: [hiKey], hands: false})}
+      ${setup.msg ? `<p style="color:var(--err)">${esc(setup.msg)}</p>` : ""}`;
+  }
+  const layoutBtns = ["intl", "us", "abnt"].map(l => `<button class="btn small${setup.layout === l ? " primary" : ""}" data-layout="${l}">${esc(names[l])}</button>`).join(" ");
+  const themes = ["mix", ...Object.keys(SERIES)].map(k => `<button class="lesson${S.series === k ? " next" : ""}" data-set="series" data-val="${k}">
+      <span class="title">${esc(k === "mix" ? t("mix") : SERIES[k].label)}</span><span class="sub">${esc(k === "mix" ? "JoJo · Eva · AoT · Soul Eater" : SERIES[k].deco)}</span></button>`).join("");
+  $("#setup").innerHTML = `
+    <div class="card hero"><h1>${esc(t("setupTitle"))}</h1><p class="sub" style="font-size:16px;margin:0">${esc(t("setupIntro"))}</p></div>
+    <div class="card"><h2>1. ${esc(t("keyboard"))}</h2>${detect}
+      <p class="sub" style="margin:12px 0 6px">${esc(t("setupManual"))}</p><div style="display:flex;gap:8px;flex-wrap:wrap">${layoutBtns}</div></div>
+    <div class="card"><h2>2. ${esc(t("setupLang"))}</h2>
+      <div class="seg" data-set="lang"><button data-set="lang" data-val="pt">Português</button><button data-set="lang" data-val="en">English</button></div></div>
+    <div class="card"><h2>3. ${esc(t("setupTheme"))}</h2><div class="grid">${themes}</div></div>
+    <div class="type-actions"><button class="btn primary" data-go="finish">${esc(t("setupGo"))}</button></div>
+    ${setup.needLayout ? `<p style="text-align:center;color:var(--err)">${esc(t("setupNeedLayout"))}</p>` : ""}`;
+}
+function chooseLayout(l) {
+  setup.layout = l;
+  setup.needLayout = false;
+  setSetting("layout", l);
+}
+function finishSetup() {
+  if (!setup.layout) { setup.needLayout = true; renderSetup(); return; }
+  S.setupDone = true;
+  save();
+  showView("home");
+}
+function handleSetupKey(e) {
+  if (e.key === "Enter") { e.preventDefault(); finishSetup(); return; }
+  if (setup.layout || !(e.key.length === 1 || e.key === "Dead")) return;
+  e.preventDefault();
+  if (setup.step === 1) {
+    if (e.code === "Semicolon" && (e.key === "ç" || e.key === "Ç")) chooseLayout("abnt");
+    else if (e.code === "Semicolon") { setup.step = 2; setup.msg = ""; S.layout = "intl"; renderSetup(); }
+    else { setup.msg = t("setupWrong1"); renderSetup(); }
+  } else if (e.code === "Quote") chooseLayout(e.key === "Dead" ? "intl" : "us");
+  else { setup.msg = t("setupWrong2"); renderSetup(); }
+}
+$("#setup").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.dataset.layout) chooseLayout(b.dataset.layout);
+  else if (b.dataset.set) setSetting(b.dataset.set, b.dataset.val);
+  else if (b.dataset.go === "finish") finishSetup();
+});
+
+/* ---------- pause, focus mode and locks ---------- */
+function activeMs() {
+  if (!run.started) return 0;
+  const end = run.ended || Date.now();
+  const pausedNow = run.pauseStart ? end - run.pauseStart : 0;
+  return Math.max(0, end - run.started - run.pausedMs - pausedNow);
+}
+function showOverlay(paused) {
+  $("#focus-overlay").textContent = paused ? t("pausedOverlay") : t("clickToType");
+  $("#focus-overlay").hidden = false;
+}
+// An idle pause starts one second after the last key, so the time spent looking away never counts.
+function pause(reason) {
+  if (!run || !run.started || run.done || run.pauseStart) return;
+  run.pauseStart = reason === "idle" ? Math.min(Date.now(), run.lastKey + 1000) : Date.now();
+  if (reason !== "menu") showOverlay(true);
+}
+function resume() {
+  if (!run.pauseStart) return;
+  run.pausedMs += Date.now() - run.pauseStart;
+  run.pauseStart = 0;
+  $("#focus-overlay").hidden = true;
+}
+function openMenu() {
+  if (!run || run.done) return;
+  pause("menu");
+  run.menuOpen = true;
+  sink.blur();
+  $("#focus-overlay").hidden = true;
+  $("#menu").innerHTML = `<h2 class="rt" style="margin:0">${esc(t("paused"))}</h2>
+    <div class="type-actions" style="margin:0">
+      <button class="btn primary" data-m="resume">${esc(t("resume"))}</button>
+      <button class="btn" data-m="restart">${esc(t("restart"))}</button>
+      <button class="btn" data-m="exit">${esc(t("exit"))}</button>
+    </div>`;
+  $("#menu").hidden = false;
+  $("#typing-area").hidden = true;
+  $("#type-actions").hidden = true;
+}
+function closeMenu() {
+  run.menuOpen = false;
+  $("#menu").hidden = true;
+  $("#typing-area").hidden = false;
+  $("#type-actions").hidden = false;
+  setCursor();
+  focusSink();
+  if (run.pauseStart) showOverlay(true);
+}
+$("#menu").addEventListener("click", e => {
+  const b = e.target.closest("[data-m]");
+  if (!b) return;
+  if (b.dataset.m === "resume") closeMenu();
+  else if (b.dataset.m === "restart") restart();
+  else goBack();
+});
+$("#btn-pause").addEventListener("click", () => openMenu());
+function openTip() {
+  if (!run || !run.intro || run.done) return;
+  pause("menu");
+  run.introOpen = true;
+  sink.blur();
+  $("#focus-overlay").hidden = true;
+  $("#typing-area").hidden = true;
+  $("#type-actions").hidden = true;
+  $("#intro").hidden = false;
+  renderIntro();
+}
+const lessonIndexOf = id => LESSON_DEFS.findIndex(L => L.id === id);
+// Until the all-letters review is cleared, the free run sticks to letters from cleared lessons.
+function learnedLimit() {
+  const r3 = lessonIndexOf("r3");
+  if (S.unlockAll || progress().r3?.stars >= 1) return null;
+  let lim = 0;
+  LESSON_DEFS.forEach((L, i) => { if (i < r3 && progress()[L.id]?.stars >= 1) lim = Math.max(lim, i); });
+  return lim;
+}
+const quotesUnlocked = () => S.unlockAll || progress().shift?.stars >= 1;
+function renderFreeNote() {
+  const lim = learnedLimit();
+  $("#free-note").textContent = lim === null ? "" :
+    t("freeLimited", {k: [...allowedUpTo(lim)].filter(isLetter).map(c => c.toUpperCase()).join(" "), n: lessonIndexOf("r3") + 1});
+}
+function renderQuoteNote() {
+  const open = quotesUnlocked();
+  $("#quote-note").textContent = open ? "" : t("quotesLocked", {n: lessonIndexOf("shift") + 1});
+  $("#btn-quote").textContent = open ? t("start") : t("previewBtn");
+}
+const startQuote = () => startRun("quote", {preview: !quotesUnlocked()});
+
+/* ---------- boot ---------- */
+window.addEventListener("pagehide", save);
+applyTheme();
+applyI18n();
+showView(S.setupDone ? "home" : "setup");
+</script>
+</body>
+</html>
