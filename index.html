@@ -509,7 +509,7 @@ Object.assign(T.pt, {
   stPowerV: "{n} letras seguidas sem erro", stRangeV: "{n}% da corrida", stDurabilityV: "treinou {n} dos últimos 7 dias", stPotentialV: "o Tusk ainda evolui",
   raceTable: "Classificação: {p} pontos", stage: "Etapa", rival: "Rival", placeCol: "Colocação",
   proNext: "Próximo (Enter)", proPrev: "Voltar", proSkip: "Pular a história",
-  proSignUp: "Fazer a inscrição (Enter)", proBack: "Voltar para a corrida (Enter)",
+  proSignUp: "Fazer a inscrição (Enter)", proHome: "Ir para o início",
   replayPrologue: "Ver a história de novo",
   footer: "O progresso fica salvo neste navegador."
 });
@@ -712,7 +712,7 @@ function sanitize(str, accents) {
 /* ---------- storage ---------- */
 const STORE_KEY = "typedojo:v1";
 const DEFAULTS = {
-  settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false, prologueSeen: false},
+  settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
   best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: [],
   profile: {name: "", number: 0}, days: {}, bestStreak: 0
@@ -1813,7 +1813,7 @@ $("#btn-tip").addEventListener("click", () => openTip());
 
 /* ---------- prologue ---------- */
 const PROLOGUE = [
-  {art: "map", title: "San Diego, 25 de setembro de 1890",
+  {art: "🌅", title: "San Diego, 25 de setembro de 1890",
     narr: ["3.852 corredores esperam na praia. Na frente deles, quase 6.000 km de deserto, montanhas, rios e gelo até Nova York.", "Tem cowboy, tem nobre, tem bandido e tem até um corredor a pé, o Sandman. O prêmio é de 50 milhões de dólares."]},
   {art: "🏇", title: "Você é o Johnny Joestar",
     narr: ["Você era o jóquei mais famoso do país, até levar um tiro na coluna. Desde então as suas pernas não se mexem. Em cima do cavalo, você ainda corre como qualquer um.", "Na largada, você conhece o Gyro Zeppeli, que veio de Nápoles. A família dele guarda um segredo: a Rotação. Você toca na bola de aço do Gyro e, por um segundo, fica de pé.", "Você decide seguir o Gyro até Nova York."],
@@ -1824,11 +1824,27 @@ const PROLOGUE = [
     narr: ["Cada lição concluída leva o seu cavalo alguns quilômetros mais perto de Nova York.", "No fim de cada etapa, um rival da série corre contra você: Sandman, Diego, Hot Pants, Pocoloco e o próprio Valentine. Pelo caminho você junta as partes do Cadáver Santo, e o Tusk evolui até o ACT4."]},
   {art: "💻", title: "E fora da corrida?",
     narr: ["Quem digita sem olhar faz o trabalho da escola, conversa no jogo e escreve código com os olhos na tela. A cabeça fica na ideia, e não na procura da tecla.", "Você vai usar isso a vida inteira."],
-    gyro: "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais longo era o atalho."},
-  {art: "🏁", title: "Como treinar",
-    narr: ["15 minutos por dia, sem olhar para as mãos. A missão diária na tela inicial diz o que treinar.", "Primeiro a precisão, depois a velocidade. Com 90% de acerto você passa de lição."],
-    gyro: "Os dedos ficam no F e no J, Johnny. A largada é agora. Nyo-ho!"}
+    gyro: "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais longo era o atalho."}
 ];
+// The last slide points to where the player is in the race.
+function whereSlide() {
+  const lc = lessonCounts();
+  if (lc.cleared === 0) return {art: "map", title: "Na largada",
+    narr: ["O seu cavalo está na praia de San Diego, no km 0. A missão diária na tela inicial diz o que treinar.",
+      "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição."],
+    gyro: "Os dedos ficam no F e no J, Johnny. A largada é agora. Nyo-ho!"};
+  if (lc.cleared === LESSON_DEFS.length) return {art: "map", title: "Trinity Church, Nova York", finished: true,
+    narr: [`Você cruzou a chegada depois de ${fmtKm(TOTAL_KM)}.`, "Agora o treino livre e as frases deixam os seus dedos mais rápidos."],
+    gyro: "Nyo-ho-ho! A Rotação sempre pode melhorar."};
+  const stg = STAGES[currentStageIdx()], nx = nextLessonIdx(), L = LESSON_DEFS[nx], day = today();
+  const done = [day.next, day.gyro, day.free].filter(Boolean).length;
+  return {art: "map", title: `${stg.lbl}: ${stg.place}`, lesson: nx + 1,
+    narr: [`Você já percorreu ${fmtKm(kmTraveled())} de ${fmtKm(TOTAL_KM)}, entre ${stg.from} e ${stg.to}.`,
+      `Próxima lição: ${nx + 1} (${lessonTitle(L)}).` + (L.race ? ` É uma corrida contra ${RIVALS[L.race].nm}.` : ""),
+      day.done ? "A missão de hoje já está cumprida. Um treino a mais é bônus." : `Missão de hoje: ${done} de 3 feitas.`],
+    gyro: STORY[L.id]?.gyro || "Galope constante, Johnny."};
+}
+const prologueSlides = () => [...PROLOGUE, whereSlide()];
 let prologueAt = 0;
 function prologueArt(art) {
   if (art === "map") return mapSvg();
@@ -1836,17 +1852,17 @@ function prologueArt(art) {
   return art;
 }
 function renderPrologue() {
-  const P = PROLOGUE[prologueAt], last = prologueAt === PROLOGUE.length - 1;
-  const nextLbl = !last ? t("proNext") : S.setupDone ? t("proBack") : t("proSignUp");
+  const slides = prologueSlides(), P = slides[prologueAt], last = prologueAt === slides.length - 1;
+  const nextLbl = !last ? t("proNext") : !S.setupDone ? t("proSignUp") : P.lesson ? t("homeContinue", {n: P.lesson}) + " " + t("enterHint") : t("proHome") + " " + t("enterHint");
   $("#prologue").innerHTML = `
     <div class="card">
       <div class="pro-art">${prologueArt(P.art)}</div>
       <h1>${esc(P.title)}</h1>
       ${P.narr.map(x => `<p>${esc(x)}</p>`).join("")}
       ${P.gyro ? `<div class="bubble"><b>Gyro:</b> ${esc(P.gyro)}</div>` : ""}
-      <div class="pro-dots">${PROLOGUE.map((_, i) => `<i class="${i === prologueAt ? "on" : ""}"></i>`).join("")}</div>
+      <div class="pro-dots">${slides.map((_, i) => `<i class="${i === prologueAt ? "on" : ""}"></i>`).join("")}</div>
       <div class="pro-nav">
-        <button class="btn small" data-pro="skip">${esc(t("proSkip"))}</button>
+        ${!last ? `<button class="btn small" data-pro="skip">${esc(t("proSkip"))}</button>` : S.setupDone && P.lesson ? `<button class="btn small" data-pro="home">${esc(t("proHome"))}</button>` : "<span></span>"}
         <span style="display:flex;gap:8px">
           ${prologueAt ? `<button class="btn" data-pro="prev">${esc(t("proPrev"))}</button>` : ""}
           <button class="btn primary" data-pro="next">${esc(nextLbl)}</button>
@@ -1854,27 +1870,28 @@ function renderPrologue() {
       </div>
     </div>`;
 }
-function endPrologue() {
-  S.prologueSeen = true;
+function endPrologue(startLesson) {
   prologueAt = 0;
-  save();
   showView(S.setupDone ? "home" : "setup");
+  if (startLesson && S.setupDone && nextLessonIdx() >= 0 && !whereSlide().finished) startNext();
 }
 function stepPrologue(d) {
-  const i = prologueAt + d;
-  if (i >= PROLOGUE.length) { endPrologue(); return; }
+  const i = prologueAt + d, n = PROLOGUE.length + 1;
+  if (i >= n) { endPrologue(true); return; }
   prologueAt = Math.max(0, i);
   renderPrologue();
 }
+const toLastSlide = () => { prologueAt = PROLOGUE.length; renderPrologue(); };
 function handlePrologueKey(e) {
   const act = {Enter: 1, " ": 1, ArrowRight: 1, ArrowLeft: -1}[e.key];
   if (act) { e.preventDefault(); stepPrologue(act); }
-  else if (e.key === "Escape") { e.preventDefault(); endPrologue(); }
+  else if (e.key === "Escape") { e.preventDefault(); if (prologueAt < PROLOGUE.length) toLastSlide(); else endPrologue(); }
 }
 $("#prologue").addEventListener("click", e => {
   const b = e.target.closest("[data-pro]");
   if (!b) return;
-  if (b.dataset.pro === "skip") endPrologue();
+  if (b.dataset.pro === "skip") toLastSlide();
+  else if (b.dataset.pro === "home") endPrologue();
   else stepPrologue(b.dataset.pro === "prev" ? -1 : 1);
 });
 
@@ -2233,7 +2250,7 @@ const startQuote = () => startRun("quote", {preview: !quotesUnlocked()});
 window.addEventListener("pagehide", save);
 applyTheme();
 applyI18n();
-showView(!S.prologueSeen ? "prologue" : S.setupDone ? "home" : "setup");
+showView("prologue");
 </script>
 </body>
 </html>
