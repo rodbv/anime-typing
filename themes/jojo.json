@@ -501,5 +501,263 @@
         "gyro": "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais curto era o desvio."
       }
     ]
-  }
+  },
+  "achievements": [
+    {
+      "id": "ball",
+      "s": "race",
+      "ic": "⚪",
+      "nm": "Bola de aço",
+      "d": "Termine a etapa 1",
+      "when": {
+        "type": "stageCleared",
+        "stage": 0
+      }
+    },
+    {
+      "id": "larm",
+      "s": "race",
+      "ic": "💪",
+      "nm": "Braço esquerdo",
+      "d": "Termine a etapa 2",
+      "when": {
+        "type": "stageCleared",
+        "stage": 1
+      }
+    },
+    {
+      "id": "eyes",
+      "s": "race",
+      "ic": "👁️",
+      "nm": "Olhos",
+      "d": "Termine a etapa 3",
+      "when": {
+        "type": "stageCleared",
+        "stage": 2
+      }
+    },
+    {
+      "id": "spine",
+      "s": "race",
+      "ic": "🦴",
+      "nm": "Coluna",
+      "d": "Termine a etapa 4",
+      "when": {
+        "type": "stageCleared",
+        "stage": 3
+      }
+    },
+    {
+      "id": "heart",
+      "s": "race",
+      "ic": "❤️",
+      "nm": "Coração",
+      "d": "Termine a etapa 5",
+      "when": {
+        "type": "stageCleared",
+        "stage": 4
+      }
+    },
+    {
+      "id": "rarm",
+      "s": "race",
+      "ic": "🤚",
+      "nm": "Braço direito, orelhas e pernas",
+      "d": "Termine a etapa 6",
+      "when": {
+        "type": "stageCleared",
+        "stage": 5
+      }
+    },
+    {
+      "id": "torso",
+      "s": "race",
+      "ic": "👕",
+      "nm": "Tronco",
+      "d": "Termine a etapa 7, em Gettysburg",
+      "when": {
+        "type": "stageCleared",
+        "stage": 6
+      }
+    },
+    {
+      "id": "head",
+      "s": "race",
+      "ic": "💀",
+      "nm": "Cabeça",
+      "d": "Termine a etapa 8, na Filadélfia",
+      "when": {
+        "type": "stageCleared",
+        "stage": 7
+      }
+    },
+    {
+      "id": "corpse",
+      "s": "race",
+      "ic": "🏁",
+      "nm": "Cadáver completo",
+      "d": "Chegue à Trinity Church",
+      "when": {
+        "type": "stageCleared",
+        "stage": 8
+      }
+    },
+    {
+      "id": "act1",
+      "s": "tusk",
+      "ic": "💅",
+      "nm": "Tusk ACT1",
+      "d": "Conclua a lição S L, no deserto",
+      "when": {
+        "type": "lessonDone",
+        "lesson": "sl"
+      }
+    },
+    {
+      "id": "act2",
+      "s": "tusk",
+      "ic": "🌀",
+      "nm": "Tusk ACT2",
+      "d": "Conclua a lição Q P, no Mississippi",
+      "when": {
+        "type": "lessonDone",
+        "lesson": "qp"
+      }
+    },
+    {
+      "id": "act3",
+      "s": "tusk",
+      "ic": "🕳️",
+      "nm": "Tusk ACT3",
+      "d": "Conclua a lição V B",
+      "when": {
+        "type": "lessonDone",
+        "lesson": "vb"
+      }
+    },
+    {
+      "id": "act4",
+      "s": "tusk",
+      "ic": "♾️",
+      "nm": "Tusk ACT4",
+      "d": "Vença a etapa 8, contra o Valentine",
+      "when": {
+        "type": "lessonDone",
+        "lesson": "r3"
+      }
+    },
+    {
+      "id": "golden",
+      "s": "goal",
+      "ic": "🌻",
+      "nm": "Proporção áurea",
+      "d": "Uma lição com 100% de precisão",
+      "when": {
+        "type": "perfectLesson",
+        "minChars": 40
+      }
+    },
+    {
+      "id": "gallop",
+      "s": "goal",
+      "ic": "🐎",
+      "nm": "Galope constante",
+      "d": "Nota A de ritmo numa rodada",
+      "when": {
+        "type": "rhythm",
+        "grade": "A"
+      }
+    },
+    {
+      "id": "slowdancer",
+      "s": "goal",
+      "ic": "🐴",
+      "nm": "Slow Dancer",
+      "d": "Treine em 5 dias diferentes",
+      "when": {
+        "type": "daysTrained",
+        "n": 5
+      }
+    },
+    {
+      "id": "valkyrie",
+      "s": "goal",
+      "ic": "🏇",
+      "nm": "Valkyrie",
+      "d": "Suba ao pódio em 3 corridas",
+      "when": {
+        "type": "podiums",
+        "n": 3
+      }
+    },
+    {
+      "id": "lucky",
+      "s": "goal",
+      "ic": "🍀",
+      "nm": "Sorte do Pocoloco",
+      "d": "1º lugar na corrida contra o Pocoloco",
+      "when": {
+        "type": "racePlace",
+        "lesson": "r2",
+        "place": 1
+      }
+    },
+    {
+      "id": "nyoho",
+      "s": "goal",
+      "ic": "😆",
+      "nm": "Nyo-ho-ho!",
+      "d": "Cumpra a primeira missão do dia",
+      "when": {
+        "type": "missions",
+        "n": 1
+      }
+    },
+    {
+      "id": "pizza",
+      "s": "goal",
+      "ic": "🍕",
+      "nm": "Pizza mozzarella",
+      "d": "Cumpra 5 missões do dia",
+      "when": {
+        "type": "missions",
+        "n": 5
+      }
+    },
+    {
+      "id": "camp",
+      "s": "goal",
+      "ic": "🔥",
+      "nm": "Fogueira do acampamento",
+      "d": "Cumpra 15 missões do dia",
+      "when": {
+        "type": "missions",
+        "n": 15
+      }
+    },
+    {
+      "id": "spin",
+      "s": "goal",
+      "ic": "⚙️",
+      "nm": "Rotação",
+      "d": "Treino livre: 25 PPM com 95%",
+      "when": {
+        "type": "freeRun",
+        "wpm": 25,
+        "acc": 95
+      }
+    },
+    {
+      "id": "infinite",
+      "s": "goal",
+      "ic": "💫",
+      "nm": "Rotação infinita",
+      "d": "Treino livre: 35 PPM com 95%",
+      "when": {
+        "type": "freeRun",
+        "wpm": 35,
+        "acc": 95
+      }
+    }
+  ]
 }

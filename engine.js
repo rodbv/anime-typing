@@ -156,33 +156,19 @@ const missionsDone = () => Object.values(data.days || {}).filter(d => d.done).le
 const daysTrained = () => Object.values(data.days || {}).filter(d => d.ms > 0).length;
 
 /* Goals that unlock collection items. ctx = {run, m, cleared, stars3, totalLessons, lessons, totals} */
-const ACHIEVEMENTS = [
-  {id: "ball", s: "race", ic: "⚪", nm: "Bola de aço", d: {pt: "Termine a etapa 1"}, ok: () => stageCleared(0)},
-  {id: "larm", s: "race", ic: "💪", nm: "Braço esquerdo", d: {pt: "Termine a etapa 2"}, ok: () => stageCleared(1)},
-  {id: "eyes", s: "race", ic: "👁️", nm: "Olhos", d: {pt: "Termine a etapa 3"}, ok: () => stageCleared(2)},
-  {id: "spine", s: "race", ic: "🦴", nm: "Coluna", d: {pt: "Termine a etapa 4"}, ok: () => stageCleared(3)},
-  {id: "heart", s: "race", ic: "❤️", nm: "Coração", d: {pt: "Termine a etapa 5"}, ok: () => stageCleared(4)},
-  {id: "rarm", s: "race", ic: "🤚", nm: "Braço direito, orelhas e pernas", d: {pt: "Termine a etapa 6"}, ok: () => stageCleared(5)},
-  {id: "torso", s: "race", ic: "👕", nm: "Tronco", d: {pt: "Termine a etapa 7, em Gettysburg"}, ok: () => stageCleared(6)},
-  {id: "head", s: "race", ic: "💀", nm: "Cabeça", d: {pt: "Termine a etapa 8, na Filadélfia"}, ok: () => stageCleared(7)},
-  {id: "corpse", s: "race", ic: "🏁", nm: "Cadáver completo", d: {pt: "Chegue à Trinity Church"}, ok: () => stageCleared(8)},
-
-  {id: "act1", s: "tusk", ic: "💅", nm: "Tusk ACT1", d: {pt: "Conclua a lição S L, no deserto"}, ok: c => (c.lessons.sl?.stars || 0) >= 1},
-  {id: "act2", s: "tusk", ic: "🌀", nm: "Tusk ACT2", d: {pt: "Conclua a lição Q P, no Mississippi"}, ok: c => (c.lessons.qp?.stars || 0) >= 1},
-  {id: "act3", s: "tusk", ic: "🕳️", nm: "Tusk ACT3", d: {pt: "Conclua a lição V B"}, ok: c => (c.lessons.vb?.stars || 0) >= 1},
-  {id: "act4", s: "tusk", ic: "♾️", nm: "Tusk ACT4", d: {pt: "Vença a etapa 8, contra o Valentine"}, ok: c => (c.lessons.r3?.stars || 0) >= 1},
-
-  {id: "golden", s: "goal", ic: "🌻", nm: "Proporção áurea", d: {pt: "Uma lição com 100% de precisão"}, ok: c => c.run.mode === "lesson" && c.m.acc === 100 && c.run.pos >= 40},
-  {id: "gallop", s: "goal", ic: "🐎", nm: "Galope constante", d: {pt: "Nota A de ritmo numa rodada"}, ok: c => c.m.rhythm === "A"},
-  {id: "slowdancer", s: "goal", ic: "🐴", nm: "Slow Dancer", d: {pt: "Treine em 5 dias diferentes"}, ok: () => daysTrained() >= 5},
-  {id: "valkyrie", s: "goal", ic: "🏇", nm: "Valkyrie", d: {pt: "Suba ao pódio em 3 corridas"}, ok: () => podiums() >= 3},
-  {id: "lucky", s: "goal", ic: "🍀", nm: "Sorte do Pocoloco", d: {pt: "1º lugar na corrida contra o Pocoloco"}, ok: c => (c.lessons.r2?.place || 9) === 1},
-  {id: "nyoho", s: "goal", ic: "😆", nm: "Nyo-ho-ho!", d: {pt: "Cumpra a primeira missão do dia"}, ok: () => missionsDone() >= 1},
-  {id: "pizza", s: "goal", ic: "🍕", nm: "Pizza mozzarella", d: {pt: "Cumpra 5 missões do dia"}, ok: () => missionsDone() >= 5},
-  {id: "camp", s: "goal", ic: "🔥", nm: "Fogueira do acampamento", d: {pt: "Cumpra 15 missões do dia"}, ok: () => missionsDone() >= 15},
-  {id: "spin", s: "goal", ic: "⚙️", nm: "Rotação", d: {pt: "Treino livre: 25 PPM com 95%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 25 && c.m.acc >= 95},
-  {id: "infinite", s: "goal", ic: "💫", nm: "Rotação infinita", d: {pt: "Treino livre: 35 PPM com 95%"}, ok: c => c.run.mode === "free" && c.m.wpm >= 35 && c.m.acc >= 95}
-];
+// Achievement conditions a theme can use, by type. Each one gets the condition from the theme and the finished run.
+const CONDITIONS = {
+  stageCleared: w => stageCleared(w.stage),
+  lessonDone: (w, c) => (c.lessons[w.lesson]?.stars || 0) >= 1,
+  racePlace: (w, c) => (c.lessons[w.lesson]?.place || 9) <= w.place,
+  perfectLesson: (w, c) => c.run.mode === "lesson" && c.m.acc === 100 && c.run.pos >= w.minChars,
+  rhythm: (w, c) => c.m.rhythm === w.grade,
+  daysTrained: w => daysTrained() >= w.n,
+  podiums: w => podiums() >= w.n,
+  missions: w => missionsDone() >= w.n,
+  freeRun: (w, c) => c.run.mode === "free" && c.m.wpm >= w.wpm && c.m.acc >= w.acc
+};
+const ACHIEVEMENTS = TH.achievements;
 
 /* ---------- keyboard layouts ---------- */
 // keys: [base chars, shifted chars, finger per key]. Fingers: 0-3 left pinky..index, 4-7 right index..pinky, 8 thumb.
@@ -896,7 +882,7 @@ function checkAchievements(m) {
   for (const a of ACHIEVEMENTS) {
     if (data.unlocked[a.id]) continue;
     let ok = false;
-    try { ok = a.ok(ctx); } catch (e) { ok = false; }
+    try { ok = CONDITIONS[a.when.type](a.when, ctx); } catch (e) { ok = false; }
     if (ok) { data.unlocked[a.id] = Date.now(); fresh.push(a); }
   }
   return fresh;
@@ -950,7 +936,7 @@ function finish() {
   const missHtml = missed.length
     ? `<div class="kchips">${missed.map(([c, n]) => `<span class="cap">${esc(c === " " ? "␣" : c)}<small style="margin-left:4px;color:var(--err)">${n}</small></span>`).join("")}</div>`
     : `<p>${esc(t("noMiss"))}</p>`;
-  const unlockHtml = fresh.map(a => `<div class="unlock"><span class="ic">${a.ic}</span><div><span class="menacing">ゴゴゴ ${esc(t("unlocked"))}</span><br><b>${esc(a.nm)}</b> · <span class="sub">${esc(a.d[S.lang])}</span></div></div>`).join("");
+  const unlockHtml = fresh.map(a => `<div class="unlock"><span class="ic">${a.ic}</span><div><span class="menacing">ゴゴゴ ${esc(t("unlocked"))}</span><br><b>${esc(a.nm)}</b> · <span class="sub">${esc(a.d)}</span></div></div>`).join("");
 
   const btns = [];
   const hasNext = run.mode === "lesson" && run.passed && !run.preview && run.lessonIdx < LESSON_DEFS.length - 1;
@@ -1090,7 +1076,7 @@ function renderCollection() {
     ${ACHIEVEMENTS.filter(a => a.s === g).map(a => {
       const u = data.unlocked[a.id];
       return `<div class="item ${u ? "got" : "locked"}"><span class="ic">${a.ic}</span><div>
-        <div class="nm">${esc(a.nm)}${u ? "" : " 🔒"}</div><div class="ds">${esc(a.d.pt)}</div>
+        <div class="nm">${esc(a.nm)}${u ? "" : " 🔒"}</div><div class="ds">${esc(a.d)}</div>
         ${u ? `<div class="ds">${new Date(u).toLocaleDateString("pt-BR")}</div>` : ""}</div></div>`;
     }).join("")}</div></div>`).join("");
 }

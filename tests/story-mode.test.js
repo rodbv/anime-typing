@@ -34,6 +34,9 @@ ev('showView("lessons")');
 console.log('stage headers:', d.querySelectorAll('#lesson-grid .stage-h').length, '| cards:', d.querySelectorAll('#lesson-grid .lesson').length, '| race tags:', d.querySelectorAll('#lesson-grid .race-tag').length);
 // progress moves the horse and km
 A.playLesson(0); A.playLesson(1);
+const unlockText = [...d.querySelectorAll('#results .unlock')].map(u => u.textContent.replace(/\s+/g, ' ').trim());
+console.log('unlocks on results:', unlockText.join(' / '));
+if (!unlockText.length || unlockText.some(x => x.includes('undefined'))) throw new Error('results unlock text is missing or undefined');
 ev('showView("lessons")');
 console.log('after stage 1:', d.querySelector('#lesson-grid .card p').textContent, '| ball unlocked:', !!ev('data.unlocked.ball'));
 // free and quotes
