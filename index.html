@@ -143,6 +143,15 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
 .narr{font-style:italic;color:var(--muted);margin:6px 0}
 .bubble{background:var(--panel2);border-left:4px solid var(--accent);border-radius:10px;padding:10px 14px;margin:8px 0}
 .bubble.rival{border-left-color:var(--err)}
+.pro{max-width:640px;margin:0 auto;width:100%}
+.pro-art{text-align:center;font-size:84px;line-height:1.1;margin:4px 0 10px}
+.pro-art svg{font-size:16px}
+.pro h1{margin:0 0 8px;font-size:26px;line-height:1.2}
+.pro p{font-size:17px;line-height:1.55;margin:8px 0}
+.pro-dots{display:flex;gap:6px;justify-content:center;margin:14px 0 4px}
+.pro-dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.pro-dots i.on{background:var(--accent)}
+.pro-nav{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap}
 .input{all:unset;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:18px;min-width:240px}
 .input:focus{border-color:var(--accent)}
 .toast{position:absolute;top:8px;right:12px;background:var(--accent);color:#111;font:700 14px system-ui,sans-serif;padding:4px 12px;border-radius:99px;animation:toast 1.4s ease-out}
@@ -195,6 +204,7 @@ body.focus header .controls,body.focus nav.tabs,body.focus footer{display:none}
     <button data-view="stats" data-i18n="tabStats"></button>
   </nav>
 
+  <section class="view" id="v-prologue"><div class="stack pro" id="prologue"></div></section>
   <section class="view" id="v-setup"><div class="stack" id="setup"></div></section>
   <section class="view" id="v-home"><div class="stack" id="home"></div></section>
 
@@ -498,6 +508,9 @@ Object.assign(T.pt, {
   stPower: "Poder", stSpeed: "Velocidade", stRange: "Alcance", stDurability: "Resistência", stPrecision: "Precisão", stPotential: "Potencial",
   stPowerV: "{n} letras seguidas sem erro", stRangeV: "{n}% da corrida", stDurabilityV: "treinou {n} dos últimos 7 dias", stPotentialV: "o Tusk ainda evolui",
   raceTable: "Classificação: {p} pontos", stage: "Etapa", rival: "Rival", placeCol: "Colocação",
+  proNext: "Próximo (Enter)", proPrev: "Voltar", proSkip: "Pular a história",
+  proSignUp: "Fazer a inscrição (Enter)", proBack: "Voltar para a corrida (Enter)",
+  replayPrologue: "Ver a história de novo",
   footer: "O progresso fica salvo neste navegador."
 });
 const t = (k, vars) => {
@@ -699,7 +712,7 @@ function sanitize(str, accents) {
 /* ---------- storage ---------- */
 const STORE_KEY = "typedojo:v1";
 const DEFAULTS = {
-  settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
+  settings: {layout: "intl", lang: "pt", series: "mix", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false, prologueSeen: false},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
   best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: [],
   profile: {name: "", number: 0}, days: {}, bestStreak: 0
@@ -998,11 +1011,12 @@ function syncSegs() {
 function showView(v) {
   view = v;
   document.querySelectorAll(".view").forEach(s => { s.hidden = s.id !== "v-" + v; });
-  $("#tabs").hidden = v === "setup";
+  $("#tabs").hidden = v === "setup" || v === "prologue";
   document.body.classList.toggle("focus", v === "type");
   if (v === "free") renderFreeNote();
   if (v === "quotes") renderQuoteNote();
   if (v === "setup") renderSetup();
+  if (v === "prologue") renderPrologue();
   if (v === "home") renderHome();
   if (v === "lessons") renderLessons();
   if (v === "stats") renderStats();
@@ -1444,6 +1458,7 @@ setInterval(() => {
 /* ---------- global keys ---------- */
 document.addEventListener("keydown", e => {
   if (view === "setup") { handleSetupKey(e); return; }
+  if (view === "prologue") { handlePrologueKey(e); return; }
   if (view === "type" && run) {
     if (run.introOpen) {
       if (e.key === "Enter") { e.preventDefault(); closeIntro(); }
@@ -1572,6 +1587,7 @@ function renderStats() {
         <label class="toggle"><input type="checkbox" id="opt-acc" ${S.accents ? "checked" : ""}> ${esc(t("accents"))}</label>
         <label class="toggle"><input type="checkbox" id="opt-unlock" ${S.unlockAll ? "checked" : ""}> ${esc(t("unlockAll"))}</label>
         <button class="btn small" id="btn-redo" style="margin-top:8px">${esc(t("redoSetup"))}</button>
+        <button class="btn small" id="btn-prologue" style="margin-top:8px">${esc(t("replayPrologue"))}</button>
         <button class="btn small" id="btn-reset" style="margin-top:8px">${esc(t("reset"))}</button>
       </div>
     </div>`;
@@ -1588,6 +1604,7 @@ function renderStats() {
   $("#opt-acc").addEventListener("change", e => { S.accents = e.target.checked; save(); });
   $("#opt-unlock").addEventListener("change", e => { S.unlockAll = e.target.checked; save(); });
   $("#btn-redo").addEventListener("click", () => { setup = {step: 1, layout: null, msg: ""}; showView("setup"); });
+  $("#btn-prologue").addEventListener("click", () => { prologueAt = 0; showView("prologue"); });
   resetArmed = false;
   $("#btn-reset").addEventListener("click", e => {
     if (!resetArmed) { resetArmed = true; e.target.textContent = t("resetConfirm"); return; }
@@ -1793,6 +1810,72 @@ $("#home").addEventListener("click", e => {
   else showView(b.dataset.go);
 });
 $("#btn-tip").addEventListener("click", () => openTip());
+
+/* ---------- prologue ---------- */
+const PROLOGUE = [
+  {art: "map", title: "San Diego, 25 de setembro de 1890",
+    narr: ["3.852 cavaleiros esperam na praia. Na frente deles, quase 6.000 km de deserto, montanhas, rios e gelo até Nova York.", "O prêmio é de 50 milhões de dólares."]},
+  {art: "🏇", title: "Você é o Johnny Joestar",
+    narr: ["Um acidente tirou os movimentos das suas pernas. Em cima do cavalo, você corre como qualquer um.", "Na largada, você vê o Gyro Zeppeli girar uma bola de aço. Por um segundo, as suas pernas se mexem. Você decide seguir o Gyro até o fim."],
+    gyro: "Quer aprender a Rotação? Então treina todo dia. Nyo-ho!"},
+  {art: "hands", title: "O Tusk",
+    narr: ["No deserto, você desperta um Stand: o Tusk. Ele dispara as suas unhas girando, como balas.", "Mas cada unha só dispara quando o dedo dela acha a tecla sem você olhar. Aqui, cada dedo cuida das suas teclas, e cada lição nova ensina um dedo a disparar."]},
+  {art: "🏆", title: "A corrida",
+    narr: ["Cada lição concluída leva o seu cavalo alguns quilômetros mais perto de Nova York.", "No fim de cada etapa, um rival da série corre contra você: Sandman, Diego, Hot Pants, Pocoloco e o próprio Valentine. Pelo caminho você junta as partes do Cadáver Santo, e o Tusk evolui até o ACT4."]},
+  {art: "💻", title: "E fora da corrida?",
+    narr: ["Quem digita sem olhar faz o trabalho da escola, conversa no jogo e escreve código com os olhos na tela. A cabeça fica na ideia, e não na procura da tecla.", "Você vai usar isso a vida inteira."],
+    gyro: "No começo você vai ficar mais lento do que catando milho. É normal. O caminho mais longo era o atalho."},
+  {art: "🏁", title: "Como treinar",
+    narr: ["15 minutos por dia, sem olhar para as mãos. A missão diária na tela inicial diz o que treinar.", "Primeiro a precisão, depois a velocidade. Com 90% de acerto você passa de lição."]}
+];
+let prologueAt = 0;
+function prologueArt(art) {
+  if (art === "map") return mapSvg();
+  if (art === "hands") return handsSvg({hi: ["f", "j"]});
+  return art;
+}
+function renderPrologue() {
+  const P = PROLOGUE[prologueAt], last = prologueAt === PROLOGUE.length - 1;
+  const nextLbl = !last ? t("proNext") : S.setupDone ? t("proBack") : t("proSignUp");
+  $("#prologue").innerHTML = `
+    <div class="card">
+      <div class="pro-art">${prologueArt(P.art)}</div>
+      <h1>${esc(P.title)}</h1>
+      ${P.narr.map(x => `<p>${esc(x)}</p>`).join("")}
+      ${P.gyro ? `<div class="bubble"><b>Gyro:</b> ${esc(P.gyro)}</div>` : ""}
+      <div class="pro-dots">${PROLOGUE.map((_, i) => `<i class="${i === prologueAt ? "on" : ""}"></i>`).join("")}</div>
+      <div class="pro-nav">
+        <button class="btn small" data-pro="skip">${esc(t("proSkip"))}</button>
+        <span style="display:flex;gap:8px">
+          ${prologueAt ? `<button class="btn" data-pro="prev">${esc(t("proPrev"))}</button>` : ""}
+          <button class="btn primary" data-pro="next">${esc(nextLbl)}</button>
+        </span>
+      </div>
+    </div>`;
+}
+function endPrologue() {
+  S.prologueSeen = true;
+  prologueAt = 0;
+  save();
+  showView(S.setupDone ? "home" : "setup");
+}
+function stepPrologue(d) {
+  const i = prologueAt + d;
+  if (i >= PROLOGUE.length) { endPrologue(); return; }
+  prologueAt = Math.max(0, i);
+  renderPrologue();
+}
+function handlePrologueKey(e) {
+  const act = {Enter: 1, " ": 1, ArrowRight: 1, ArrowLeft: -1}[e.key];
+  if (act) { e.preventDefault(); stepPrologue(act); }
+  else if (e.key === "Escape") { e.preventDefault(); endPrologue(); }
+}
+$("#prologue").addEventListener("click", e => {
+  const b = e.target.closest("[data-pro]");
+  if (!b) return;
+  if (b.dataset.pro === "skip") endPrologue();
+  else stepPrologue(b.dataset.pro === "prev" ? -1 : 1);
+});
 
 /* ---------- first-run setup ---------- */
 let setup = {step: 1, layout: null, msg: ""};
@@ -2149,7 +2232,7 @@ const startQuote = () => startRun("quote", {preview: !quotesUnlocked()});
 window.addEventListener("pagehide", save);
 applyTheme();
 applyI18n();
-showView(S.setupDone ? "home" : "setup");
+showView(!S.prologueSeen ? "prologue" : S.setupDone ? "home" : "setup");
 </script>
 </body>
 </html>
