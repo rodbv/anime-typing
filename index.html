@@ -552,7 +552,7 @@ const STAGES = [
   {lbl: "Etapa 4", place: "Grandes Planícies", from: "Cañon City", to: "Kansas City", km: 1250, pt: [352, 166], label: "Kansas City", dy: 22},
   {lbl: "Etapa 5", place: "Rio Mississippi", from: "Kansas City", to: "Chicago", km: 780, pt: [445, 128], label: "Chicago", dy: 22},
   {lbl: "Etapa 6", place: "Tundra do Wisconsin", from: "Chicago", to: "Mackinaw City", km: 690, pt: [458, 70], label: "Mackinaw City", dy: -12},
-  {lbl: "Etapa 7", place: "Rumo ao leste", from: "Mackinaw City", to: "Filadélfia", km: 1300, pt: [548, 150], label: "Filadélfia", dy: 22},
+  {lbl: "Etapa 7", place: "Margem do lago Erie", from: "Mackinaw City", to: "Filadélfia", km: 1300, pt: [548, 150], label: "Filadélfia", dy: 22},
   {lbl: "Etapa 8", place: "Campos de Nova Jersey", from: "Filadélfia", to: "Union Beach", km: 140, pt: [570, 139]},
   {lbl: "Etapa final", place: "Nova York", from: "Union Beach", to: "Trinity Church", km: 13, pt: [586, 122], label: "Nova York", dy: -12}
 ];
@@ -566,32 +566,32 @@ const RIVALS = {
   pocoloco: {nm: "Pocoloco", floor: 12, pre: "Hoje é meu dia de sorte!", win: "Nem a sorte do Pocoloco segurou você.", lose: "A sorte do Pocoloco funcionou de novo."},
   gyro: {nm: "Gyro Zeppeli", floor: 13, pre: "Nyo-ho! Nesta etapa eu não espero você, Johnny.", win: "Você venceu o seu próprio mestre na travessia do gelo.", lose: "O Gyro venceu a etapa 6, como na série. Nyo-ho-ho!"},
   diego2: {nm: "Diego Brando", floor: 13, pre: "Com o Scary Monsters, eu vejo a corrida de cima.", win: "Revanche feita. O Diego chegou atrás na Filadélfia.", lose: "O Diego levou de novo. Ainda tem o final."},
-  valentine: {nm: "Funny Valentine", floor: 14, boss: true, pre: "Neste mundo, cada erro seu vira uma cópia que trabalha para mim.", win: "O D4C não alcançou você. Union Beach está logo ali.", lose: "O Valentine chegou antes. Mas a corrida continua."},
-  diego3: {nm: "Diego de outro mundo", floor: 14, boss: true, pre: "Eu vim de outro mundo para terminar esta corrida.", win: "Trinity Church! O Johnny cruzou a chegada.", lose: "O Diego de outro mundo chegou antes. Tente de novo: a chegada é sua."}
+  valentine: {nm: "Funny Valentine", floor: 14, boss: true, pre: "Neste mundo, cada erro seu vira uma cópia que trabalha para mim.", win: "O D4C não alcançou você. Union Beach está logo ali.", lose: "O D4C pegou você desta vez. Mas a corrida continua."},
+  diego3: {nm: "Diego de outro mundo", floor: 14, boss: true, pre: "Eu vim de outro mundo para terminar esta corrida.", win: "Trinity Church! Desta vez o Johnny cruza a chegada.", lose: "O Diego de outro mundo chegou antes. Tente de novo: a chegada é sua."}
 };
 
 const STORY = {
   fj: {narr: "Milhares de cavaleiros na areia de San Diego. A largada está perto.", gyro: "Antes de girar qualquer coisa, aprenda onde a mão descansa. Sinta o relevo no F e no J. Tudo começa ali."},
   dk: {gyro: "O médio fica no D e no K. Depois de cada golpe, o dedo volta para casa."},
-  sl: {narr: "No deserto, o braço esquerdo do Cadáver Santo entra no corpo do Johnny. Tusk ACT1 desperta.", gyro: "Suas unhas giram e disparam, mas só dos dedos que você treinou. Anelar: S e L."},
+  sl: {narr: "Na Palma do Diabo, no deserto do Arizona, o braço esquerdo do Cadáver Santo entra no corpo do Johnny. Tusk ACT1 desperta.", gyro: "Suas unhas giram e disparam, mas só dos dedos que você treinou. Anelar: S e L."},
   a: {gyro: "O mindinho é o dedo mais fraco. No deserto a água é pouca, então economize movimento: só o mindinho se mexe."},
   gh: {gyro: "O indicador estica para o lado, como a rédea que puxa o cavalo para o meio. Depois volta."},
   r1: {gyro: "A linha base inteira de uma vez. Respire, Johnny. Galope constante."},
-  ei: {narr: "Na subida das Rochosas, o Tusk evolui para ACT2. O buraco da unha agora persegue o alvo.", gyro: "Agora os dedos sobem. O médio vai até o E e o I, e volta. A mão fica parada, como o cavaleiro firme na sela."},
+  ei: {narr: "A subida das Montanhas Rochosas. A trilha fica estreita e o ar fica frio.", gyro: "Agora os dedos sobem. O médio vai até o E e o I, e volta. A mão fica parada, como o cavaleiro firme na sela."},
   ru: {gyro: "O indicador sobe até o R e o U, e volta para o F e o J."},
   to: {narr: "As Grandes Planícies. Campo aberto até onde a vista alcança.", gyro: "Galope constante. O T é um esticão do indicador. O O é do anelar."},
   nm: {gyro: "N e M ficam embaixo do J. O indicador desce e volta, sem levantar a mão."},
   "c,": {gyro: "O C é do médio esquerdo e a vírgula é do médio direito. Ritmo vence pressa."},
-  qp: {narr: "O rio Mississippi corta o caminho.", gyro: "Para atravessar o Mississippi, até os mindinhos trabalham: Q e P."},
+  qp: {narr: "No rio Mississippi, contra o Sandman e o In a Silent Way, o Tusk evolui para ACT2. O buraco da unha agora persegue o alvo.", gyro: "Para atravessar o Mississippi, até os mindinhos trabalham: Q e P."},
   r2: {gyro: "A linha de cima inteira. Não olhe para as mãos, olhe para a trilha."},
   acc1: {narr: "Neve e gelo no Wisconsin. O gelo engana: primeiro você pisa no acento, depois na letra.", gyro: "A tecla morta é como gelo fino. Aperte o acento, solte, e só então a letra."},
   acc2: {gyro: "Chapéu no E (ê), crase no A (à) e o Ç. Mesmo jeito: primeiro o sinal, depois a letra."},
-  vb: {narr: "Tusk ACT3. O Johnny atira em si mesmo e entra no buraco do espaço.", gyro: "Linha de baixo. O indicador desce até o V e o B."},
+  vb: {narr: "Em Gettysburg, contra o Axl RO, o Johnny atira em si mesmo e entra no buraco: Tusk ACT3.", gyro: "Linha de baixo. O indicador desce até o V e o B."},
   "x.": {gyro: "O anelar desce até o X e até o ponto. Desce e volta."},
   zwy: {gyro: "As letras raras: Z com o mindinho, W com o anelar e Y com o indicador direito. Quase lá, Johnny."},
-  r3: {narr: "Filadélfia. O presidente Valentine espera no caminho.", gyro: "Todas as letras. Respire e mantenha o galope."},
-  shift: {narr: "A Rotação de ouro do Gyro passa para o Johnny. Nasce o Tusk ACT4.", gyro: "Para a maiúscula, o mindinho da outra mão segura o Shift. As duas mãos juntas, como a rotação perfeita."},
-  quotes: {narr: "Os últimos 13 km: de Union Beach até a Trinity Church, em Nova York.", gyro: "Frases inteiras, com pontuação. Esta é a reta final."}
+  r3: {narr: "Contra o Valentine, a Slow Dancer corre no Retângulo de Ouro e o Johnny acerta a Rotação de ouro. Nasce o Tusk ACT4.", gyro: "Todas as letras. Respire e mantenha o galope."},
+  shift: {narr: "Os barcos atravessam a baía de Raritan. A última etapa começa em Coney Island.", gyro: "Para a maiúscula, o mindinho da outra mão segura o Shift. As duas mãos juntas, como a rotação perfeita."},
+  quotes: {narr: "Os últimos 13 km: de Coney Island, pela Ponte do Brooklyn, até a Trinity Church.", gyro: "Frases inteiras, com pontuação. Esta é a reta final."}
 };
 
 const COMMON = {
@@ -621,17 +621,17 @@ const ACHIEVEMENTS = [
   {id: "ball", s: "race", ic: "⚪", nm: "Bola de aço", d: {pt: "Termine a etapa 1"}, ok: () => stageCleared(0)},
   {id: "larm", s: "race", ic: "💪", nm: "Braço esquerdo", d: {pt: "Termine a etapa 2"}, ok: () => stageCleared(1)},
   {id: "eyes", s: "race", ic: "👁️", nm: "Olhos", d: {pt: "Termine a etapa 3"}, ok: () => stageCleared(2)},
-  {id: "heart", s: "race", ic: "❤️", nm: "Coração", d: {pt: "Termine a etapa 4"}, ok: () => stageCleared(3)},
-  {id: "spine", s: "race", ic: "🦴", nm: "Coluna", d: {pt: "Termine a etapa 5"}, ok: () => stageCleared(4)},
-  {id: "rarm", s: "race", ic: "🤚", nm: "Braço direito", d: {pt: "Termine a etapa 6"}, ok: () => stageCleared(5)},
-  {id: "ears", s: "race", ic: "👂", nm: "Orelhas", d: {pt: "Termine a etapa 7"}, ok: () => stageCleared(6)},
-  {id: "legs", s: "race", ic: "🦵", nm: "Pernas", d: {pt: "Termine a etapa 8"}, ok: () => stageCleared(7)},
+  {id: "spine", s: "race", ic: "🦴", nm: "Coluna", d: {pt: "Termine a etapa 4"}, ok: () => stageCleared(3)},
+  {id: "heart", s: "race", ic: "❤️", nm: "Coração", d: {pt: "Termine a etapa 5"}, ok: () => stageCleared(4)},
+  {id: "rarm", s: "race", ic: "🤚", nm: "Braço direito, orelhas e pernas", d: {pt: "Termine a etapa 6"}, ok: () => stageCleared(5)},
+  {id: "torso", s: "race", ic: "👕", nm: "Tronco", d: {pt: "Termine a etapa 7, em Gettysburg"}, ok: () => stageCleared(6)},
+  {id: "head", s: "race", ic: "💀", nm: "Cabeça", d: {pt: "Termine a etapa 8, na Filadélfia"}, ok: () => stageCleared(7)},
   {id: "corpse", s: "race", ic: "🏁", nm: "Cadáver completo", d: {pt: "Chegue à Trinity Church"}, ok: () => stageCleared(8)},
 
   {id: "act1", s: "tusk", ic: "💅", nm: "Tusk ACT1", d: {pt: "Conclua a lição S L, no deserto"}, ok: c => (c.lessons.sl?.stars || 0) >= 1},
-  {id: "act2", s: "tusk", ic: "🌀", nm: "Tusk ACT2", d: {pt: "Conclua a lição E I, nas Rochosas"}, ok: c => (c.lessons.ei?.stars || 0) >= 1},
+  {id: "act2", s: "tusk", ic: "🌀", nm: "Tusk ACT2", d: {pt: "Conclua a lição Q P, no Mississippi"}, ok: c => (c.lessons.qp?.stars || 0) >= 1},
   {id: "act3", s: "tusk", ic: "🕳️", nm: "Tusk ACT3", d: {pt: "Conclua a lição V B"}, ok: c => (c.lessons.vb?.stars || 0) >= 1},
-  {id: "act4", s: "tusk", ic: "♾️", nm: "Tusk ACT4", d: {pt: "Conclua a lição de Shift"}, ok: c => (c.lessons.shift?.stars || 0) >= 1},
+  {id: "act4", s: "tusk", ic: "♾️", nm: "Tusk ACT4", d: {pt: "Vença a etapa 8, contra o Valentine"}, ok: c => (c.lessons.r3?.stars || 0) >= 1},
 
   {id: "golden", s: "goal", ic: "🌻", nm: "Proporção áurea", d: {pt: "Uma lição com 100% de precisão"}, ok: c => c.run.mode === "lesson" && c.m.acc === 100 && c.run.pos >= 40},
   {id: "gallop", s: "goal", ic: "🐎", nm: "Galope constante", d: {pt: "Nota A de ritmo numa rodada"}, ok: c => c.m.rhythm === "A"},
@@ -1820,7 +1820,7 @@ const PROLOGUE = [
     narr: ["Você era o jóquei mais famoso do país, até levar um tiro na coluna. Desde então as suas pernas não se mexem. Em cima da sua égua, a Slow Dancer, você ainda corre como qualquer um.", "Na largada, você conhece o Gyro Zeppeli, que veio de Nápoles. A família dele guarda um segredo: a Rotação. Você toca na bola de aço do Gyro e, por um segundo, fica de pé.", "Você decide seguir o Gyro até Nova York."],
     gyro: "Quer aprender a Rotação? Então treina todo dia. Nyo-ho!"},
   {art: "hands", title: "O Tusk",
-    narr: ["No deserto do Arizona, o braço esquerdo do Cadáver Santo entra no seu corpo. Você desperta um Stand: o Tusk. Ele gira as suas unhas e dispara como balas.", "Aqui, cada unha só dispara quando o dedo dela acha a tecla sem você olhar. Cada dedo cuida das suas teclas, e cada lição nova ensina mais um dedo a disparar."]},
+    narr: ["Na Palma do Diabo, no deserto do Arizona, o braço esquerdo do Cadáver Santo entra no seu corpo. Você desperta um Stand: o Tusk. Ele gira as suas unhas e dispara como balas.", "Aqui, cada unha só dispara quando o dedo dela acha a tecla sem você olhar. Cada dedo cuida das suas teclas, e cada lição nova ensina mais um dedo a disparar."]},
   {art: "🏆", title: "A corrida",
     narr: ["Cada lição concluída leva a Slow Dancer alguns quilômetros mais perto de Nova York.", "No fim de cada etapa, um rival da série corre contra você: Sandman, Diego, Hot Pants, Pocoloco e o próprio Valentine. Pelo caminho você junta as partes do Cadáver Santo, e o Tusk evolui até o ACT4."]},
   {art: "💻", title: "E fora da corrida?",
@@ -2099,7 +2099,7 @@ function rhythmGrade(gaps) {
   return cv < 0.35 ? "A" : cv < 0.5 ? "B" : cv < 0.65 ? "C" : cv < 0.8 ? "D" : "E";
 }
 const gradeOf = (v, cuts) => { const g = ["A", "B", "C", "D"].find((_, i) => v >= cuts[i]); return g || "E"; };
-const tuskAct = () => ["shift", "vb", "ei", "sl"].map((id, i) => lessonDone(LESSON_DEFS[lessonIndexOf(id)]) ? 4 - i : 0).find(n => n) || 0;
+const tuskAct = () => ["r3", "vb", "qp", "sl"].map((id, i) => lessonDone(LESSON_DEFS[lessonIndexOf(id)]) ? 4 - i : 0).find(n => n) || 0;
 function standStats() {
   const hist = data.history;
   const fast = hist.filter(h => h.acc >= 90).reduce((a, h) => Math.max(a, h.wpm), 0);
