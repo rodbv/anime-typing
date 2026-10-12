@@ -32,7 +32,16 @@ check(!evilView.innerHTML.includes('<img'), 'the card should escape markup in th
 check(evilView.textContent.includes('Etapa final'), 'an out-of-range stage should clamp to the last stage');
 check(evil.d.querySelectorAll('.share-items span').length === 1, 'unknown achievement ids should be dropped');
 
+// Each card names its theme. A page that does not know the theme says so; a theme in the catalog opens on its own page.
+const cardParam = card => 'http://localhost/index.html?card=' + Buffer.from(JSON.stringify(card)).toString('base64url');
+check(JSON.parse(Buffer.from(url.split('card=')[1], 'base64url')).th === 'jojo', 'the link should carry the theme id');
+const other = boot(null, cardParam({th: 'naruto', n: 'Ana', st: 1}));
+check(other.d.getElementById('share-view').textContent.includes('tema que esta página não conhece'), 'a card from an unknown theme should say so');
+const rush = boot(null, cardParam({th: 'rush', n: 'Ana', st: 1}));
+check(rush.ev('view') !== 'card' && rush.ev('themePage("rush")') === 'rush.html' && rush.ev('themePage("jojo")') === undefined,
+  'a card from another theme in the catalog should leave for that theme\'s page');
+
 d.getElementById('tabs').querySelector('[data-view=stats]').click(); d.getElementById('btn-share').click();
 check(!d.getElementById('share').hidden, 'the profile share button should open the modal');
-console.log('ERRORS', A.errors, P.errors, bad.errors, evil.errors);
+console.log('ERRORS', A.errors, P.errors, bad.errors, evil.errors, other.errors);
 process.exit(0);

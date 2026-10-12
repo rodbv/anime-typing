@@ -1063,7 +1063,7 @@ function shareSnapshot() {
   const best = runs.filter(h => h.acc >= 90).reduce((b, h) => h.wpm > b.wpm ? h : b, {wpm: 0, acc: 0});
   const lc = lessonCounts();
   return {
-    n: data.profile.name || TH.hero.name, d: dayKey(new Date()),
+    th: TH.id, n: data.profile.name || TH.hero.name, d: dayKey(new Date()),
     mi: runs.length ? Math.max(1, Math.round((day.ms || 0) / 60000)) : 0, r: runs.length, w: best.wpm, a: best.acc,
     ms: missionStepsDone(day), md: day.done ? 1 : 0,
     it: ACHIEVEMENTS.filter(a => (data.unlocked[a.id] || 0) >= start).map(a => a.id),
@@ -1085,7 +1085,7 @@ function readCard(param) {
   const num = (v, max) => Math.min(max, Math.max(0, Math.round(+v) || 0));
   const ids = new Set(ACHIEVEMENTS.map(a => a.id));
   return {
-    n: String(c.n || TH.hero.name).slice(0, 24), d: /^\d{4}-\d{2}-\d{2}$/.test(c.d) ? c.d : dayKey(new Date()),
+    th: typeof c.th === "string" ? c.th : TH.id, n: String(c.n || TH.hero.name).slice(0, 24), d: /^\d{4}-\d{2}-\d{2}$/.test(c.d) ? c.d : dayKey(new Date()),
     mi: num(c.mi, 1440), r: num(c.r, 999), w: num(c.w, 300), a: num(c.a, 100), ms: num(c.ms, 3), md: c.md ? 1 : 0,
     it: (Array.isArray(c.it) ? c.it : []).filter(id => ids.has(id)),
     dist: num(c.dist, TOTAL_DIST), st: num(c.st, STAGES.length - 1), lc: num(c.lc, LESSON_DEFS.length),
@@ -1115,16 +1115,22 @@ function cardHtml(c) {
       <div class="big">${statBox(`${c.lc}/${LESSON_DEFS.length}`, t("cardLessons"))}${statBox(c.act ? TH.evolution.levels[c.act - 1].label : "-", TH.evolution.name)}${statBox(`${c.col}/${ACHIEVEMENTS.length}`, t("cardAchievements"))}${statBox(c.pts, t("cardPoints"))}</div>
     </div>`;
 }
+// The page of another theme in the catalog, unless that page is this one.
+const themePage = id => (window.THEMES || []).find(x => x.id === id && !location.pathname.endsWith("/" + x.page))?.page;
 function showCard(param) {
   const c = readCard(param);
+  // A card from another theme opens on that theme's page, since its stages and achievements belong there.
+  const page = c && c.th !== TH.id && themePage(c.th);
+  if (page) { location.replace(page + location.search); return; }
+  const invalid = !c ? "cardInvalidText" : c.th !== TH.id ? "cardOtherTheme" : null;
   view = "card";
   document.body.classList.add("cardmode");
   document.querySelectorAll(".view").forEach(sec => { sec.hidden = sec.id !== "v-card"; });
-  $("#share-view").innerHTML = c ? cardHtml(c) + `
+  $("#share-view").innerHTML = !invalid ? cardHtml(c) + `
     <div class="type-actions">
       <a class="btn primary" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText(c) + "\n" + location.href)}">${esc(t("cardSend"))}</a>
       <a class="btn" href="${esc(gameUrl())}">${esc(t("cardOpen"))}</a>
-    </div>` : `<div class="card"><h1>${esc(t("cardInvalidTitle"))}</h1><p>${esc(t("cardInvalidText"))}</p><a class="btn" href="${esc(gameUrl())}">${esc(t("cardOpen"))}</a></div>`;
+    </div>` : `<div class="card"><h1>${esc(t("cardInvalidTitle"))}</h1><p>${esc(t(invalid))}</p><a class="btn" href="${esc(gameUrl())}">${esc(t("cardOpen"))}</a></div>`;
 }
 function openShare() {
   const url = shareUrl(), q = qrcode(0, "M");

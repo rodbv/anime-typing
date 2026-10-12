@@ -246,6 +246,7 @@
   "cardOpen": "Abrir o jogo",
   "cardInvalidTitle": "Link inválido",
   "cardInvalidText": "Este link de progresso está quebrado. Gere um novo QR code no jogo.",
+  "cardOtherTheme": "Este link de progresso é de um tema que esta página não conhece.",
   "cardToday": "Hoje",
   "cardTrain": "de treino",
   "cardRuns": "rodadas",
