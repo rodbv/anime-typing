@@ -1,7 +1,7 @@
 // The race ghost: its speed, its position, the place and points, adaptive speed, pause, and no ghost outside races.
 const {boot} = require('./harness');
 const check = (ok, msg) => { if (!ok) throw new Error(msg); };
-const A = boot(); const {d, ev} = A; A.ready();
+const A = boot(null, 'http://localhost/', {clock: true}); const {d, ev} = A; A.ready();
 
 // With no history, the ghost runs at the rival's floor.
 ev('startRun("lesson",{lessonIdx:1, forceIntro:true})');
@@ -38,10 +38,9 @@ check(ev('makeRace(LESSON_DEFS[5]).wpm') === 22 && ev('makeRace(LESSON_DEFS[18])
 // Pause freezes the ghost; a lesson without a rival has no ghost.
 ev('startRun("lesson",{lessonIdx:1})'); A.type(ev('run.text').slice(0, 3));
 ev('pause("menu")'); const g1 = ev('activeMs()');
-setTimeout(() => {
-  check(Math.abs(ev('activeMs()') - g1) < 5, 'the ghost clock should stop during a pause');
-  ev('startRun("lesson",{lessonIdx:0})');
-  check(!ev('run.race') && !A.vis('m-ghost'), 'lesson 1 should have no ghost');
-  console.log('ERRORS', A.errors);
-  process.exit(0);
-}, 300);
+A.tick(300);
+check(ev('activeMs()') === g1, 'the ghost clock should stop during a pause');
+ev('startRun("lesson",{lessonIdx:0})');
+check(!ev('run.race') && !A.vis('m-ghost'), 'lesson 1 should have no ghost');
+console.log('ERRORS', A.errors);
+process.exit(0);

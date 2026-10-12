@@ -53,14 +53,41 @@ function frozenDate(RealDate, now) {
   };
 }
 
+// A clock that moves only when the test calls tick(ms), which runs the timers that fall due on the way.
+function fakeClock(w) {
+  let now = w.Date.now(), lastId = 0;
+  const timers = new Map();
+  w.Date = class extends w.Date {
+    constructor(...a) { if (a.length) super(...a); else super(now); }
+    static now() { return now; }
+  };
+  const add = (fn, ms, every) => { timers.set(++lastId, {at: now + (ms || 0), fn, every}); return lastId; };
+  w.setTimeout = (fn, ms) => add(fn, ms, 0);
+  w.setInterval = (fn, ms) => add(fn, ms, ms);
+  w.clearTimeout = w.clearInterval = id => timers.delete(id);
+  return ms => {
+    const end = now + ms;
+    for (;;) {
+      const [id, timer] = [...timers].filter(([, x]) => x.at <= end).sort((a, b) => a[1].at - b[1].at)[0] || [];
+      if (!timer) break;
+      now = timer.at;
+      if (timer.every) timer.at += timer.every; else timers.delete(id);
+      timer.fn();
+    }
+    now = end;
+  };
+}
+
 function boot(storage, url = 'http://localhost/', opts = {}) {
   const errors = [];
+  let tick = () => { throw new Error('boot with {clock: true} to use tick'); };
   const dom = new JSDOM(pageHtml(opts.page, opts.themeEdit, opts.theme), {runScripts: 'dangerously', pretendToBeVisual: true, url,
     beforeParse(w) {
       w.structuredClone = structuredClone; w.TextEncoder = TextEncoder; w.TextDecoder = TextDecoder;
       w.addEventListener('error', e => errors.push(e.message));
       if (opts.seed !== undefined) w.Math.random = seededRandom(opts.seed);
       if (opts.now !== undefined) w.Date = frozenDate(w.Date, opts.now);
+      if (opts.clock) tick = fakeClock(w);
       if (storage) w.localStorage.setItem(storeKey(opts.page, opts.theme), storage);
     }});
   const w = dom.window, d = w.document;
@@ -68,6 +95,7 @@ function boot(storage, url = 'http://localhost/', opts = {}) {
   const sink = d.getElementById('sink');
   return {
     w, d, ev, errors,
+    tick: ms => tick(ms),
     key: (k, code) => d.dispatchEvent(new w.KeyboardEvent('keydown', {key: k, code, bubbles: true})),
     type: s => { for (const ch of s) { sink.value += ch; sink.dispatchEvent(new w.InputEvent('input', {data: ch})); } },
     vis: id => !d.getElementById(id).hidden,
