@@ -1,6 +1,6 @@
 # Como criar um tema
 
-Um tema é um arquivo JSON em `themes/`. O engine (`engine.js`) traz o curso de 21 lições, a digitação e as regras do jogo, e é igual para todos os temas. O tema conta a história: etapas, rivais, falas, conquistas, cores e textos.
+Um tema é um arquivo JSON em `themes/`. O engine traz o curso de 21 lições (`course.js`), a digitação e as regras do jogo (`engine.js`), e é igual para todos os temas. O tema conta a história: etapas, rivais, falas, conquistas, cores e textos.
 
 Um tema só precisa de `id` e das etapas. Todo o resto tem um padrão no engine ou em `i18n/`, e o tema sobrescreve o que quiser. `themes/jojo.json` e `themes/rush.json` são exemplos completos.
 

@@ -3,7 +3,7 @@
 // themes.json lists every theme for the theme selector; without it, the page has no selector.
 (function () {
   // The engine files, in the order they run.
-  const SCRIPTS = ["markup.js", "layouts.js", "engine.js"];
+  const SCRIPTS = ["markup.js", "layouts.js", "theme.js", "course.js", "engine.js"];
   const me = document.currentScript;
   const version = new URL(me.src).search;
   const files = (me.dataset.i18n || "").split(/\s+/).filter(Boolean);
