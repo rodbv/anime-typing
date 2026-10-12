@@ -670,7 +670,11 @@ function finish() {
   run.primary = actions[btns[0][0]];
 
   const r = $("#results");
+  // A failed lesson ends like an episode: the card fades from sepia while the theme's banner slides in.
+  const cliffhanger = run.mode === "lesson" && !run.passed && !run.preview && FX.failBanner;
+  r.classList.toggle("cliffhanger", !!cliffhanger);
   r.innerHTML = `
+    ${cliffhanger ? `<div class="tbc"><span>${esc(FX.failBanner)}</span></div>` : ""}
     ${mission.justDone ? `<div class="done-box">🔥 <b>${esc(t("missionDoneTitle"))}</b> ${esc(t("missionDoneText", {name: data.profile.name || TH.hero.short}))}</div>` : ""}
     <h2 class="rt">${esc(title)} ${record ? `<span class="flair">${esc(t("flair"))} ${esc(t("newRecord"))}</span>` : ""}</h2>
     ${mission.breakNow ? `<p class="tipline">⏸️ ${esc(t("breakMsg"))}</p>` : ""}

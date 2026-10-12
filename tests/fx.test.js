@@ -24,5 +24,17 @@ const R = boot(null, 'http://localhost/', {page: 'rush.html'}); R.ready();
 R.ev('startRun("lesson",{lessonIdx:5})'); R.ev('if (run.introOpen) closeIntro()');
 typeClean(R, 30);
 check(count(R, 'mark') + count(R, 'rush') === 0, 'a theme without fx should float nothing');
+// A failed lesson ends with the theme's banner; a cleared one does not.
+const failLesson = A => {
+  A.ev('startRun("lesson",{lessonIdx:2})'); A.ev('if (run.introOpen) closeIntro()');
+  while (!A.ev('run.done')) { A.type('\u0001'); typeClean(A, Math.min(3, A.ev('run.text.length - run.pos'))); }
+};
+failLesson(J);
+check(J.d.querySelector('#results .tbc')?.textContent === 'To Be Continued' && J.d.getElementById('results').classList.contains('cliffhanger'),
+  'a failed lesson should end with To Be Continued');
+J.playLesson(2);
+check(!J.d.querySelector('#results .tbc') && !J.d.getElementById('results').classList.contains('cliffhanger'), 'a cleared lesson should not show the banner');
+failLesson(R);
+check(!R.d.querySelector('#results .tbc'), 'a theme without failBanner should not show it');
 console.log('ERRORS', J.errors, R.errors);
 process.exit(0);

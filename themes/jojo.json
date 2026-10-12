@@ -28,7 +28,8 @@
     ],
     "marksAt": 12,
     "rush": "ORA",
-    "rushEvery": 25
+    "rushEvery": 25,
+    "failBanner": "To Be Continued"
   },
   "strings": {
     "subtitle": "A corrida de digitação de San Diego a Nova York",
