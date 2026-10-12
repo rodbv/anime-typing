@@ -50,13 +50,13 @@ Se o tema tiver um erro de estrutura, como uma lição que não existe ou um riv
 | `hero` | o personagem do jogador: `name`, `short` (nome curto), `number` e `icon` | "Jogador", nº 1, ⌨️ |
 | `mentor` | quem dá as dicas: `name` | "Treinador" |
 | `words` | `names` e `terms`, palavras separadas por espaço que entram nas lições | só as palavras comuns |
-| `quotes` | frases para digitar, cada uma como `[texto, autor]`. O jogo usa quantas houver. | ditados populares |
+| `quotes` | frases para digitar, cada uma como `[texto, autor]`. O jogo usa quantas houver, e pelo menos 3 precisam ter menos de 60 caracteres. | ditados populares |
 | `journey.view` | como a jornada aparece: `"line"`, `"snake"` ou `"map"` (ver abaixo) | `"line"` |
 | `journey.unit` e `journey.unitOne` | unidade da distância, no plural e no singular | "etapas" e "etapa" |
 | `journey.marker` | ícone do jogador na jornada | 📍 |
 | `rivals` | os rivais das corridas, por id | nenhum |
 | `story` | narração por lição: `{"<id da lição>": {"narr": "...", "mentor": "..."}}` | nenhuma |
-| `evolution` | o que evolui com o jogador: `name` e `levels`, cada nível com `label` e a `lesson` que o libera | sem níveis |
+| `evolution` | o que evolui com o jogador: `name` e `levels`, cada nível com `label` e a `lesson` que o libera (um id do curso) | sem níveis |
 | `prologue` | a história de abertura: `slides` e `where` | sem slides; `where` de `i18n/` |
 | `achievements` | as conquistas | nenhuma |
 | `ranks` | patentes por velocidade: `[ppm mínimo, nome em inglês, nome em português]` | de Iniciante a Lenda |
@@ -99,19 +99,18 @@ Três chaves de `strings` montam os textos de uma etapa. Elas aceitam qualquer c
 "diego": {"nm": "Diego Brando", "no": "001", "floor": 8, "pre": "...", "win": "...", "lose": "..."}
 ```
 
-- **`floor`:** velocidade mínima do fantasma, em PPM. O fantasma corre 10% acima da média recente do jogador, ou 20% se `boss` for `true`.
-- **`pre`, `win` e `lose`:** a fala antes da corrida, a frase de vitória e a frase de derrota.
+- **`nm`:** obrigatório, o nome do rival.
+- **`floor`:** opcional, velocidade mínima do fantasma, em PPM. O fantasma corre 10% acima da média recente do jogador, ou 20% se `boss` for `true`, e nunca abaixo da meta de velocidade da lição.
+- **`pre`, `win` e `lose`:** opcionais, a fala antes da corrida, a frase de vitória e a frase de derrota.
 - **`no`:** opcional, o número de corredor do rival.
 
 ### Abertura (`prologue`)
 
 - **`slides`:** cada slide tem `art` (um emoji, `"map"` para a jornada ou `"hands"` para as mãos no teclado), `title`, `narr` (lista de parágrafos) e `mentor` (opcional).
-- **`where`:** o último slide, que mostra onde o jogador está. Ele tem três formas:
-  - `start` antes da primeira lição;
-  - `finished` depois da última;
-  - `progress` no meio do caminho.
-
-  Cada forma substitui só os campos que definir. Os textos aceitam os campos da etapa atual e estes marcadores: `{dist}`, `{total}`, `{n}`, `{lesson}`, `{rival}` e `{done}`.
+- **`where`:** o último slide, que mostra onde o jogador está. Cada forma substitui só os campos que definir, e os outros vêm de `i18n/`. São três formas:
+  - `start`, antes da primeira lição: `title`, `narr` e `mentor`, sem marcadores;
+  - `finished`, depois da última: `title`, `narr` e `mentor`. Só `narr` aceita um marcador, `{total}`;
+  - `progress`, no meio do caminho: `title`, `distance`, `next`, `race` (acrescentado a `next` quando a próxima lição é corrida), `mission`, `missionDone` e `mentor` (usado quando a lição não tem fala do mentor em `story`). Os textos aceitam os campos da etapa atual e os marcadores `{dist}`, `{total}`, `{n}`, `{lesson}`, `{rival}` e `{done}`. `missionDone` e `mentor` não aceitam marcadores.
 
 ### Conquistas (`achievements`)
 
@@ -119,7 +118,7 @@ Três chaves de `strings` montam os textos de uma etapa. Elas aceitam qualquer c
 {"id": "ball", "s": "race", "ic": "⚪", "nm": "Bola de aço", "d": "Termine a etapa 1", "when": {"type": "stageCleared", "stage": 0}}
 ```
 
-`s` é o grupo da conquista. Os grupos aparecem na ordem da primeira conquista de cada um. O nome de cada grupo fica em `strings.collGroups`, por exemplo `{"race": "Partes do Cadáver Santo"}`; sem nome, o grupo mostra o próprio id. `when` diz quando a conquista é liberada:
+`s` é o grupo da conquista. Um `type` desconhecido, uma `lesson` que não existe ou uma `stage` fora das etapas aparecem na lista de problemas do tema. Os grupos aparecem na ordem da primeira conquista de cada um. O nome de cada grupo fica em `strings.collGroups`, por exemplo `{"race": "Partes do Cadáver Santo"}`; sem nome, o grupo mostra o próprio id. `when` diz quando a conquista é liberada:
 
 | `type` | Parâmetros | Libera quando |
 |---|---|---|
