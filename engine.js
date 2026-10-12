@@ -381,6 +381,7 @@ function appendText(str) {
 }
 function renderRun() {
   $("#fx").innerHTML = "";
+  if (FX.rushSound && S.sound) rushClip();
   $("#type-label").textContent = runLabel();
   $("#text-inner").innerHTML = "";
   $("#text-inner").style.transform = "";
@@ -759,10 +760,17 @@ function tone(freq, ms, {type = "triangle", gain = 0.08, at = 0, slide = 0} = {}
 const SOUNDS = {
   hit: () => tone(150, 50, {type: "sine", gain: 0.05}),
   miss: () => tone(95, 160, {type: "square", gain: 0.035, slide: 0.7}),
-  burst: () => [392, 523, 659, 784].forEach((f, i) => tone(f, 120, {at: i * 60})),
+  burst: () => FX.rushSound ? playClip(rushClip()) : [392, 523, 659, 784].forEach((f, i) => tone(f, 120, {at: i * 60})),
   clear: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 180, {at: i * 110})),
   fail: () => [330, 247].forEach((f, i) => tone(f, 280, {at: i * 230, type: "sawtooth", gain: 0.04}))
 };
+// The theme's recorded burst, loaded when a run starts so it plays without delay.
+let rushAudio = null;
+const rushClip = () => rushAudio = rushAudio || Object.assign(new Audio(FX.rushSound), {preload: "auto"});
+function playClip(clip) {
+  clip.currentTime = 0;
+  clip.play()?.catch(() => { /* the browser refused to play; the game goes on silent */ });
+}
 function sound(name) {
   if (!S.sound) return;
   try { SOUNDS[name](); } catch (e) { /* the browser refused audio; the game goes on silent */ }

@@ -33,7 +33,8 @@
     "winArt": [
       "themes/jojo/johnny.webp",
       "themes/jojo/gyro.webp"
-    ]
+    ],
+    "rushSound": "themes/jojo/ora.mp3"
   },
   "strings": {
     "subtitle": "A corrida de digitação de San Diego a Nova York",
