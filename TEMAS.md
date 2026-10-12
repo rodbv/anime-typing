@@ -130,6 +130,7 @@ Três chaves de `strings` montam os textos de uma etapa. Elas aceitam qualquer c
 | `daysTrained` | `n` | o jogador treinou em `n` dias diferentes |
 | `podiums` | `n` | o jogador subiu ao pódio em `n` corridas |
 | `missions` | `n` | o jogador cumpriu `n` missões do dia |
+| `daysInARow` | `n` | o jogador terminou um treino ou lição em `n` dias seguidos |
 | `freeRun` | `wpm`, `acc` | uma rodada de treino livre alcança essa velocidade e essa precisão |
 
 ## Textos

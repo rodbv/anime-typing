@@ -791,7 +791,7 @@
 <span>
 <i class="part">
 </i>D</span>
-<span style="margin-left:6px;font-size:13px">5 dias de treino nesta semana</span>
+<span style="margin-left:6px;font-size:13px">5 dias de treino nesta semana · 🔥 3 seguidos</span>
 </div>
 </div>
 <div class="card">
@@ -1256,7 +1256,7 @@
 <span class="ic">😆</span>
 <div>
 <div class="nm">Nyo-ho-ho!</div>
-<div class="ds">Cumpra a primeira missão do dia</div>
+<div class="ds">Treine 2 dias seguidos</div>
 <div class="ds">06/10/2026</div>
 </div>
 </div>
@@ -1264,14 +1264,14 @@
 <span class="ic">🍕</span>
 <div>
 <div class="nm">Pizza mozzarella 🔒</div>
-<div class="ds">Cumpra 5 missões do dia</div>
+<div class="ds">Treine 5 dias seguidos</div>
 </div>
 </div>
 <div class="item locked">
 <span class="ic">🔥</span>
 <div>
 <div class="nm">Fogueira do acampamento 🔒</div>
-<div class="ds">Cumpra 15 missões do dia</div>
+<div class="ds">Treine 10 dias seguidos</div>
 </div>
 </div>
 <div class="item locked">

@@ -73,7 +73,7 @@
     "mReviewAny": "Ensaio do Professor: refaça qualquer lição",
     "mentorTip": "Dica do Professor",
     "sheetEmpty": "O kit ainda está vazio",
-    "missionDoneText": "O Professor guardou as baquetas. Bom ensaio hoje, {name}. Amanhã a turnê continua.",
+    "streakText": "O Professor marcou mais uma data na turnê, {name}. Volte amanhã para manter a sequência.",
     "flair": "♪ ♫ ♪",
     "stageHead": "{lbl}: {place} ({year})",
     "stageTag": "{lbl}: {place} ({year})",
@@ -908,10 +908,10 @@
       "s": "goal",
       "ic": "🎸",
       "nm": "Primeiro ensaio",
-      "d": "Cumpra a primeira missão do dia",
+      "d": "Treine 2 dias seguidos",
       "when": {
-        "type": "missions",
-        "n": 1
+        "type": "daysInARow",
+        "n": 2
       }
     },
     {
@@ -919,9 +919,9 @@
       "s": "goal",
       "ic": "🎼",
       "nm": "Cinco ensaios",
-      "d": "Cumpra 5 missões do dia",
+      "d": "Treine 5 dias seguidos",
       "when": {
-        "type": "missions",
+        "type": "daysInARow",
         "n": 5
       }
     },
@@ -930,10 +930,10 @@
       "s": "goal",
       "ic": "🎫",
       "nm": "Fã de carteirinha",
-      "d": "Cumpra 15 missões do dia",
+      "d": "Treine 10 dias seguidos",
       "when": {
-        "type": "missions",
-        "n": 15
+        "type": "daysInARow",
+        "n": 10
       }
     },
     {

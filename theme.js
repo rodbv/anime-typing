@@ -53,7 +53,7 @@ const stageRaceId = si => { const ls = LESSON_DEFS.filter(L => L.stage === si); 
 const stageCleared = si => lessonDone(stageRaceId(si));
 const podiums = () => LESSON_DEFS.filter(L => L.race && (progress()[L.id]?.place || 9) <= 3).length;
 const missionsDone = () => Object.values(data.days || {}).filter(d => d.done).length;
-const daysTrained = () => Object.values(data.days || {}).filter(d => d.ms > 0).length;
+const daysTrained = () => Object.keys(data.days || {}).filter(trainedOn).length;
 
 // Achievement conditions a theme can use, by type. Each one gets the condition from the theme and {run, m, lessons} of the finished run.
 const CONDITIONS = {
@@ -65,6 +65,7 @@ const CONDITIONS = {
   daysTrained: w => daysTrained() >= w.n,
   podiums: w => podiums() >= w.n,
   missions: w => missionsDone() >= w.n,
+  daysInARow: w => bestDaysInARow() >= w.n,
   freeRun: (w, c) => c.run.mode === "free" && c.m.wpm >= w.wpm && c.m.acc >= w.acc
 };
 const ACHIEVEMENTS = TH.achievements;

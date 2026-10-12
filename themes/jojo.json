@@ -108,7 +108,7 @@
     "mReviewAny": "Treino do Gyro: refaça qualquer lição",
     "mentorTip": "Dica do Gyro",
     "sheetEmpty": "O Stand ainda não despertou",
-    "missionDoneText": "O Gyro acendeu a fogueira do acampamento. Bom trabalho hoje, {name}. Amanhã a corrida continua.",
+    "streakText": "O Gyro acendeu a fogueira do acampamento, {name}. Volte amanhã para mantê-la acesa.",
     "flair": "ゴゴゴ",
     "stageHead": "{lbl}: {from} → {to} · {dist}",
     "stageTag": "{lbl}: {from} → {to}",
@@ -917,10 +917,10 @@
       "s": "goal",
       "ic": "😆",
       "nm": "Nyo-ho-ho!",
-      "d": "Cumpra a primeira missão do dia",
+      "d": "Treine 2 dias seguidos",
       "when": {
-        "type": "missions",
-        "n": 1
+        "type": "daysInARow",
+        "n": 2
       }
     },
     {
@@ -928,9 +928,9 @@
       "s": "goal",
       "ic": "🍕",
       "nm": "Pizza mozzarella",
-      "d": "Cumpra 5 missões do dia",
+      "d": "Treine 5 dias seguidos",
       "when": {
-        "type": "missions",
+        "type": "daysInARow",
         "n": 5
       }
     },
@@ -939,10 +939,10 @@
       "s": "goal",
       "ic": "🔥",
       "nm": "Fogueira do acampamento",
-      "d": "Cumpra 15 missões do dia",
+      "d": "Treine 10 dias seguidos",
       "when": {
-        "type": "missions",
-        "n": 15
+        "type": "daysInARow",
+        "n": 10
       }
     },
     {

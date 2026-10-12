@@ -665,10 +665,6 @@ function finish() {
   else if (courseDone) btns.push(["home", t("proHome"), true], ["again", t("again"), false]);
   else btns.push(["again", t("again"), true]);
   btns.push(["back", t("back") + " (Esc)", false]);
-  if (mission.justDone) {
-    const keep = btns[0][0];
-    btns.splice(0, btns.length, ["home", t("seeYou"), true], [keep, t("keepTraining"), false], ["back", t("back") + " (Esc)", false]);
-  }
   if (!btns.some(b => b[0] === "home")) btns.push(["home", t("tabHome"), false]);
   const actions = {
     home: goHome,
@@ -688,7 +684,7 @@ function finish() {
   r.innerHTML = `
     ${cliffhanger ? cliffhangerHtml() : ""}
     ${(run.won || courseDone) && FX.winArt.length ? victoryHtml() : run.mode === "lesson" && run.passed && !run.preview && FX.clearArt.length ? cheerHtml() : ""}
-    ${mission.justDone ? `<div class="done-box">🔥 <b>${esc(t("missionDoneTitle"))}</b> ${esc(t("missionDoneText", {name: data.profile.name || TH.hero.short}))}</div>` : ""}
+    ${mission.firstToday ? streakBoxHtml() : ""}
     <h2 class="rt">${esc(title)} ${record ? `<span class="flair">${esc(t("flair"))} ${esc(t("newRecord"))}</span>` : ""}</h2>
     ${mission.breakNow ? `<p class="tipline">⏸️ ${esc(t("breakMsg"))}</p>` : ""}
     ${extra}
@@ -1476,8 +1472,9 @@ const missionStepsDone = day => [day.next, day.review, day.free].filter(Boolean)
 // The last seven days, oldest first, ending today.
 const lastWeek = () => Array.from({length: 7}, (_, i) => { const dt = new Date(); dt.setDate(dt.getDate() - 6 + i); return dt; });
 function updateMission(m) {
-  const day = today();
+  const day = today(), firstToday = !trainedOn(dayKey(new Date()));
   day.ms += m.ms;
+  day.runs = (day.runs || 0) + 1;
   if (run.mode === "lesson" && run.passed && !run.preview) {
     const L = LESSON_DEFS[run.lessonIdx];
     // Without a review lesson (nothing cleared at the start of the day), any lesson after the new one counts.
@@ -1485,12 +1482,33 @@ function updateMission(m) {
     else if (!day.reviewLesson || L.id === day.reviewLesson) day.review = true;
   }
   if (run.mode === "free" || run.mode === "quote") day.free = true;
-  const justDone = !day.done && day.next && day.review && day.free;
-  if (justDone) day.done = true;
+  if (day.next && day.review && day.free) day.done = true;
   const breakNow = !day.breakShown && day.ms >= BREAK_MS;
   if (breakNow) day.breakShown = true;
   save();
-  return {justDone, breakNow};
+  return {firstToday, breakNow};
+}
+// A day counts when the player finishes any run; the streak runs back from today, or from yesterday while today has none yet.
+const trainedOn = k => data.days[k]?.runs > 0 || data.days[k]?.ms > 0;
+const dayBefore = k => { const dt = new Date(k + "T12:00"); dt.setDate(dt.getDate() - 1); return dayKey(dt); };
+function daysInARow() {
+  let k = dayKey(new Date()), n = 0;
+  if (!trainedOn(k)) k = dayBefore(k);
+  for (; trainedOn(k); k = dayBefore(k)) n++;
+  return n;
+}
+function bestDaysInARow() {
+  let best = 0, n = 0, prev = null;
+  for (const k of Object.keys(data.days).filter(trainedOn).sort()) {
+    n = prev && dayBefore(k) === prev ? n + 1 : 1;
+    best = Math.max(best, n);
+    prev = k;
+  }
+  return best;
+}
+function streakBoxHtml() {
+  const n = daysInARow();
+  return `<div class="done-box">🔥 <b>${esc(n > 1 ? t("streakTitle", {n}) : t("streakStart"))}</b> ${esc(t("streakText", {name: data.profile.name || TH.hero.short}))}</div>`;
 }
 function weekHtml() {
   const names = t("weekdays");
@@ -1501,7 +1519,8 @@ function weekHtml() {
     if (day && day.ms > 0) n++;
     dots.push(`<span><i class="${day?.done ? "done" : day?.ms > 0 ? "part" : ""}"></i>${names[dt.getDay()]}</span>`);
   }
-  return `<div class="week">${dots.join("")}<span style="margin-left:6px;font-size:13px">${esc(t("weekCount", {n}))}</span></div>`;
+  const streak = daysInARow();
+  return `<div class="week">${dots.join("")}<span style="margin-left:6px;font-size:13px">${esc(t("weekCount", {n}))}${streak ? " · " + esc(t("streakCount", {n: streak})) : ""}</span></div>`;
 }
 function missionHtml() {
   const day = today();
