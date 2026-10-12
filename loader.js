@@ -21,9 +21,13 @@
       document.body.appendChild(s);
     });
   }).catch(err => {
+    // The interface texts may be what failed to load, so this message picks its language from the browser.
+    const pt = (navigator.language || "").startsWith("pt");
+    const run = `<code>just run</code> (${pt ? "ou" : "or"} <code>python3 -m http.server</code>)`, local = `<a href="http://localhost:8000">http://localhost:8000</a>`;
     document.body.innerHTML = `<div style="font:16px/1.5 system-ui,sans-serif;max-width:560px;margin:40px auto;padding:0 16px">
-      <h1 style="font-size:22px">O jogo não conseguiu carregar os arquivos</h1>
-      <p>Ele precisa ser aberto por um servidor, como o GitHub Pages. No computador, rode <code>just run</code> (ou <code>python3 -m http.server</code>) nesta pasta e abra <a href="http://localhost:8000">http://localhost:8000</a>.</p>
+      <h1 style="font-size:22px">${pt ? "O jogo não conseguiu carregar os arquivos" : "The game could not load its files"}</h1>
+      <p>${pt ? `Ele precisa ser aberto por um servidor, como o GitHub Pages. No computador, rode ${run} nesta pasta e abra ${local}.`
+        : `It needs a server, such as GitHub Pages. On a computer, run ${run} in this folder and open ${local}.`}</p>
       <p style="color:#888">${String(err.message).replace(/</g, "&lt;")}</p></div>`;
   });
 })();
