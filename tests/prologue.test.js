@@ -51,5 +51,9 @@ check(C.ev('view') === 'home', 'Enter on the finished slide should go home');
 // The profile can replay the story from the first slide.
 C.ev('showView("stats")'); C.d.getElementById('btn-prologue').click();
 check(C.ev('view') === 'prologue' && title(C) === first, 'replaying the story should start at the first slide');
-console.log('ERRORS', A.errors, B.errors, C.errors);
+// Each theme names the race in its own words on the returning player's main button.
+const R = boot(null, 'http://localhost/', {page: 'rush.html'}); R.ready();
+const R2 = boot(R.saved(), 'http://localhost/', {page: 'rush.html'});
+check(R2.d.querySelector('#prologue .btn.primary').textContent.startsWith('Continuar a jornada'), 'a returning Rush player should continue the journey');
+console.log('ERRORS', A.errors, B.errors, C.errors, R.errors, R2.errors);
 process.exit(0);
