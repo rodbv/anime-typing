@@ -3,7 +3,7 @@ const {boot} = require('./harness');
 const check = (ok, msg) => { if (!ok) throw new Error(msg); };
 const A = boot(); const {d, ev} = A; A.ready();
 ev('window.asked = []; const realSound = sound; sound = name => { asked.push(name); realSound(name); }; window.tones = 0; tone = () => tones++');
-ev('window.clips = []; window.Audio = class { constructor(src) { this.src = src; } play() { clips.push(this.src); } }');
+ev('window.clips = []; window.Audio = class { constructor(src) { this.src = src; } play() { clips.push(this.src); } pause() {} }');
 const asked = () => ev('asked.splice(0)');
 const typeClean = n => { for (let i = 0; i < n; i++) A.type(ev('run.text[run.pos]')); };
 
@@ -17,7 +17,7 @@ check(asked().includes('burst') && ev('clips.join()') === 'themes/jojo/ora.mp3',
 typeClean(25);
 check(ev('clips.join()') === 'themes/jojo/ora.mp3,themes/jojo/chumimi.mp3', 'the next burst should play the next clip in the list, got ' + ev('clips.join()'));
 typeClean(ev('run.text.length - run.pos'));
-check(asked().pop() === 'clear', 'a cleared lesson should end with the clear sound');
+check(asked().pop() === 'clear' && ev('clips.at(-1)') === 'themes/jojo/nyoho.mp3', 'a cleared lesson should end with the theme\'s clear clip');
 
 d.querySelector('#tabs [data-view=stats]').click();
 d.getElementById('opt-sound').click();

@@ -381,7 +381,8 @@ function appendText(str) {
 }
 function renderRun() {
   $("#fx").innerHTML = "";
-  if (FX.rushSounds.length && S.sound) rushClips();
+  stopClips();
+  if (S.sound) Object.keys(FX.sounds).forEach(themeClips);
   $("#type-label").textContent = runLabel();
   $("#text-inner").innerHTML = "";
   $("#text-inner").style.transform = "";
@@ -760,21 +761,26 @@ function tone(freq, ms, {type = "triangle", gain = 0.08, at = 0, slide = 0} = {}
 const SOUNDS = {
   hit: () => tone(150, 50, {type: "sine", gain: 0.05}),
   miss: () => tone(95, 160, {type: "square", gain: 0.035, slide: 0.7}),
-  burst: () => FX.rushSounds.length ? playClip(nextRushClip()) : [392, 523, 659, 784].forEach((f, i) => tone(f, 120, {at: i * 60})),
+  burst: () => [392, 523, 659, 784].forEach((f, i) => tone(f, 120, {at: i * 60})),
   clear: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 180, {at: i * 110})),
   fail: () => [330, 247].forEach((f, i) => tone(f, 280, {at: i * 230, type: "sawtooth", gain: 0.04}))
 };
-// The theme's recorded bursts take turns, loaded when a run starts so they play without delay.
-let rushAudios = null, rushTurn = 0;
-const rushClips = () => rushAudios = rushAudios || FX.rushSounds.map(src => Object.assign(new Audio(src), {preload: "auto"}));
-const nextRushClip = () => rushClips()[rushTurn++ % FX.rushSounds.length];
+// The theme's clips replace a synthesized sound and take turns; they load when a run starts so they play without delay.
+const clipSets = {}, clipTurns = {};
+const themeClips = name => clipSets[name] = clipSets[name] || (FX.sounds[name] || []).map(src => Object.assign(new Audio(src), {preload: "auto"}));
+function nextClip(name) {
+  const set = themeClips(name), turn = clipTurns[name] || 0;
+  clipTurns[name] = turn + 1;
+  return set[turn % set.length];
+}
+const stopClips = () => Object.values(clipSets).flat().forEach(clip => clip.pause());
 function playClip(clip) {
   clip.currentTime = 0;
   clip.play()?.catch(() => { /* the browser refused to play; the game goes on silent */ });
 }
 function sound(name) {
   if (!S.sound) return;
-  try { SOUNDS[name](); } catch (e) { /* the browser refused audio; the game goes on silent */ }
+  try { if (FX.sounds[name]?.length) playClip(nextClip(name)); else SOUNDS[name](); } catch (e) { /* the browser refused audio; the game goes on silent */ }
 }
 
 /* ---------- global keys ---------- */
