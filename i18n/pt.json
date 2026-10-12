@@ -10,7 +10,7 @@
   "tabStats": "Progresso",
   "lessonTip": "Deixe os dedos na linha base: F e J têm um relevo para você achar sem olhar. Olhe para a tela, não para as mãos.",
   "lesson": "Lição",
-  "passRule": "Para passar: 90% de precisão (nas corridas, 93%)",
+  "passRule": "Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)",
   "preview": "Prévia",
   "lockedTip": "Bloqueada: clique para ver uma prévia. A prévia não conta para o progresso.",
   "previewDone": "Fim da prévia. Esta rodada não conta para o progresso.",
@@ -313,7 +313,7 @@
       "title": "Antes da primeira lição",
       "narr": [
         "A missão diária na tela inicial diz o que treinar.",
-        "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição."
+        "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto e a velocidade da lição, você passa."
       ]
     },
     "finished": {
@@ -373,5 +373,7 @@
       "Em boca fechada não entra mosquito.",
       "Ditado popular"
     ]
-  ]
+  ],
+  "failedWpm": "Quase! Para passar, você precisa de {n} PPM. Mantenha os olhos na tela.",
+  "wpmGoal": "meta {n} PPM"
 }

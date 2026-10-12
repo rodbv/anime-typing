@@ -420,7 +420,7 @@
 </div>
 <h1>Na largada</h1>
 <p>A Slow Dancer está na praia de San Diego, no km 0. A missão diária na tela inicial diz o que treinar.</p>
-<p>15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição.</p>
+<p>15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto e a velocidade da lição, você passa.</p>
 <div class="bubble">
 <b>Gyro:</b> Os dedos ficam no F e no J, Johnny. A largada é agora. Nyo-ho!</div>
 <div class="pro-dots">
@@ -884,7 +884,7 @@
 </div>
 <h2 class="stage-h">Etapa 1: San Diego → Igreja Santa Maria Novella · 15 km</h2>
 <div class="grid">
-<button class="lesson" data-i="0" title="Para passar: 90% de precisão (nas corridas, 93%)">
+<button class="lesson" data-i="0" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
 <span class="n">Lição 1</span>
 <div class="keys">
 <span class="cap">F</span>
@@ -895,7 +895,7 @@
 <span class="sub"> · 12 PPM</span>
 </span>
 </button>
-<button class="lesson" data-i="1" title="Para passar: 90% de precisão (nas corridas, 93%)">
+<button class="lesson" data-i="1" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
 <span class="n">Lição 2</span>
 <div class="keys">
 <span class="cap">D</span>
@@ -911,7 +911,7 @@
 </div>
 <h2 class="stage-h">Etapa 2: Igreja Santa Maria Novella → Monument Valley · 1.200 km</h2>
 <div class="grid">
-<button class="lesson" data-i="2" title="Para passar: 90% de precisão (nas corridas, 93%)">
+<button class="lesson" data-i="2" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
 <span class="n">Lição 3</span>
 <div class="keys">
 <span class="cap">S</span>
@@ -923,7 +923,7 @@
 <span class="sub"> · 12 PPM</span>
 </span>
 </button>
-<button class="lesson" data-i="3" title="Para passar: 90% de precisão (nas corridas, 93%)">
+<button class="lesson" data-i="3" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
 <span class="n">Lição 4</span>
 <div class="keys">
 <span class="cap">A</span>
@@ -936,7 +936,7 @@
 <span class="sub"> · 11 PPM</span>
 </span>
 </button>
-<button class="lesson" data-i="4" title="Para passar: 90% de precisão (nas corridas, 93%)">
+<button class="lesson" data-i="4" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
 <span class="n">Lição 5</span>
 <div class="keys">
 <span class="cap">G</span>
@@ -947,7 +947,7 @@
 <span class="sub"> · 14 PPM</span>
 </span>
 </button>
-<button class="lesson" data-i="5" title="Para passar: 90% de precisão (nas corridas, 93%)">
+<button class="lesson" data-i="5" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
 <span class="n">Lição 6</span>
 <div class="title">Revisão: linha base</div>
 <span class="race-tag">🏁 Diego Brando</span>
@@ -961,7 +961,7 @@
 </div>
 <h2 class="stage-h">Etapa 3: Monument Valley → Cañon City · 510 km</h2>
 <div class="grid">
-<button class="lesson" data-i="6" title="Para passar: 90% de precisão (nas corridas, 93%)">
+<button class="lesson" data-i="6" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
 <span class="n">Lição 7</span>
 <div class="keys">
 <span class="cap">E</span>
@@ -974,7 +974,7 @@
 <span class="sub"> · 13 PPM</span>
 </span>
 </button>
-<button class="lesson next" data-i="7" title="Para passar: 90% de precisão (nas corridas, 93%)">
+<button class="lesson next" data-i="7" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
 <span class="n">Lição 8</span>
 <div class="keys">
 <span class="cap">R</span>

@@ -360,7 +360,7 @@ function nextLessonIdx() {
 // Up to the top-row review, stars reward accuracy only. After it, speed counts too.
 function starsFor(wpm, acc, idx) {
   const L = LESSON_DEFS[idx];
-  if (acc < passAcc(L)) return 0;
+  if (acc < passAcc(L) || wpm < passWpm(idx)) return 0;
   if (idx <= lessonIndexOf("r2")) return acc >= 98 ? 3 : acc >= 95 ? 2 : 1;
   if (acc >= 97 && wpm >= 20) return 3;
   if (acc >= 94 && wpm >= 15) return 2;
@@ -385,6 +385,8 @@ const VOWELS = "aeiou";
 const PART_LEN = 48;
 const homeOf = k => { const rc = keyGeometry().pos[k]; return rc ? HOME[S.layout][rc.f] : k; };
 const passAcc = L => L.race ? 93 : 90;
+// A slow pass usually means the player looked at the keys, so each part of the course asks for a minimum speed.
+const passWpm = idx => idx < 6 ? 8 : idx < 13 ? 10 : 12;
 const accentsOn = () => S.layout !== "us" && (S.accents || (progress().acc2?.stars || 0) >= 1);
 
 // Warm-up drill: the finger leaves its home key, presses the new key and comes back ("fgf", "jhhj").
@@ -756,7 +758,7 @@ function goBack() {
   showView({lesson: "lessons", free: "free", quote: "quotes"}[m]);
 }
 function runLabel() {
-  if (run.mode === "lesson") return `${t("lesson")} ${run.lessonIdx + 1} · ${lessonTitle(LESSON_DEFS[run.lessonIdx])}` +
+  if (run.mode === "lesson") return `${t("lesson")} ${run.lessonIdx + 1} · ${lessonTitle(LESSON_DEFS[run.lessonIdx])} · ${t("wpmGoal", {n: passWpm(run.lessonIdx)})}` +
     (run.race ? ` · 🏁 ${run.race.nm} (${run.race.wpm} ${t("wpm")})` : "") + (run.preview ? " · " + t("preview") : "");
   if (run.mode === "free") return `${t("tabFree")} · ${run.limit} s`;
   return t("tabQuotes") + (run.preview ? " · " + t("preview") : "");
@@ -1001,14 +1003,19 @@ function finish() {
     const prev = progress()[L.id];
     run.wasNew = !(prev?.stars >= 1);
     record = !run.preview && !!prev && st >= 1 && m.wpm > prev.wpm;
-    if (!run.preview) progress()[L.id] = {stars: Math.max(st, prev?.stars || 0), wpm: Math.max(m.wpm, prev?.wpm || 0), acc: Math.max(m.acc, prev?.acc || 0), place: prev?.place, last: Date.now()};
     run.passed = st >= 1;
+    if (!run.preview) {
+      const due = run.passed && !run.wasNew && reviewDue(L);
+      progress()[L.id] = {...prev, stars: Math.max(st, prev?.stars || 0), wpm: Math.max(m.wpm, prev?.wpm || 0), acc: Math.max(m.acc, prev?.acc || 0), last: Date.now(),
+        cleared: prev?.cleared || (run.passed ? Date.now() : undefined), reviews: (prev?.reviews || 0) + (due ? 1 : 0)};
+    }
     if (run.race) {
       const place = racePlace(m.ms);
       if (run.passed && !run.preview) progress()[L.id].place = Math.min(progress()[L.id].place || 9, place);
       extra += raceResultHtml(place, m.ms);
     }
-    title = run.preview ? t("previewDone") : run.passed ? t("cleared") : t("failedAcc", {n: passAcc(L)});
+    title = run.preview ? t("previewDone") : run.passed ? t("cleared")
+      : m.acc < passAcc(L) ? t("failedAcc", {n: passAcc(L)}) : t("failedWpm", {n: passWpm(run.lessonIdx)});
     extra = `<div style="font-size:28px">${starRow(st)}</div>` + extra;
   } else {
     const prev = data.best[run.mode];
@@ -1727,9 +1734,18 @@ const racePoints = () => LESSON_DEFS.reduce((a, L) => a + (L.race ? PLACE_POINTS
 const BREAK_MS = 20 * 60000;
 const dayKey = dt => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
 // The review lesson revisits the cleared lesson with the worst key, or else the weakest and oldest one.
+// A cleared lesson comes back for review 1, 3 and 7 days after the player first cleared it.
+const REVIEW_DAYS = [1, 3, 7];
+const daysAgo = ts => Math.round((new Date(dayKey(new Date())) - new Date(dayKey(new Date(ts)))) / 86400000);
+function reviewDue(L) {
+  const p = progress()[L.id], n = p?.reviews || 0;
+  return lessonDone(L) && n < REVIEW_DAYS.length && daysAgo(p.cleared || p.last) >= REVIEW_DAYS[n];
+}
 function pickReviewLesson(exclude) {
   const pr = progress(), done = LESSON_DEFS.filter(L => lessonDone(L) && L.id !== exclude);
   if (!done.length) return null;
+  const due = done.filter(reviewDue).sort((a, b) => (pr[a.id].cleared || pr[a.id].last) - (pr[b.id].cleared || pr[b.id].last));
+  if (due.length) return due[0].id;
   const rate = st => st.m / (st.h + st.m);
   const worst = Object.entries(data.keys[S.layout]).filter(([, st]) => st.h + st.m >= 10 && st.m > 0).sort((a, b) => rate(b[1]) - rate(a[1]))[0];
   const byKey = worst && done.find(L => lessonKeys(L).includes(worst[0]));

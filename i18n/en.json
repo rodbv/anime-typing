@@ -10,7 +10,7 @@
   "tabStats": "Progress",
   "lessonTip": "Keep your fingers on the home row: F and J have a bump so you can find them without looking. Look at the screen, not at your hands.",
   "lesson": "Lesson",
-  "passRule": "To pass: 90% accuracy and 10 WPM",
+  "passRule": "To pass: 90% accuracy and the lesson's speed (93% in races)",
   "preview": "Preview",
   "lockedTip": "Locked: click to preview it. A preview does not count toward progress.",
   "previewDone": "Preview finished. This run does not count toward progress.",
@@ -231,7 +231,7 @@
       "title": "Before the first lesson",
       "narr": [
         "The daily mission on the home screen says what to practice.",
-        "15 minutes a day, without looking at your hands. Accuracy first, then speed: with 90% accuracy you pass a lesson."
+        "15 minutes a day, without looking at your hands. Accuracy first, then speed: with 90% accuracy and the lesson's speed, you pass."
       ]
     },
     "finished": {
@@ -287,5 +287,7 @@
       "The early bird catches the worm.",
       "Proverb"
     ]
-  ]
+  ],
+  "failedWpm": "Almost! To pass, you need {n} WPM. Keep your eyes on the screen.",
+  "wpmGoal": "goal {n} WPM"
 }

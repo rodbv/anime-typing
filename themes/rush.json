@@ -29,7 +29,7 @@
     "quoteIntro": "Digite versos do Rush, em inglês. Maiúsculas e pontuação contam.",
     "freeLimited": "Por enquanto, o treino livre usa só as teclas que você já sabe: {k}. Todas as letras liberam depois da lição {n}.",
     "lessonTip": "Cada lição é um disco. Termine as lições para avançar na discografia.",
-    "passRule": "Para passar: 90% de precisão (nos duelos, 93%)",
+    "passRule": "Para passar: 90% de precisão e a velocidade da lição (nos duelos, 93%)",
     "homeStart": "Primeiro disco: lição 1",
     "homeContinue": "Continuar a discografia: lição {n}",
     "racerTag": "Starman nº {n} · {name}",
@@ -680,7 +680,7 @@
         "title": "Antes do primeiro disco",
         "narr": [
           "Você está em Syrinx, com a música só nos dedos. A missão diária na tela inicial diz o que treinar.",
-          "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição."
+          "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto e a velocidade da lição, você passa."
         ],
         "mentor": "Os indicadores ficam no F e no J. Conte até quatro e comece."
       },
