@@ -110,8 +110,6 @@ document.body.insertAdjacentHTML("afterbegin", `
 </div>
 `);
 
-"use strict";
-
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -180,8 +178,7 @@ const podiums = () => LESSON_DEFS.filter(L => L.race && (progress()[L.id]?.place
 const missionsDone = () => Object.values(data.days || {}).filter(d => d.done).length;
 const daysTrained = () => Object.values(data.days || {}).filter(d => d.ms > 0).length;
 
-/* Goals that unlock collection items. ctx = {run, m, cleared, stars3, totalLessons, lessons, totals} */
-// Achievement conditions a theme can use, by type. Each one gets the condition from the theme and the finished run.
+// Achievement conditions a theme can use, by type. Each one gets the condition from the theme and {run, m, lessons} of the finished run.
 const CONDITIONS = {
   stageCleared: w => stageCleared(w.stage),
   lessonDone: (w, c) => (c.lessons[w.lesson]?.stars || 0) >= 1,
@@ -392,7 +389,6 @@ function drill(letters, focus) {
   for (let i = 0; i < len; i++) s += Math.random() < 0.6 ? pick(focus) : pick(letters);
   return s;
 }
-function allQuotes() { return TH.quotes.map(q => [q[0], q[1]]); }
 const VOWELS = "aeiou";
 const PART_LEN = 48;
 const homeOf = k => { const rc = keyGeometry().pos[k]; return rc ? HOME[S.layout][rc.f] : k; };
@@ -448,7 +444,7 @@ function wordPart(themedList, commonList, used, fallback, opts = {}) {
 function lessonParts(idx) {
   const L = LESSON_DEFS[idx];
   if (L.quotes) {
-    return allQuotes().filter(q => q[0].length < 60).sort(() => Math.random() - 0.5).slice(0, 3).map(q => sanitize(q[0], S.layout !== "us"));
+    return TH.quotes.filter(q => q[0].length < 60).sort(() => Math.random() - 0.5).slice(0, 3).map(q => sanitize(q[0], S.layout !== "us"));
   }
   const allowed = allowedUpTo(idx);
   const letters = [...allowed].filter(isLetter);
@@ -733,7 +729,7 @@ $("#lesson-grid").addEventListener("click", e => {
 /* ---------- runs ---------- */
 function newRun(mode, o = {}) {
   const r = {mode, lessonIdx: o.lessonIdx ?? null, quote: o.quote ?? null, preview: !!o.preview, text: "", pos: 0, started: 0, ended: 0,
-    keystrokes: 0, correct: 0, errors: 0, errAt: new Set(), miss: {}, done: false, els: [], curEl: null,
+    errAt: new Set(), miss: {}, done: false, els: [], curEl: null,
     limit: mode === "free" ? Number(S.time) : 0, nextEls: [], bannerShown: false, primary: null,
     pausedMs: 0, pauseStart: 0, lastKey: 0, menuOpen: false, errCount: {}, gaps: [], lastOk: 0, streak: 0, bestStreak: 0};
   if (mode === "lesson") {
@@ -746,7 +742,7 @@ function newRun(mode, o = {}) {
     if (r.introOpen) introSeen.add(L.id);
   }
   else if (mode === "free") r.text = freeChunk(80);
-  else { r.quote = r.quote || pick(allQuotes()); r.text = sanitize(r.quote[0], S.layout !== "us"); }
+  else { r.quote = r.quote || pick(TH.quotes); r.text = sanitize(r.quote[0], S.layout !== "us"); }
   if (mode === "lesson" && LESSON_DEFS[r.lessonIdx].race) r.race = makeRace(LESSON_DEFS[r.lessonIdx]);
   return r;
 }
@@ -908,9 +904,7 @@ function typeChar(ch) {
   const st = strokes(exp, true);
   const base = (st && kb.map[st[0].c]?.base) || exp.toLowerCase();
   const el = run.els[run.pos];
-  run.keystrokes++;
   if (ch === exp) {
-    run.correct++;
     const now = Date.now();
     if (run.lastOk && now - run.lastOk < 2000) run.gaps.push(now - run.lastOk);
     run.lastOk = now;
@@ -935,7 +929,6 @@ function typeChar(ch) {
     }
     setCursor();
   } else {
-    run.errors++;
     run.streak = 0;
     el.classList.add("bad");
     run.errCount[run.pos] = (run.errCount[run.pos] || 0) + 1;
@@ -979,18 +972,16 @@ function rankFor(w) {
 const rankName = r => S.lang === "pt" ? r[2] : r[1];
 function lessonCounts() {
   const p = progress();
-  let cleared = 0, stars3 = 0, stars = 0;
+  let cleared = 0, stars = 0;
   for (const L of LESSON_DEFS) {
     const s = p[L.id]?.stars || 0;
     if (s >= 1) cleared++;
-    if (s >= 3) stars3++;
     stars += s;
   }
-  return {cleared, stars3, stars};
+  return {cleared, stars};
 }
 function checkAchievements(m) {
-  const lc = lessonCounts();
-  const ctx = {run, m, cleared: lc.cleared, stars3: lc.stars3, totalLessons: LESSON_DEFS.length, lessons: progress(), totals: data.totals};
+  const ctx = {run, m, lessons: progress()};
   const fresh = [];
   for (const a of ACHIEVEMENTS) {
     if (data.unlocked[a.id]) continue;
