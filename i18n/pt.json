@@ -376,5 +376,20 @@
     ]
   ],
   "failedWpm": "Quase! Para passar, você precisa de {n} PPM. Mantenha os olhos na tela.",
-  "wpmGoal": "meta {n} PPM"
+  "wpmGoal": "meta {n} PPM",
+  "tpTitle": "O tema tem problemas",
+  "tpStage": "etapa {n}",
+  "tpAchievement": "conquista \"{id}\"",
+  "tpNoId": "o tema precisa de um id",
+  "tpNoPlace": "{where}: falta o nome (place)",
+  "tpUnknownLesson": "{where}: a lição \"{id}\" não existe",
+  "tpUnknownView": "journey.view \"{id}\" não existe: use \"line\", \"snake\" ou \"map\"",
+  "tpNoPoint": "{where}: falta a posição no mapa (pt)",
+  "tpUnknownRival": "{where}: o rival \"{id}\" não existe",
+  "tpQuotes": "quotes: a lição de frases precisa de pelo menos 3 frases com menos de 60 caracteres",
+  "tpRivalName": "rival \"{id}\": falta o nome (nm)",
+  "tpUnknownType": "{where}: o tipo \"{id}\" não existe",
+  "tpUnknownStage": "{where}: a etapa {n} não existe",
+  "tpNoStage": "a lição \"{id}\" não está em nenhuma etapa",
+  "tpLessonOrder": "a lição \"{id}\" está numa etapa anterior à lição que vem antes dela"
 }

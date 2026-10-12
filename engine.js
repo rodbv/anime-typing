@@ -49,21 +49,23 @@ function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
 /* ---------- theme check ---------- */
 // The theme groups the course into stages in course order; a stage's rival races its last lesson.
 const themeProblems = [];
-if (!TH.id) themeProblems.push("o tema precisa de um id");
-STAGES.forEach((st, si) => { if (!st.place) themeProblems.push(`etapa ${si + 1}: falta o nome (place)`); });
+const problem = (k, vars) => themeProblems.push(t(k, vars));
+const stageWhere = n => t("tpStage", {n});
+if (!TH.id) problem("tpNoId");
+STAGES.forEach((st, si) => { if (!st.place) problem("tpNoPlace", {where: stageWhere(si + 1)}); });
 STAGES.forEach((st, si) => (st.lessons || []).forEach(id => {
   const L = LESSON_DEFS.find(x => x.id === id);
-  if (!L) themeProblems.push(`etapa ${si + 1}: a lição "${id}" não existe`);
+  if (!L) problem("tpUnknownLesson", {where: stageWhere(si + 1), id});
   else L.stage = si;
 }));
 const VIEW = TH.journey.view ?? "line";
-if (!["line", "snake", "map"].includes(VIEW)) themeProblems.push(`journey.view "${VIEW}" não existe: use "line", "snake" ou "map"`);
+if (!["line", "snake", "map"].includes(VIEW)) problem("tpUnknownView", {id: VIEW});
 if (VIEW === "map") [TH.journey.start, ...STAGES].forEach((st, i) => {
-  if (!Array.isArray(st.pt)) themeProblems.push(`${i ? `etapa ${i}` : "journey.start"}: falta a posição no mapa (pt)`);
+  if (!Array.isArray(st.pt)) problem("tpNoPoint", {where: i ? stageWhere(i) : "journey.start"});
 });
 STAGES.forEach((st, si) => {
   if (!st.rival) return;
-  if (!RIVALS[st.rival]) themeProblems.push(`etapa ${si + 1}: o rival "${st.rival}" não existe`);
+  if (!RIVALS[st.rival]) problem("tpUnknownRival", {where: stageWhere(si + 1), id: st.rival});
   else {
     const last = LESSON_DEFS.find(L => L.id === st.lessons?.[st.lessons.length - 1]);
     if (last) last.race = st.rival;
@@ -71,21 +73,21 @@ STAGES.forEach((st, si) => {
 });
 // Content that later screens read is checked here, so a theme mistake shows on this list instead of breaking a screen.
 const lessonIds = new Set(LESSON_DEFS.map(L => L.id));
-if (TH.quotes.filter(q => q[0].length < 60).length < 3) themeProblems.push("quotes: a lição de frases precisa de pelo menos 3 frases com menos de 60 caracteres");
-TH.evolution.levels.forEach(lv => { if (!lessonIds.has(lv.lesson)) themeProblems.push(`evolution: a lição "${lv.lesson}" não existe`); });
-Object.entries(RIVALS).forEach(([id, r]) => { if (!r.nm) themeProblems.push(`rival "${id}": falta o nome (nm)`); });
+if (TH.quotes.filter(q => q[0].length < 60).length < 3) problem("tpQuotes");
+TH.evolution.levels.forEach(lv => { if (!lessonIds.has(lv.lesson)) problem("tpUnknownLesson", {where: "evolution", id: lv.lesson}); });
+Object.entries(RIVALS).forEach(([id, r]) => { if (!r.nm) problem("tpRivalName", {id}); });
 TH.achievements.forEach(a => {
-  const w = a.when || {};
-  if (!CONDITIONS[w.type]) themeProblems.push(`conquista "${a.id}": o tipo "${w.type}" não existe`);
-  if (w.lesson !== undefined && !lessonIds.has(w.lesson)) themeProblems.push(`conquista "${a.id}": a lição "${w.lesson}" não existe`);
-  if (w.type === "stageCleared" && !(Number.isInteger(w.stage) && w.stage >= 0 && w.stage < STAGES.length)) themeProblems.push(`conquista "${a.id}": a etapa ${w.stage} não existe`);
+  const w = a.when || {}, where = t("tpAchievement", {id: a.id});
+  if (!CONDITIONS[w.type]) problem("tpUnknownType", {where, id: w.type});
+  if (w.lesson !== undefined && !lessonIds.has(w.lesson)) problem("tpUnknownLesson", {where, id: w.lesson});
+  if (w.type === "stageCleared" && !(Number.isInteger(w.stage) && w.stage >= 0 && w.stage < STAGES.length)) problem("tpUnknownStage", {where, n: w.stage});
 });
 LESSON_DEFS.forEach((L, i) => {
-  if (L.stage === undefined) themeProblems.push(`a lição "${L.id}" não está em nenhuma etapa`);
-  else if (i && L.stage < LESSON_DEFS[i - 1].stage) themeProblems.push(`a lição "${L.id}" está numa etapa anterior à lição que vem antes dela`);
+  if (L.stage === undefined) problem("tpNoStage", {id: L.id});
+  else if (i && L.stage < LESSON_DEFS[i - 1].stage) problem("tpLessonOrder", {id: L.id});
 });
 if (themeProblems.length) {
-  document.body.innerHTML = `<div class="card" style="max-width:640px;margin:40px auto"><h1>O tema tem problemas</h1><ul>${themeProblems.map(p => `<li>${esc(p)}</li>`).join("")}</ul><p><a href="index.html">index.html</a></p></div>`;
+  document.body.innerHTML = `<div class="card" style="max-width:640px;margin:40px auto"><h1>${esc(t("tpTitle"))}</h1><ul>${themeProblems.map(p => `<li>${esc(p)}</li>`).join("")}</ul><p><a href="index.html">index.html</a></p></div>`;
   throw new Error("theme problems: " + themeProblems.join("; "));
 }
 /* ---------- lesson progress ---------- */

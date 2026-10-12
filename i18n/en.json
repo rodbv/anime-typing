@@ -372,5 +372,20 @@
     ]
   ],
   "failedWpm": "Almost! To pass, you need {n} WPM. Keep your eyes on the screen.",
-  "wpmGoal": "goal {n} WPM"
+  "wpmGoal": "goal {n} WPM",
+  "tpTitle": "The theme has problems",
+  "tpStage": "stage {n}",
+  "tpAchievement": "achievement \"{id}\"",
+  "tpNoId": "the theme needs an id",
+  "tpNoPlace": "{where}: the name (place) is missing",
+  "tpUnknownLesson": "{where}: the lesson \"{id}\" does not exist",
+  "tpUnknownView": "journey.view \"{id}\" does not exist: use \"line\", \"snake\" or \"map\"",
+  "tpNoPoint": "{where}: the map position (pt) is missing",
+  "tpUnknownRival": "{where}: the rival \"{id}\" does not exist",
+  "tpQuotes": "quotes: the quotes lesson needs at least 3 quotes shorter than 60 characters",
+  "tpRivalName": "rival \"{id}\": the name (nm) is missing",
+  "tpUnknownType": "{where}: the type \"{id}\" does not exist",
+  "tpUnknownStage": "{where}: the stage {n} does not exist",
+  "tpNoStage": "the lesson \"{id}\" is in no stage",
+  "tpLessonOrder": "the lesson \"{id}\" is in an earlier stage than the lesson before it"
 }
