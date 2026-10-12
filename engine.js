@@ -495,11 +495,15 @@ function bumpKey(base, ok) {
   const s = ks[base] || (ks[base] = {h: 0, m: 0});
   if (ok) s.h++; else s.m++;
 }
+// Typing this word in capitals during a lesson fails it at once, to try the defeat screen.
+const FAIL_CHEAT = "DERROTA";
 function typeChar(ch) {
   if (!run || run.done || run.introOpen || run.menuOpen || view !== "type") return;
   if (!run.started) run.started = Date.now();
   resume();
   run.lastKey = Date.now();
+  run.typed = ((run.typed || "") + ch).slice(-FAIL_CHEAT.length);
+  if (run.mode === "lesson" && run.typed === FAIL_CHEAT) { run.forceFail = true; finish(); return; }
   const exp = run.text[run.pos];
   const st = strokes(exp, true);
   const base = (st && kb.map[st[0].c]?.base) || exp.toLowerCase();
@@ -605,7 +609,7 @@ function finish() {
   run.passed = false;
   if (run.mode === "lesson") {
     const L = LESSON_DEFS[run.lessonIdx];
-    const st = starsFor(m.wpm, m.acc, run.lessonIdx);
+    const st = run.forceFail ? 0 : starsFor(m.wpm, m.acc, run.lessonIdx);
     const prev = progress()[L.id];
     run.wasNew = !lessonDone(L.id);
     record = !run.preview && !!prev && st >= 1 && m.wpm > prev.wpm;

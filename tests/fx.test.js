@@ -34,6 +34,10 @@ check(J.d.querySelector('#results .tbc')?.textContent === 'To Be Continued' && J
   'a failed lesson should end with To Be Continued');
 check(J.d.querySelector('#results .frozen img')?.getAttribute('src') === 'themes/jojo/johnny-falls.webp', 'a failed lesson should freeze the theme\'s fail art under the banner');
 check(J.ev('clipTurns.fail') === 1 && J.ev('clipSets.fail[0].src').endsWith('themes/jojo/roundabout.mp3'), 'a failed lesson should play the theme\'s fail clip');
+// Typing DERROTA during a lesson fails it at once.
+J.ev('startRun("lesson",{lessonIdx:2})'); J.ev('if (run.introOpen) closeIntro()');
+typeClean(J, 3); [...'DERROTA'].forEach(ch => J.type(ch));
+check(J.ev('run.done') && !J.ev('run.passed') && J.d.querySelector('#results .frozen img'), 'typing DERROTA should fail the lesson');
 J.playLesson(2);
 check(!J.d.querySelector('#results .tbc') && !J.d.getElementById('results').classList.contains('cliffhanger'), 'a cleared lesson should not show the banner');
 failLesson(R);
