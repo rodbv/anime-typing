@@ -438,8 +438,7 @@
 </i>
 </div>
 <div class="pro-nav">
-<span>
-</span>
+<button class="btn small" data-pro="home">Ir para o início</button>
 <span style="display:flex;gap:8px">
 <button class="btn" data-pro="prev">Voltar</button>
 <button class="btn primary" data-pro="next">Fazer a inscrição (Enter)</button>
@@ -657,6 +656,7 @@
 </div>
 <div class="type-actions">
 <button class="btn primary" data-go="finish">Começar (Enter)</button>
+<button class="btn" data-go="leave">Ir para o início</button>
 </div>
 
 === prologue position ===
@@ -2013,6 +2013,7 @@
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 1 text ===
@@ -2278,6 +2279,7 @@ fff jjjj fff jjj fff jfj ffff jjj jjj fff jjjj fff fjf fff jjj fjf fff jfj fff j
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 2 text ===
@@ -2541,6 +2543,7 @@ dkd kkdd kkk dddd dkd ddd dddd ddd ddd dkd kkk ddd kdk kkdd kkk kkkk ddd dkd ddd
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 3 text ===
@@ -2804,6 +2807,7 @@ llll llll lll ssll llll lsl ssss lsl lll llss sss sss lll sss lll sss lsl sss ll
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 4 text ===
@@ -3071,6 +3075,7 @@ aaa ;;; aaa aaa aaa ;;; aaa ;;; ;;; ;;; ;;; ;;; ;;; sal falsa; asa ala fala sal;
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 5 text ===
@@ -3336,6 +3341,7 @@ jjh jhj fgf hjh fgf hjh hjh jjh ffg gfg jhj jhj hjh algas gala galas algas sagas
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 6 text ===
@@ -3604,6 +3610,7 @@ aaa jdj ddd jjaa fggf ddd ddd aaa aadd jjj aga jgj fala fada asas falas gala gal
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 7 text ===
@@ -3873,6 +3880,7 @@ ede dde ede kki ded kki deed ede ede iki ede ded ela delas de essa elas de esse 
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 8 text ===
@@ -4140,6 +4148,7 @@ juuj uju juuj ffr frrf rfr uju frrf rfr frrf ffr ferradura rua ferradura lua ser
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 9 text ===
@@ -4407,6 +4416,7 @@ fttf llo lool fttf fft llo fttf fft fttf tft llo diego deserto outro foi gelo so
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 10 text ===
@@ -4676,6 +4686,7 @@ jjm jmj njn jmj jjn jnj jnnj njn jmj njn mjm mjm norisuke medo nosso grande mont
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 11 text ===
@@ -4944,6 +4955,7 @@ ddc kk, kk, dccd kk, ddc kk, ddc ddc kk, kk, dccd rancho cachorro como, cadeira,
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 12 text ===
@@ -5209,6 +5221,7 @@ ddc kk, kk, dccd kk, ddc kk, ddc ddc kk, kk, dccd rancho cachorro como, cadeira,
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 13 text ===
@@ -5473,6 +5486,7 @@ jhj jhj gfg hjh frf aaq fggf rfr frf qaq rfr ffg norisuke guardanapo porta salas
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 14 text ===
@@ -5739,6 +5753,7 @@ jhj jhj gfg hjh frf aaq fggf rfr frf qaq rfr ffg norisuke guardanapo porta salas
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 15 text ===
@@ -6006,6 +6021,7 @@ jhj jhj gfg hjh frf aaq fggf rfr frf qaq rfr ffg norisuke guardanapo porta salas
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 16 text ===
@@ -6272,6 +6288,7 @@ ffv fbbf bfb fvvf ffb bfb bfb bfb ffv bfb ffv fbf voltar nova blackmore vento bl
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 17 text ===
@@ -6544,6 +6561,7 @@ ll. ll. xsx ll. xsx ll. xsx ll. sxs ll. sxs ll. ll. lixo luxo caixa. peixe caixa
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 18 text ===
@@ -6810,6 +6828,7 @@ zaz jyj ssw jjy swws ssw yjy aza zaz azza wsw jyj lucy cowboy zeppeli dez treze 
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 19 text ===
@@ -7078,6 +7097,7 @@ fbbf fvvf fbbf lvl lll bfb llvv vfv vfv p;p p;p lll meus gyro bandeira dela aque
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 20 text ===
@@ -7346,6 +7366,7 @@ Bbb Ppp Ggg Yyy Eee Xxx Qqq Rrr Ttt Eee Aaa Hhh Ttt Joestar Selo Salada Folha Tr
 </ul>
 <div class="type-actions">
 <button class="btn primary" id="intro-go">Entendi, começar (Enter)</button>
+<button class="btn" id="intro-back">Voltar (Esc)</button>
 </div>
 
 === lesson 21 text ===
@@ -7419,6 +7440,6 @@ Gyro
 </div>
 </div>
 <div class="type-actions">
-<a class="btn primary" href="https://wa.me/?text=%F0%9F%8F%87%20Theo%20(n%C2%BA%20939)%20no%20Steel%20Ball%20Type%3A%2018%20min%20de%20treino%20hoje%2C%20miss%C3%A3o%203%20de%203%2C%203%20conquistas%20novas.%20Etapa%202%2C%201.215%20km%20de%205.898%20km.%0Ahttp%3A%2F%2Flocalhost%2F%3Fcard%3DeyJuIjoiVGhlbyIsImQiOiIyMDI2LTEwLTExIiwibWkiOjE4LCJyIjo3LCJ3IjoxNCwiYSI6OTYsIm1zIjozLCJtZCI6MSwiaXQiOlsibGFybSIsImFjdDEiLCJzbG93ZGFuY2VyIl0sImRpc3QiOjEyMTUsInN0IjoxLCJsYyI6NiwiYWN0IjoxLCJjb2wiOjUsInB0cyI6MTZ9">Mandar no WhatsApp</a>
-<a class="btn" href="https://rodbv.github.io/jojo-typing/">Abrir o jogo</a>
+<a class="btn primary" target="_blank" rel="noopener" href="https://wa.me/?text=%F0%9F%8F%87%20Theo%20(n%C2%BA%20939)%20no%20Steel%20Ball%20Type%3A%2018%20min%20de%20treino%20hoje%2C%20miss%C3%A3o%203%20de%203%2C%203%20conquistas%20novas.%20Etapa%202%2C%201.215%20km%20de%205.898%20km.%0Ahttp%3A%2F%2Flocalhost%2F%3Fcard%3DeyJuIjoiVGhlbyIsImQiOiIyMDI2LTEwLTExIiwibWkiOjE4LCJyIjo3LCJ3IjoxNCwiYSI6OTYsIm1zIjozLCJtZCI6MSwiaXQiOlsibGFybSIsImFjdDEiLCJzbG93ZGFuY2VyIl0sImRpc3QiOjEyMTUsInN0IjoxLCJsYyI6NiwiYWN0IjoxLCJjb2wiOjUsInB0cyI6MTZ9">Mandar no WhatsApp</a>
+<a class="btn" href="http://localhost/">Abrir o jogo</a>
 </div>

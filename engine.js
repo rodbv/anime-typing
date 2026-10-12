@@ -332,7 +332,7 @@ LESSON_DEFS.forEach((L, i) => {
   else if (i && L.stage < LESSON_DEFS[i - 1].stage) themeProblems.push(`a lição "${L.id}" está numa etapa anterior à lição que vem antes dela`);
 });
 if (themeProblems.length) {
-  document.body.innerHTML = `<div class="card" style="max-width:640px;margin:40px auto"><h1>O tema tem problemas</h1><ul>${themeProblems.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>`;
+  document.body.innerHTML = `<div class="card" style="max-width:640px;margin:40px auto"><h1>O tema tem problemas</h1><ul>${themeProblems.map(p => `<li>${esc(p)}</li>`).join("")}</ul><p><a href="index.html">index.html</a></p></div>`;
   throw new Error("theme problems: " + themeProblems.join("; "));
 }
 const lessonKeys = L => !L.k ? "" : (typeof L.k === "string" ? L.k : L.k[S.layout]);
@@ -719,6 +719,11 @@ function startRun(mode, o) {
   showView("type");
   renderRun();
 }
+// Leaves whatever the player is doing and opens the home screen.
+function goHome() {
+  run = null;
+  showView("home");
+}
 function restart() {
   if (!run) return;
   startRun(run.mode, {lessonIdx: run.lessonIdx, preview: run.preview, quote: run.mode === "quote" ? run.quote : null});
@@ -1012,16 +1017,19 @@ function finish() {
 
   const btns = [];
   const hasNext = run.mode === "lesson" && run.passed && !run.preview && run.lessonIdx < LESSON_DEFS.length - 1;
+  const courseDone = run.mode === "lesson" && run.passed && !run.preview && run.lessonIdx === LESSON_DEFS.length - 1;
   if (hasNext) btns.push(["next", t("nextLesson"), true], ["again", t("again"), false]);
   else if (run.mode === "quote") btns.push(["nextq", t("nextQuote"), true], ["again", t("again"), false]);
+  else if (courseDone) btns.push(["home", t("proHome"), true], ["again", t("again"), false]);
   else btns.push(["again", t("again"), true]);
   btns.push(["back", t("back") + " (Esc)", false]);
   if (mission.justDone) {
     const keep = btns[0][0];
-    btns.splice(0, btns.length, ["home", t("seeYou"), true], [keep, t("keepTraining"), false]);
+    btns.splice(0, btns.length, ["home", t("seeYou"), true], [keep, t("keepTraining"), false], ["back", t("back") + " (Esc)", false]);
   }
+  if (!btns.some(b => b[0] === "home")) btns.push(["home", t("tabHome"), false]);
   const actions = {
-    home: () => { run = null; showView("home"); },
+    home: goHome,
     next: () => startRun("lesson", {lessonIdx: run.lessonIdx + 1}),
     nextq: () => startRun("quote", {preview: run.preview}),
     again: () => restart(),
@@ -1062,6 +1070,7 @@ setInterval(() => {
 }, 200);
 
 /* ---------- global keys ---------- */
+const onButton = e => !!(e.target.closest && e.target.closest("button, a"));
 document.addEventListener("keydown", e => {
   if (!$("#share").hidden) { if (e.key === "Escape") { e.preventDefault(); closeShare(); } return; }
   if (view === "card") return;
@@ -1070,15 +1079,15 @@ document.addEventListener("keydown", e => {
   if (view === "type" && run) {
     if (run.introOpen) {
       if (e.key === "Enter") { e.preventDefault(); closeIntro(); }
-      else if (e.key === "Escape") { e.preventDefault(); if (run.started) closeIntro(); else goBack(); }
+      else if (e.key === "Escape") { e.preventDefault(); if (run.started || run.tipOpen) closeIntro(); else goBack(); }
       return;
     }
     if (run.menuOpen) {
-      if (e.key === "Enter" || e.key === "Escape") { e.preventDefault(); closeMenu(); }
+      if (e.key === "Escape" || (e.key === "Enter" && !onButton(e))) { e.preventDefault(); closeMenu(); }
       return;
     }
     if (e.key === "Escape") { e.preventDefault(); if (run.done) goBack(); else openMenu(); return; }
-    if (e.key === "Enter") { e.preventDefault(); if (run.done && run.primary) run.primary(); return; }
+    if (e.key === "Enter") { if (onButton(e)) return; e.preventDefault(); if (run.done && run.primary) run.primary(); return; }
     if (e.key === "Tab") { e.preventDefault(); return; }
     if (run.done) return;
     $("#caps").hidden = !(e.getModifierState && e.getModifierState("CapsLock"));
@@ -1102,7 +1111,7 @@ document.addEventListener("keydown", e => {
     if (document.activeElement !== sink) focusSink();
     return;
   }
-  if (e.key === "Enter" && !(e.target.closest && e.target.closest("button"))) {
+  if (e.key === "Enter" && !onButton(e)) {
     if (view === "free") startRun("free");
     else if (view === "quotes") startQuote();
     else if (view === "lessons" || view === "home") startNext();
@@ -1113,6 +1122,7 @@ $("#banner-yes").addEventListener("click", () => { setSetting("layout", run.sugg
 $("#banner-no").addEventListener("click", () => { $("#banner").hidden = true; focusSink(); });
 $("#btn-free").addEventListener("click", () => startRun("free"));
 $("#btn-quote").addEventListener("click", () => startQuote());
+$("#logo").addEventListener("click", () => { if (view !== "card") goHome(); });
 $("#tabs").addEventListener("click", e => {
   const b = e.target.closest("button");
   if (!b) return;
@@ -1138,7 +1148,9 @@ $("#theme-seg").addEventListener("click", e => {
 document.querySelectorAll(".seg[data-set]").forEach(seg => {
   seg.addEventListener("click", e => {
     const b = e.target.closest("button");
-    if (b) setSetting(seg.dataset.set, b.dataset.val);
+    if (!b) return;
+    if (view === "setup" && seg.dataset.set === "layout") { chooseLayout(b.dataset.val); renderSetup(); }
+    else setSetting(seg.dataset.set, b.dataset.val);
   });
 });
 
@@ -1361,11 +1373,14 @@ function renderIntro() {
     <h2 class="rt" style="margin-top:16px">${esc(I.title)}</h2>${handsSvg({hi: I.hi, reach: I.reach})}
     <div class="legend">${legendHtml()}</div>
     <ul class="tips">${I.bullets.map(b => `<li>${esc(b)}</li>`).join("")}</ul>
-    <div class="type-actions"><button class="btn primary" id="intro-go">${esc(run.started ? t("backToTyping") : t("gotIt"))}</button></div>`;
+    <div class="type-actions"><button class="btn primary" id="intro-go">${esc(run.started || run.tipOpen ? t("backToTyping") : t("gotIt"))}</button>
+      ${run.started || run.tipOpen ? "" : `<button class="btn" id="intro-back">${esc(t("back"))} (Esc)</button>`}</div>`;
   $("#intro-go").addEventListener("click", closeIntro);
+  $("#intro-back")?.addEventListener("click", goBack);
 }
 function closeIntro() {
   run.introOpen = false;
+  run.tipOpen = false;
   $("#intro").hidden = true;
   $("#typing-area").hidden = false;
   $("#type-actions").hidden = false;
@@ -1429,6 +1444,8 @@ $("#btn-tip").addEventListener("click", () => openTip());
 
 /* ---------- share the day ---------- */
 const SITE_URL = TH.siteUrl;
+// This page's address without the query; outside an http server (file://), the theme's published address.
+const gameUrl = () => location.protocol.startsWith("http") ? location.origin + location.pathname : SITE_URL || location.pathname;
 const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); };
 function shareSnapshot() {
   const start = startOfToday(), day = data.days[dayKey(new Date())] || {};
@@ -1447,7 +1464,7 @@ function shareSnapshot() {
 const toB64url = str => btoa(String.fromCharCode(...new TextEncoder().encode(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 const fromB64url = b => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0)));
 function shareUrl() {
-  const base = location.protocol.startsWith("http") ? location.origin + location.pathname : SITE_URL;
+  const base = gameUrl();
   return base + "?card=" + toB64url(JSON.stringify(shareSnapshot()));
 }
 // The card comes from a link anyone can edit, so every field is checked before use.
@@ -1495,9 +1512,9 @@ function showCard(param) {
   document.querySelectorAll(".view").forEach(sec => { sec.hidden = sec.id !== "v-card"; });
   $("#share-view").innerHTML = c ? cardHtml(c) + `
     <div class="type-actions">
-      <a class="btn primary" href="https://wa.me/?text=${encodeURIComponent(shareText(c) + "\n" + location.href)}">${esc(t("cardSend"))}</a>
-      <a class="btn" href="${SITE_URL}">${esc(t("cardOpen"))}</a>
-    </div>` : `<div class="card"><h1>${esc(t("cardInvalidTitle"))}</h1><p>${esc(t("cardInvalidText"))}</p><a class="btn" href="${SITE_URL}">${esc(t("cardOpen"))}</a></div>`;
+      <a class="btn primary" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText(c) + "\n" + location.href)}">${esc(t("cardSend"))}</a>
+      <a class="btn" href="${esc(gameUrl())}">${esc(t("cardOpen"))}</a>
+    </div>` : `<div class="card"><h1>${esc(t("cardInvalidTitle"))}</h1><p>${esc(t("cardInvalidText"))}</p><a class="btn" href="${esc(gameUrl())}">${esc(t("cardOpen"))}</a></div>`;
 }
 function openShare() {
   const url = shareUrl(), q = qrcode(0, "M");
@@ -1529,7 +1546,7 @@ const PROLOGUE = TH.prologue.slides;
 // The last slide points to where the player is in the race, from the theme's templates.
 function whereSlide() {
   const W = TH.prologue.where, lc = lessonCounts(), total = fmtDist(TOTAL_DIST);
-  if (lc.cleared === 0) return {art: "map", ...W.start};
+  if (lc.cleared === 0) return {art: "map", ...W.start, lesson: 1};
   if (lc.cleared === LESSON_DEFS.length) return {art: "map", finished: true, title: W.finished.title, narr: W.finished.narr.map(x => fill(x, {total})), mentor: W.finished.mentor};
   const stg = STAGES[currentStageIdx()], nx = nextLessonIdx(), L = LESSON_DEFS[nx], day = today(), P = W.progress;
   const vars = {...stg, dist: fmtDist(distTraveled()), total, n: nx + 1, lesson: lessonTitle(L),
@@ -1547,7 +1564,8 @@ function prologueArt(art) {
 }
 function renderPrologue() {
   const slides = prologueSlides(), P = slides[prologueAt], last = prologueAt === slides.length - 1;
-  const nextLbl = !last ? t("proNext") : !S.setupDone ? t("proSignUp") : P.lesson ? t("homeContinue", {n: P.lesson}) + " " + t("enterHint") : t("proHome") + " " + t("enterHint");
+  const startLbl = P.lesson === 1 ? t("homeStart") : t("homeContinue", {n: P.lesson});
+  const nextLbl = !last ? t("proNext") : !S.setupDone ? t("proSignUp") : P.lesson ? startLbl + " " + t("enterHint") : t("proHome") + " " + t("enterHint");
   $("#prologue").innerHTML = `
     <div class="card">
       <div class="pro-art">${prologueArt(P.art)}</div>
@@ -1556,7 +1574,7 @@ function renderPrologue() {
       ${P.mentor ? `<div class="bubble"><b>${esc(TH.mentor.name)}:</b> ${esc(P.mentor)}</div>` : ""}
       <div class="pro-dots">${slides.map((_, i) => `<i class="${i === prologueAt ? "on" : ""}"></i>`).join("")}</div>
       <div class="pro-nav">
-        ${!last ? `<button class="btn small" data-pro="skip">${esc(t("proSkip"))}</button>` : S.setupDone && P.lesson ? `<button class="btn small" data-pro="home">${esc(t("proHome"))}</button>` : "<span></span>"}
+        ${!last ? `<button class="btn small" data-pro="skip">${esc(t("proSkip"))}</button>` : P.finished && S.setupDone ? "<span></span>" : `<button class="btn small" data-pro="home">${esc(t("proHome"))}</button>`}
         <span style="display:flex;gap:8px">
           ${prologueAt ? `<button class="btn" data-pro="prev">${esc(t("proPrev"))}</button>` : ""}
           <button class="btn primary" data-pro="next">${esc(nextLbl)}</button>
@@ -1564,14 +1582,17 @@ function renderPrologue() {
       </div>
     </div>`;
 }
-function endPrologue(startLesson) {
+// The last slide's main button signs up a new player, starts the next lesson, or goes home after the course.
+function endPrologue() {
+  const P = whereSlide();
   prologueAt = 0;
-  showView(S.setupDone ? "home" : "setup");
-  if (startLesson && S.setupDone && nextLessonIdx() >= 0 && !whereSlide().finished) startNext();
+  if (!S.setupDone) showView("setup");
+  else if (P.lesson) startNext();
+  else goHome();
 }
 function stepPrologue(d) {
   const i = prologueAt + d, n = PROLOGUE.length + 1;
-  if (i >= n) { endPrologue(true); return; }
+  if (i >= n) { endPrologue(); return; }
   prologueAt = Math.max(0, i);
   renderPrologue();
 }
@@ -1579,13 +1600,13 @@ const toLastSlide = () => { prologueAt = PROLOGUE.length; renderPrologue(); };
 function handlePrologueKey(e) {
   const act = {Enter: 1, " ": 1, ArrowRight: 1, ArrowLeft: -1}[e.key];
   if (act) { e.preventDefault(); stepPrologue(act); }
-  else if (e.key === "Escape") { e.preventDefault(); if (prologueAt < PROLOGUE.length) toLastSlide(); else endPrologue(); }
+  else if (e.key === "Escape") { e.preventDefault(); if (prologueAt < PROLOGUE.length) toLastSlide(); else { prologueAt = 0; goHome(); } }
 }
 $("#prologue").addEventListener("click", e => {
   const b = e.target.closest("[data-pro]");
   if (!b) return;
   if (b.dataset.pro === "skip") toLastSlide();
-  else if (b.dataset.pro === "home") endPrologue();
+  else if (b.dataset.pro === "home") { prologueAt = 0; goHome(); }
   else stepPrologue(b.dataset.pro === "prev" ? -1 : 1);
 });
 
@@ -1610,7 +1631,8 @@ function renderSetup() {
       <p class="sub" style="margin:0 0 10px">${esc(t("setupNameHint"))}</p>
       <input id="reg-name" class="input" maxlength="24" autocomplete="off" placeholder="${esc(TH.hero.name)}" value="${esc(data.profile.name)}">
       <p style="margin:12px 0 0">${TH.hero.icon} ${esc(t("setupNumber", {n: TH.hero.number}))}</p></div>
-    <div class="type-actions"><button class="btn primary" data-go="finish">${esc(t("setupGo"))}</button></div>
+    <div class="type-actions"><button class="btn primary" data-go="finish">${esc(t("setupGo"))}</button>
+      <button class="btn" data-go="leave">${esc(S.setupDone ? t("back") : t("proHome"))}</button></div>
     ${setup.needLayout ? `<p style="text-align:center;color:var(--err)">${esc(t("setupNeedLayout"))}</p>` : ""}`;
   $("#reg-name").addEventListener("input", e => { data.profile.name = e.target.value.trim(); });
 }
@@ -1630,7 +1652,7 @@ function handleSetupKey(e) {
     if (e.key === "Enter") { e.preventDefault(); finishSetup(); }
     return;
   }
-  if (e.key === "Enter") { e.preventDefault(); finishSetup(); return; }
+  if (e.key === "Enter") { if (onButton(e)) return; e.preventDefault(); finishSetup(); return; }
   if (setup.layout || !(e.key.length === 1 || e.key === "Dead")) return;
   e.preventDefault();
   if (setup.step === 1) {
@@ -1646,6 +1668,7 @@ $("#setup").addEventListener("click", e => {
   if (b.dataset.layout) chooseLayout(b.dataset.layout);
   else if (b.dataset.set) setSetting(b.dataset.set, b.dataset.val);
   else if (b.dataset.go === "finish") finishSetup();
+  else if (b.dataset.go === "leave") { if (S.setupDone) showView("stats"); else goHome(); }
 });
 
 /* ---------- races ---------- */
@@ -1887,7 +1910,9 @@ function openMenu() {
       <button class="btn primary" data-m="resume">${esc(t("resume"))}</button>
       <button class="btn" data-m="restart">${esc(t("restart"))}</button>
       <button class="btn" data-m="exit">${esc(t("exit"))}</button>
+      <button class="btn" data-m="home">${esc(t("tabHome"))}</button>
     </div>`;
+  $("#banner").hidden = true;
   $("#menu").hidden = false;
   $("#typing-area").hidden = true;
   $("#type-actions").hidden = true;
@@ -1906,6 +1931,7 @@ $("#menu").addEventListener("click", e => {
   if (!b) return;
   if (b.dataset.m === "resume") closeMenu();
   else if (b.dataset.m === "restart") restart();
+  else if (b.dataset.m === "home") goHome();
   else goBack();
 });
 $("#btn-pause").addEventListener("click", () => openMenu());
@@ -1913,6 +1939,7 @@ function openTip() {
   if (!run || !run.intro || run.done) return;
   pause("menu");
   run.introOpen = true;
+  run.tipOpen = true;
   sink.blur();
   $("#focus-overlay").hidden = true;
   $("#typing-area").hidden = true;
