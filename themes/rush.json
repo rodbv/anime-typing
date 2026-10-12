@@ -1,0 +1,1011 @@
+{
+  "id": "rush",
+  "lang": "pt",
+  "storeKey": "typedojo:rush",
+  "siteUrl": "https://rodbv.github.io/jojo-typing/rush.html",
+  "look": {
+    "logo": [
+      "TEMPLES OF",
+      "TYPING"
+    ],
+    "deco": "2112",
+    "colors": {
+      "bg": "#121212",
+      "panel": "#1c1c1d",
+      "panel2": "#28282a",
+      "line": "#3a3a3d",
+      "text": "#f2efe9",
+      "muted": "#a6a29b",
+      "accent": "#ff7a1a",
+      "accent2": "#e8423a"
+    }
+  },
+  "strings": {
+    "subtitle": "A digitação pela discografia do Rush, de 1974 a 2012",
+    "tabLessons": "Discografia",
+    "tabFree": "Treino livre",
+    "tabStats": "Ficha",
+    "freeIntro": "Ensaio do Professor: palavras da discografia contra o relógio.",
+    "quoteIntro": "Digite versos do Rush, em inglês. Maiúsculas e pontuação contam.",
+    "freeLimited": "Por enquanto, o treino livre usa só as teclas que você já sabe: {k}. Todas as letras liberam depois da lição {n}.",
+    "lessonTip": "Cada lição é um disco. Termine as lições para avançar na discografia.",
+    "passRule": "Para passar: 90% de precisão (nos duelos, 93%)",
+    "homeStart": "Primeiro disco: lição 1",
+    "homeContinue": "Continuar a discografia: lição {n}",
+    "racerTag": "Starman nº {n} · {name}",
+    "collGroups": {
+      "discs": "Discos",
+      "kit": "Kit de bateria",
+      "goal": "Metas"
+    },
+    "setupTitle": "Bem-vindo aos Temples of Typing",
+    "setupIntro": "Antes do primeiro disco, vamos descobrir o seu teclado e anotar o seu nome.",
+    "setupNumber": "O seu número: {n}, o ano em que o Starman achou a guitarra.",
+    "in_rv": [
+      "Revisão: todas as teclas que você já aprendeu até este disco.",
+      "Tente não olhar para o teclado. Olhe para a tela."
+    ],
+    "partDone": "Faixa {n} de 3 · +{dist}",
+    "raceRule": "Duelo contra {nm}: o fantasma toca a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
+    "mNext": "Próximo disco: lição {n} ({title})",
+    "sheetTitle": "Ficha do músico",
+    "stPower": "Força",
+    "stSpeed": "Velocidade",
+    "stRange": "Alcance",
+    "stDurability": "Resistência",
+    "stPrecision": "Precisão",
+    "stPotential": "Potencial",
+    "stPowerV": "{n} letras seguidas sem erro",
+    "stRangeV": "{n}% da discografia",
+    "stDurabilityV": "treinou {n} dos últimos 7 dias",
+    "stPotentialV": "o kit ainda cresce",
+    "stage": "Disco",
+    "proSignUp": "Anotar o meu nome (Enter)",
+    "mapLabel": "linha da discografia",
+    "sheetAria": "ficha do músico",
+    "shareText": "{icon} {name} (nº {number}) no Temples of Typing: {mi} min de treino hoje, missão {ms} de 3{items}. {stage}, {dist} de {total}.",
+    "shareHelp": "Aponte a câmera do celular para o código. Ele abre o seu diário de turnê, com um botão para mandar no WhatsApp.",
+    "cardRacer": "{icon} Starman nº {number} · ",
+    "cardTitle": "Diário de turnê",
+    "cardJourney": "Na discografia",
+    "cardPoints": "pontos nos duelos",
+    "mReview": "Ensaio do Professor: refaça a lição {n} ({title})",
+    "mReviewAny": "Ensaio do Professor: refaça qualquer lição",
+    "mentorTip": "Dica do Professor",
+    "sheetEmpty": "O kit ainda está vazio",
+    "missionDoneText": "O Professor guardou as baquetas. Bom ensaio hoje, {name}. Amanhã a turnê continua.",
+    "flair": "♪ ♫ ♪",
+    "stageHead": "{lbl}: {place} ({year})",
+    "stageTag": "{lbl}: {place} ({year})",
+    "stageRoute": "{year}"
+  },
+  "hero": {
+    "name": "Starman",
+    "short": "Starman",
+    "number": 2112,
+    "icon": "🎸"
+  },
+  "mentor": {
+    "name": "Professor"
+  },
+  "words": {
+    "names": "Geddy Alex Neil Lifeson Peart Starman Syrinx Megadon Rivendell Xanadu Cygnus Apollo Rocinante Limelight Sawyer Barchetta Lakeside Anthem Bastille Lamneth Owen Hardy Toronto",
+    "terms": "guitarra baixo bateria baqueta prato caixa bumbo palco show turnê disco vinil faixa letra verso refrão solo riff acorde nota ritmo tempo compasso metrônomo plateia rádio estúdio templo estrela sacerdote oráculo nave relógio engrenagem cachoeira caverna cidade música som volume amplificador fã ensaio"
+  },
+  "quotes": [
+    [
+      "I get up at seven, yeah, and I go to work at nine.",
+      "Working Man (Rush)"
+    ],
+    [
+      "Fly by night, away from here.",
+      "Fly by Night (Fly by Night)"
+    ],
+    [
+      "We are the Priests of the Temples of Syrinx.",
+      "Temples of Syrinx (2112)"
+    ],
+    [
+      "You don't get something for nothing, you can't have freedom for free.",
+      "Something for Nothing (2112)"
+    ],
+    [
+      "And the men who hold high places must be the ones who start.",
+      "Closer to the Heart (A Farewell to Kings)"
+    ],
+    [
+      "Begin the day with a friendly voice, a companion unobtrusive.",
+      "The Spirit of Radio (Permanent Waves)"
+    ],
+    [
+      "If you choose not to decide, you still have made a choice.",
+      "Freewill (Permanent Waves)"
+    ],
+    [
+      "Changes aren't permanent, but change is.",
+      "Tom Sawyer (Moving Pictures)"
+    ],
+    [
+      "All the world's indeed a stage, and we are merely players.",
+      "Limelight (Moving Pictures)"
+    ],
+    [
+      "Conform or be cast out.",
+      "Subdivisions (Signals)"
+    ],
+    [
+      "Time stand still, I'm not looking back, but I want to look around me now.",
+      "Time Stand Still (Hold Your Fire)"
+    ],
+    [
+      "A spirit with a vision is a dream with a mission.",
+      "Mission (Hold Your Fire)"
+    ],
+    [
+      "The point of the journey is not to arrive.",
+      "Prime Mover (Hold Your Fire)"
+    ],
+    [
+      "Show me, don't tell me.",
+      "Show Don't Tell (Presto)"
+    ],
+    [
+      "Why are we here? Because we're here. Roll the bones.",
+      "Roll the Bones (Roll the Bones)"
+    ],
+    [
+      "In a world where I feel so small, I can't stop thinking big.",
+      "Caravan (Clockwork Angels)"
+    ],
+    [
+      "The treasure of a life is a measure of love and respect.",
+      "The Garden (Clockwork Angels)"
+    ],
+    [
+      "Know your place in life is where you want to be.",
+      "Anthem (Fly by Night)"
+    ],
+    [
+      "Everyone would gather on the twenty-fourth of May, sitting in the sand to watch the fireworks display.",
+      "Lakeside Park (Caress of Steel)"
+    ],
+    [
+      "What can this strange device be?",
+      "Discovery (2112)"
+    ],
+    [
+      "Attention all planets of the Solar Federation: we have assumed control.",
+      "Grand Finale (2112)"
+    ],
+    [
+      "To seek the sacred river Alph, to walk the caves of ice.",
+      "Xanadu (A Farewell to Kings)"
+    ],
+    [
+      "There is unrest in the forest, there is trouble with the trees.",
+      "The Trees (Hemispheres)"
+    ],
+    [
+      "Plus ça change, plus c'est la même chose.",
+      "Circumstances (Hemispheres)"
+    ],
+    [
+      "Wheels within wheels in a spiral array, a pattern so grand and complex.",
+      "Natural Science (Permanent Waves)"
+    ],
+    [
+      "My uncle has a country place that no one knows about.",
+      "Red Barchetta (Moving Pictures)"
+    ],
+    [
+      "The righteous rise with burning eyes of hatred and ill will.",
+      "Witch Hunt (Moving Pictures)"
+    ],
+    [
+      "Everybody got to elevate from the norm.",
+      "Vital Signs (Moving Pictures)"
+    ],
+    [
+      "He's a rebel and a runner, he's a signal turning green.",
+      "New World Man (Signals)"
+    ],
+    [
+      "A hot and windy August afternoon has the trees in constant motion.",
+      "The Analog Kid (Signals)"
+    ],
+    [
+      "Are we the last ones left alive?",
+      "Red Sector A (Grace Under Pressure)"
+    ],
+    [
+      "Suddenly, you were gone, from all the lives you left your mark upon.",
+      "Afterimage (Grace Under Pressure)"
+    ],
+    [
+      "You can do a lot in a lifetime if you don't burn out too fast.",
+      "Marathon (Power Windows)"
+    ],
+    [
+      "We're only immortal for a limited time.",
+      "Dreamline (Roll the Bones)"
+    ],
+    [
+      "We will pay the price, but we will not count the cost.",
+      "Bravado (Roll the Bones)"
+    ],
+    [
+      "Pack up all those phantoms, shoulder that invisible load.",
+      "Ghost Rider (Vapor Trails)"
+    ],
+    [
+      "I wish that I could live it all again.",
+      "Headlong Flight (Clockwork Angels)"
+    ]
+  ],
+  "journey": {
+    "view": "snake",
+    "unit": "discos",
+    "unitOne": "disco",
+    "marker": "⭐",
+    "start": {
+      "label": "Syrinx"
+    },
+    "stages": [
+      {
+        "lbl": "Disco 1",
+        "place": "Rush",
+        "year": 1974,
+        "dist": 1,
+        "label": "1974",
+        "lessons": [
+          "fj"
+        ]
+      },
+      {
+        "lbl": "Disco 2",
+        "place": "Fly by Night",
+        "year": 1975,
+        "dist": 1,
+        "lessons": [
+          "dk"
+        ],
+        "rival": "bytor"
+      },
+      {
+        "lbl": "Disco 3",
+        "place": "Caress of Steel",
+        "year": 1975,
+        "dist": 1,
+        "lessons": [
+          "sl"
+        ]
+      },
+      {
+        "lbl": "Disco 4",
+        "place": "2112",
+        "year": 1976,
+        "dist": 1,
+        "lessons": [
+          "a"
+        ],
+        "rival": "priests"
+      },
+      {
+        "lbl": "Disco 5",
+        "place": "All the World's a Stage",
+        "year": 1976,
+        "dist": 1,
+        "lessons": [
+          "gh"
+        ]
+      },
+      {
+        "lbl": "Disco 6",
+        "place": "A Farewell to Kings",
+        "year": 1977,
+        "dist": 1,
+        "lessons": [
+          "r1"
+        ],
+        "rival": "cygnus"
+      },
+      {
+        "lbl": "Disco 7",
+        "place": "Hemispheres",
+        "year": 1978,
+        "dist": 1,
+        "lessons": [
+          "ei"
+        ]
+      },
+      {
+        "lbl": "Disco 8",
+        "place": "Permanent Waves",
+        "year": 1980,
+        "dist": 1,
+        "label": "1980",
+        "lessons": [
+          "ru"
+        ]
+      },
+      {
+        "lbl": "Disco 9",
+        "place": "Moving Pictures",
+        "year": 1981,
+        "dist": 1,
+        "lessons": [
+          "to"
+        ],
+        "rival": "witchhunt"
+      },
+      {
+        "lbl": "Disco 10",
+        "place": "Exit... Stage Left",
+        "year": 1981,
+        "dist": 1,
+        "lessons": [
+          "nm"
+        ]
+      },
+      {
+        "lbl": "Disco 11",
+        "place": "Signals",
+        "year": 1982,
+        "dist": 1,
+        "lessons": [
+          "c,"
+        ],
+        "rival": "weapon"
+      },
+      {
+        "lbl": "Disco 12",
+        "place": "Grace Under Pressure",
+        "year": 1984,
+        "dist": 1,
+        "lessons": [
+          "qp"
+        ]
+      },
+      {
+        "lbl": "Disco 13",
+        "place": "Power Windows",
+        "year": 1985,
+        "dist": 1,
+        "lessons": [
+          "r2"
+        ],
+        "rival": "bigmoney"
+      },
+      {
+        "lbl": "Disco 14",
+        "place": "Hold Your Fire",
+        "year": 1987,
+        "dist": 1,
+        "lessons": [
+          "acc1"
+        ]
+      },
+      {
+        "lbl": "Disco 15",
+        "place": "Presto",
+        "year": 1989,
+        "dist": 1,
+        "lessons": [
+          "acc2"
+        ],
+        "rival": "superconductor"
+      },
+      {
+        "lbl": "Disco 16",
+        "place": "Roll the Bones",
+        "year": 1991,
+        "dist": 1,
+        "label": "1991",
+        "lessons": [
+          "vb"
+        ]
+      },
+      {
+        "lbl": "Disco 17",
+        "place": "Counterparts",
+        "year": 1993,
+        "dist": 1,
+        "lessons": [
+          "x."
+        ],
+        "rival": "doubleagent"
+      },
+      {
+        "lbl": "Disco 18",
+        "place": "Test for Echo",
+        "year": 1996,
+        "dist": 1,
+        "lessons": [
+          "zwy"
+        ]
+      },
+      {
+        "lbl": "Disco 19",
+        "place": "Vapor Trails",
+        "year": 2002,
+        "dist": 1,
+        "label": "2002",
+        "lessons": [
+          "r3"
+        ]
+      },
+      {
+        "lbl": "Disco 20",
+        "place": "Snakes & Arrows",
+        "year": 2007,
+        "dist": 1,
+        "lessons": [
+          "shift"
+        ]
+      },
+      {
+        "lbl": "Disco 21",
+        "place": "Clockwork Angels",
+        "year": 2012,
+        "dist": 1,
+        "label": "2012",
+        "lessons": [
+          "quotes"
+        ],
+        "rival": "watchmaker"
+      }
+    ]
+  },
+  "rivals": {
+    "bytor": {
+      "nm": "By-Tor",
+      "floor": 6,
+      "pre": "Eu sou By-Tor, o cavaleiro das trevas. Nenhum músico passa por mim.",
+      "win": "O Snow Dog uiva de alegria: o By-Tor ficou para trás!",
+      "lose": "O By-Tor venceu este duelo. Treine e volte: o Snow Dog espera você."
+    },
+    "priests": {
+      "nm": "Sacerdotes de Syrinx",
+      "floor": 8,
+      "pre": "Nós somos os Sacerdotes dos Templos de Syrinx. Aqui não tem lugar para guitarras.",
+      "win": "A guitarra soou mais alto que os Templos de Syrinx!",
+      "lose": "Os Sacerdotes calaram a música desta vez. Mas ela continua nos seus dedos."
+    },
+    "cygnus": {
+      "nm": "Cygnus X-1",
+      "floor": 10,
+      "pre": "Eu sou um buraco negro. Tudo o que chega perto de mim é puxado para dentro.",
+      "win": "Você passou pelo Cygnus X-1 sem ser puxado para dentro!",
+      "lose": "O Cygnus X-1 puxou você para dentro. A história continua em Hemispheres."
+    },
+    "witchhunt": {
+      "nm": "a turba de Witch Hunt",
+      "floor": 11,
+      "pre": "A turba vem com tochas. Ela tem medo de tudo o que é diferente.",
+      "win": "A turba ficou para trás. A música diferente venceu o medo.",
+      "lose": "A turba alcançou você desta vez."
+    },
+    "weapon": {
+      "nm": "The Weapon",
+      "floor": 12,
+      "pre": "Eu sou o medo que usam como arma. Quem tem medo erra.",
+      "win": "Você tocou sem medo, e The Weapon perdeu a força.",
+      "lose": "O medo fez você errar. Respire e tente de novo."
+    },
+    "bigmoney": {
+      "nm": "The Big Money",
+      "floor": 13,
+      "pre": "Tudo tem preço. Até a sua música.",
+      "win": "A sua música não está à venda. The Big Money perdeu.",
+      "lose": "The Big Money comprou a vitória desta vez."
+    },
+    "superconductor": {
+      "nm": "o Superconductor",
+      "floor": 13,
+      "pre": "Eu sou o astro do palco. Cada gesto meu é ensaiado para enganar o público.",
+      "win": "A música de verdade venceu o show ensaiado do Superconductor.",
+      "lose": "O Superconductor enganou o público de novo."
+    },
+    "doubleagent": {
+      "nm": "o Double Agent",
+      "floor": 14,
+      "pre": "Eu jogo dos dois lados. Você nunca sabe de que lado eu estou.",
+      "win": "Você desmascarou o Double Agent.",
+      "lose": "O Double Agent trocou de lado na hora certa e chegou antes."
+    },
+    "watchmaker": {
+      "nm": "o Watchmaker",
+      "floor": 14,
+      "boss": true,
+      "pre": "Eu controlo cada segundo deste mundo. Tudo acontece na hora que eu marco.",
+      "win": "Você tocou fora do relógio do Watchmaker. Fim da discografia!",
+      "lose": "O relógio do Watchmaker bateu antes. Tente de novo: o último disco é seu."
+    }
+  },
+  "story": {
+    "fj": {
+      "narr": "1974. O primeiro disco tem três músicos e muito volume. Uma rádio de Cleveland toca Working Man, e a banda ganha os primeiros fãs nos Estados Unidos.",
+      "mentor": "Antes de tocar rápido, aprenda onde a mão descansa. Sinta o relevo no F e no J. Tudo começa ali."
+    },
+    "dk": {
+      "narr": "Em Fly by Night chega o baterista novo: o Professor. Ele também escreve as letras. No caminho, o By-Tor desafia você para um duelo.",
+      "mentor": "O médio fica no D e no K. Depois de cada nota, o dedo volta para casa."
+    },
+    "sl": {
+      "narr": "Caress of Steel tem histórias longas, como The Necromancer. O Professor monta para você a primeira peça do kit: a caixa.",
+      "mentor": "Anelar no S e no L. Bata leve, como numa caixa: o dedo bate e volta."
+    },
+    "a": {
+      "narr": "2112. Você volta aos Templos de Syrinx, onde tudo começou, e os Sacerdotes querem calar a sua guitarra.",
+      "mentor": "O mindinho é o dedo mais fraco. Só ele se mexe, a mão fica parada."
+    },
+    "gh": {
+      "narr": "All the World's a Stage é o primeiro disco ao vivo, gravado no Massey Hall, em Toronto. A plateia canta junto.",
+      "mentor": "O indicador estica para o lado até o G e o H, e volta."
+    },
+    "r1": {
+      "narr": "A Farewell to Kings foi gravado numa fazenda no País de Gales. No fim do disco, a nave Rocinante voa direto para o buraco negro Cygnus X-1.",
+      "mentor": "A linha base inteira. Mantenha o tempo, como um metrônomo."
+    },
+    "ei": {
+      "narr": "Em Hemispheres, a história do Cygnus continua. Apollo, deus da razão, e Dionísio, deus da emoção, brigam pelo mundo.",
+      "mentor": "Agora os dedos sobem. O médio vai até o E e o I, e volta. A mão fica parada."
+    },
+    "ru": {
+      "narr": "Permanent Waves abre com The Spirit of Radio. A música da banda toca nas rádios do mundo inteiro.",
+      "mentor": "O indicador sobe até o R e o U, e volta para o F e o J."
+    },
+    "to": {
+      "narr": "Moving Pictures tem Tom Sawyer e YYZ, o código do aeroporto de Toronto tocado em código Morse. Mas a turba de Witch Hunt vem atrás de você.",
+      "mentor": "O T é um esticão do indicador. O O é do anelar."
+    },
+    "nm": {
+      "narr": "Exit... Stage Left é o segundo disco ao vivo. Em Montreal, milhares de fãs cantam cada verso.",
+      "mentor": "N e M ficam embaixo do J. O indicador desce e volta, sem levantar a mão."
+    },
+    "c,": {
+      "narr": "Em Signals entram os teclados eletrônicos. Subdivisions fala de quem não se encaixa. The Weapon, o medo usado como arma, desafia você.",
+      "mentor": "O C é do médio esquerdo e a vírgula é do médio direito. Tempo vence pressa."
+    },
+    "qp": {
+      "narr": "Grace Under Pressure quer dizer calma debaixo de pressão. O Professor acrescenta os tons ao seu kit.",
+      "mentor": "Até os mindinhos trabalham agora: Q e P. Devagar e firme."
+    },
+    "r2": {
+      "narr": "Power Windows fala de poder: dinheiro, guerra e ciência. The Big Money quer comprar a sua música.",
+      "mentor": "A linha de cima inteira. Não olhe para as mãos, olhe para a tela."
+    },
+    "acc1": {
+      "narr": "Hold Your Fire tem Time Stand Still, com a cantora Aimee Mann. Agora vêm os acentos: primeiro o sinal, depois a letra.",
+      "mentor": "A tecla morta é como uma pausa na música. Aperte o acento, solte, e só então a letra."
+    },
+    "acc2": {
+      "narr": "Presto é a palavra que o mágico diz no truque. O Superconductor, um astro de palco ensaiado, quer roubar o seu público.",
+      "mentor": "Chapéu no E (ê), crase no A (à) e o Ç. Mesmo jeito: primeiro o sinal, depois a letra."
+    },
+    "vb": {
+      "narr": "Roll the Bones diz que a vida é um jogo de dados. O Professor monta os pratos no seu kit.",
+      "mentor": "Linha de baixo. O indicador desce até o V e o B."
+    },
+    "x.": {
+      "narr": "Counterparts fala de opostos que se completam. O Double Agent joga dos dois lados e desafia você.",
+      "mentor": "O anelar desce até o X e até o ponto. Desce e volta."
+    },
+    "zwy": {
+      "narr": "Antes de Test for Echo, o Professor voltou a ter aulas de bateria. Até um mestre continua aprendendo.",
+      "mentor": "As letras raras: Z com o mindinho, W com o anelar e Y com o indicador direito. Quase lá."
+    },
+    "r3": {
+      "narr": "Depois de anos de silêncio, a banda volta com Vapor Trails. One Little Victory começa só com a bateria. O seu kit fica completo.",
+      "mentor": "Todas as letras. Respire e mantenha o tempo."
+    },
+    "shift": {
+      "narr": "Snakes & Arrows: cobras e flechas, sorte e azar no caminho. Falta só um disco.",
+      "mentor": "Para a maiúscula, o mindinho da outra mão segura o Shift. As duas mãos tocam juntas."
+    },
+    "quotes": {
+      "narr": "Clockwork Angels, o último disco. Num mundo de engrenagens, o Watchmaker controla cada segundo. Este é o duelo final.",
+      "mentor": "Versos inteiros, com pontuação. Este é o grand finale."
+    }
+  },
+  "evolution": {
+    "name": "Kit",
+    "levels": [
+      {
+        "label": "Caixa",
+        "lesson": "sl"
+      },
+      {
+        "label": "+ Tons",
+        "lesson": "qp"
+      },
+      {
+        "label": "+ Pratos",
+        "lesson": "vb"
+      },
+      {
+        "label": "Completo",
+        "lesson": "r3"
+      }
+    ]
+  },
+  "prologue": {
+    "slides": [
+      {
+        "art": "🌌",
+        "title": "Ano 2112, cidade de Megadon",
+        "narr": [
+          "As cidades da Federação Solar são cinzentas e iguais. Nos Templos de Syrinx, os Sacerdotes decidem o que cada pessoa lê, ouve e pensa.",
+          "Ninguém lembra mais o que é música."
+        ]
+      },
+      {
+        "art": "🎸",
+        "title": "Você é o Starman",
+        "narr": [
+          "Atrás de uma cachoeira, você acha uma caixa de madeira com cordas: uma guitarra. Os seus dedos aprendem a tirar sons dela.",
+          "Você mostra a guitarra aos Sacerdotes, e eles a quebram. Para eles, é um brinquedo antigo e inútil.",
+          "Mas a música ficou nos seus dedos, e você sai pela estrada para levá-la adiante."
+        ]
+      },
+      {
+        "art": "hands",
+        "title": "Os dedos",
+        "narr": [
+          "Para tocar, os dedos precisam achar cada tecla sem você olhar.",
+          "Cada dedo cuida das suas teclas, e cada lição nova ensina mais um dedo a tocar."
+        ]
+      },
+      {
+        "art": "🥁",
+        "title": "O Professor e a discografia",
+        "narr": [
+          "Na estrada você conhece o Professor. É assim que os fãs chamam o Neil Peart, o baterista do Rush.",
+          "Cada lição é um disco, de Rush (1974) a Clockwork Angels (2012). Em alguns discos, um vilão das músicas desafia você para um duelo: By-Tor, os Sacerdotes de Syrinx, The Big Money e, no fim, o Watchmaker."
+        ],
+        "mentor": "Começamos com uma caixa. O kit cresce junto com você."
+      },
+      {
+        "art": "💻",
+        "title": "E fora da música?",
+        "narr": [
+          "Quem digita sem olhar faz o trabalho da escola, conversa no jogo e escreve código com os olhos na tela. A cabeça fica na ideia, e não na procura da tecla.",
+          "Você vai usar isso a vida inteira."
+        ],
+        "mentor": "No começo você vai ficar mais lento do que catando milho. É normal. Todo músico começa devagar."
+      }
+    ],
+    "where": {
+      "start": {
+        "title": "Antes do primeiro disco",
+        "narr": [
+          "Você está em Syrinx, com a música só nos dedos. A missão diária na tela inicial diz o que treinar.",
+          "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição."
+        ],
+        "mentor": "Os indicadores ficam no F e no J. Conte até quatro e comece."
+      },
+      "finished": {
+        "title": "Clockwork Angels, 2012",
+        "narr": [
+          "Você tocou {total}, do primeiro ao último.",
+          "Agora o treino livre e os versos deixam os seus dedos mais rápidos."
+        ],
+        "mentor": "Sempre dá para tocar melhor. Até o Professor voltou a ter aulas."
+      },
+      "progress": {
+        "title": "{lbl}: {place}",
+        "distance": "Você já tocou {dist} de {total}. Agora está em {place}, de {year}.",
+        "next": "Próxima lição: {n} ({lesson}).",
+        "race": " É um duelo contra {rival}.",
+        "missionDone": "A missão de hoje já está cumprida. Um ensaio a mais é bônus.",
+        "mission": "Missão de hoje: {done} de 3 feitas.",
+        "mentor": "Tempo constante, como um metrônomo."
+      }
+    }
+  },
+  "achievements": [
+    {
+      "id": "workingman",
+      "s": "discs",
+      "ic": "🛠️",
+      "nm": "Working Man",
+      "d": "Termine o disco Rush",
+      "when": {
+        "type": "stageCleared",
+        "stage": 0
+      }
+    },
+    {
+      "id": "starman",
+      "s": "discs",
+      "ic": "⭐",
+      "nm": "Starman",
+      "d": "Termine o disco 2112",
+      "when": {
+        "type": "stageCleared",
+        "stage": 3
+      }
+    },
+    {
+      "id": "masseyhall",
+      "s": "discs",
+      "ic": "🎤",
+      "nm": "Massey Hall",
+      "d": "Termine All the World's a Stage",
+      "when": {
+        "type": "stageCleared",
+        "stage": 4
+      }
+    },
+    {
+      "id": "balance",
+      "s": "discs",
+      "ic": "⚖️",
+      "nm": "Deus do equilíbrio",
+      "d": "Termine Hemispheres",
+      "when": {
+        "type": "stageCleared",
+        "stage": 6
+      }
+    },
+    {
+      "id": "yyz",
+      "s": "discs",
+      "ic": "✈️",
+      "nm": "YYZ",
+      "d": "Termine Moving Pictures",
+      "when": {
+        "type": "stageCleared",
+        "stage": 8
+      }
+    },
+    {
+      "id": "exitstage",
+      "s": "discs",
+      "ic": "🚪",
+      "nm": "Exit... Stage Left",
+      "d": "Termine o segundo disco ao vivo",
+      "when": {
+        "type": "stageCleared",
+        "stage": 9
+      }
+    },
+    {
+      "id": "powerwindows",
+      "s": "discs",
+      "ic": "⚡",
+      "nm": "Power Windows",
+      "d": "Termine Power Windows",
+      "when": {
+        "type": "stageCleared",
+        "stage": 12
+      }
+    },
+    {
+      "id": "dice",
+      "s": "discs",
+      "ic": "🎲",
+      "nm": "Roll the Bones",
+      "d": "Termine Roll the Bones",
+      "when": {
+        "type": "stageCleared",
+        "stage": 15
+      }
+    },
+    {
+      "id": "clockwork",
+      "s": "discs",
+      "ic": "⚙️",
+      "nm": "Clockwork Angels",
+      "d": "Termine a discografia",
+      "when": {
+        "type": "stageCleared",
+        "stage": 20
+      }
+    },
+    {
+      "id": "snare",
+      "s": "kit",
+      "ic": "🥁",
+      "nm": "Caixa",
+      "d": "Conclua a lição S L, em Caress of Steel",
+      "when": {
+        "type": "lessonDone",
+        "lesson": "sl"
+      }
+    },
+    {
+      "id": "toms",
+      "s": "kit",
+      "ic": "🪘",
+      "nm": "Tons",
+      "d": "Conclua a lição Q P, em Grace Under Pressure",
+      "when": {
+        "type": "lessonDone",
+        "lesson": "qp"
+      }
+    },
+    {
+      "id": "cymbals",
+      "s": "kit",
+      "ic": "🌕",
+      "nm": "Pratos",
+      "d": "Conclua a lição V B, em Roll the Bones",
+      "when": {
+        "type": "lessonDone",
+        "lesson": "vb"
+      }
+    },
+    {
+      "id": "fullkit",
+      "s": "kit",
+      "ic": "🎶",
+      "nm": "Kit completo",
+      "d": "Conclua o disco Vapor Trails",
+      "when": {
+        "type": "lessonDone",
+        "lesson": "r3"
+      }
+    },
+    {
+      "id": "nomiss",
+      "s": "goal",
+      "ic": "🎯",
+      "nm": "Sem nota errada",
+      "d": "Uma lição com 100% de precisão",
+      "when": {
+        "type": "perfectLesson",
+        "minChars": 40
+      }
+    },
+    {
+      "id": "metronome",
+      "s": "goal",
+      "ic": "⏱️",
+      "nm": "Metrônomo",
+      "d": "Nota A de ritmo numa rodada",
+      "when": {
+        "type": "rhythm",
+        "grade": "A"
+      }
+    },
+    {
+      "id": "tour",
+      "s": "goal",
+      "ic": "🚐",
+      "nm": "Turnê de 5 datas",
+      "d": "Treine em 5 dias diferentes",
+      "when": {
+        "type": "daysTrained",
+        "n": 5
+      }
+    },
+    {
+      "id": "platinum",
+      "s": "goal",
+      "ic": "💿",
+      "nm": "Disco de platina",
+      "d": "Suba ao pódio em 3 duelos",
+      "when": {
+        "type": "podiums",
+        "n": 3
+      }
+    },
+    {
+      "id": "notforsale",
+      "s": "goal",
+      "ic": "💸",
+      "nm": "Não está à venda",
+      "d": "1º lugar no duelo contra The Big Money",
+      "when": {
+        "type": "racePlace",
+        "lesson": "r2",
+        "place": 1
+      }
+    },
+    {
+      "id": "rehearsal",
+      "s": "goal",
+      "ic": "🎸",
+      "nm": "Primeiro ensaio",
+      "d": "Cumpra a primeira missão do dia",
+      "when": {
+        "type": "missions",
+        "n": 1
+      }
+    },
+    {
+      "id": "fiverehearsals",
+      "s": "goal",
+      "ic": "🎼",
+      "nm": "Cinco ensaios",
+      "d": "Cumpra 5 missões do dia",
+      "when": {
+        "type": "missions",
+        "n": 5
+      }
+    },
+    {
+      "id": "fan",
+      "s": "goal",
+      "ic": "🎫",
+      "nm": "Fã de carteirinha",
+      "d": "Cumpra 15 missões do dia",
+      "when": {
+        "type": "missions",
+        "n": 15
+      }
+    },
+    {
+      "id": "sawyer",
+      "s": "goal",
+      "ic": "🛶",
+      "nm": "Tom Sawyer",
+      "d": "Treino livre: 25 PPM com 95%",
+      "when": {
+        "type": "freeRun",
+        "wpm": 25,
+        "acc": 95
+      }
+    },
+    {
+      "id": "strangiato",
+      "s": "goal",
+      "ic": "🌀",
+      "nm": "La Villa Strangiato",
+      "d": "Treino livre: 35 PPM com 95%",
+      "when": {
+        "type": "freeRun",
+        "wpm": 35,
+        "acc": 95
+      }
+    }
+  ],
+  "ranks": [
+    [
+      0,
+      "Banda de garagem",
+      "Banda de garagem"
+    ],
+    [
+      10,
+      "Bar da esquina",
+      "Bar da esquina"
+    ],
+    [
+      15,
+      "Clube",
+      "Clube"
+    ],
+    [
+      20,
+      "Teatro",
+      "Teatro"
+    ],
+    [
+      25,
+      "Ginásio",
+      "Ginásio"
+    ],
+    [
+      30,
+      "Arena",
+      "Arena"
+    ],
+    [
+      40,
+      "Estádio",
+      "Estádio"
+    ],
+    [
+      50,
+      "Disco de platina",
+      "Disco de platina"
+    ],
+    [
+      60,
+      "Hall of Fame",
+      "Hall of Fame"
+    ]
+  ]
+}
