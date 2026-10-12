@@ -718,7 +718,10 @@ function floatFx(kind, text, x, y, delay = 0) {
   el.style.top = y + "%";
   el.style.animationDelay = delay + "ms";
   el.addEventListener("animationend", () => el.remove());
-  $("#fx").appendChild(el);
+  const layer = $("#fx");
+  // A fast typist starts effects faster than they end, so the oldest ones give way.
+  while (layer.childElementCount >= 24) layer.firstChild.remove();
+  layer.appendChild(el);
 }
 function streakFx() {
   const s = run.streak;
