@@ -19,6 +19,17 @@
       "accent2": "#7fd1c7"
     }
   },
+  "fx": {
+    "marks": [
+      "ゴ",
+      "ゴ",
+      "ド",
+      "ゴ"
+    ],
+    "marksAt": 12,
+    "rush": "ORA",
+    "rushEvery": 25
+  },
   "strings": {
     "subtitle": "A corrida de digitação de San Diego a Nova York",
     "tabLessons": "Etapas",

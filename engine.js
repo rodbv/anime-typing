@@ -380,6 +380,7 @@ function appendText(str) {
   }
 }
 function renderRun() {
+  $("#fx").innerHTML = "";
   $("#type-label").textContent = runLabel();
   $("#text-inner").innerHTML = "";
   $("#text-inner").style.transform = "";
@@ -507,6 +508,7 @@ function typeChar(ch) {
     run.lastOk = now;
     run.streak = run.errAt.has(run.pos) ? 0 : run.streak + 1;
     run.bestStreak = Math.max(run.bestStreak, run.streak);
+    streakFx();
     $("#kb").classList.remove("insist");
     $("#hint").classList.remove("insist");
     el.classList.remove("cur", "bad");
@@ -694,6 +696,30 @@ setInterval(() => {
   updateChips();
   if (run.mode === "free" && activeMs() >= run.limit * 1000) finish();
 }, 200);
+
+/* ---------- theme effects ---------- */
+// The theme's flair while typing: marks float up during a long run of hits, and a burst of words fills the box at each milestone.
+const FX = TH.fx;
+const calmMotion = () => !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+// Positions come from the streak instead of Math.random, so a seeded run keeps the same lesson texts.
+const fxSpot = (n, salt) => (n * 37 + salt * 53) % 90 + 5;
+function floatFx(kind, text, x, y, delay = 0) {
+  const el = document.createElement("span");
+  el.className = "fx " + kind;
+  el.textContent = text;
+  el.style.left = x + "%";
+  el.style.top = y + "%";
+  el.style.animationDelay = delay + "ms";
+  el.addEventListener("animationend", () => el.remove());
+  $("#fx").appendChild(el);
+}
+function streakFx() {
+  const s = run.streak;
+  if (calmMotion() || !s) return;
+  // The marks rise along the left and right edges of the box, as in the manga, and leave the text clear.
+  if (FX.marks.length && s >= FX.marksAt && s % 2 === 0) floatFx("mark", FX.marks[s / 2 % FX.marks.length], (s / 2 % 2 ? 1 : 92) + s % 4, fxSpot(s, 1) * 0.7);
+  if (FX.rush && s % FX.rushEvery === 0) for (let i = 0; i < 6; i++) floatFx("rush", FX.rush, fxSpot(s, i + 2), fxSpot(s, i + 9) * 0.7, i * 70);
+}
 
 /* ---------- global keys ---------- */
 const onButton = e => !!(e.target.closest && e.target.closest("button, a"));

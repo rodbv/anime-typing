@@ -92,6 +92,7 @@ document.body.insertAdjacentHTML("afterbegin", `
         <div id="text-inner"></div>
         <div class="focus-overlay" id="focus-overlay" hidden data-i18n="clickToType"></div>
         <div class="toast" id="toast" hidden></div>
+        <div class="fx-layer" id="fx"></div>
       </div>
       <div class="attrib" id="attrib"></div>
       <div class="hint" id="hint"></div>
