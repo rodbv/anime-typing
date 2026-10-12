@@ -85,6 +85,8 @@ function boot(storage, url = 'http://localhost/', opts = {}) {
     beforeParse(w) {
       w.structuredClone = structuredClone; w.TextEncoder = TextEncoder; w.TextDecoder = TextDecoder;
       w.addEventListener('error', e => errors.push(e.message));
+      // jsdom has no media playback; the theme's audio clips play into nothing.
+      w.HTMLMediaElement.prototype.play = () => Promise.resolve();
       // The game takes its language from the browser; the tests run as a Brazilian browser unless they pass lang.
       const langs = [].concat(opts.lang || 'pt-BR');
       Object.defineProperty(w.navigator, 'languages', {get: () => langs});
