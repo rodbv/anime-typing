@@ -39,6 +39,7 @@ O [ROTEIRO.md](ROTEIRO.md) descreve a história do tema JoJo, as etapas e as dec
 - `themes/jojo.json` e `themes/rush.json`: o conteúdo de cada tema.
 - `i18n/pt.json` e `i18n/en.json`: os textos comuns da interface e os textos padrão de um tema.
 - `index.html` e `rush.html`: as páginas de cada tema.
+- `themes.json`: a lista de temas do seletor no topo da página.
 
 O [TEMAS.md](TEMAS.md) explica como criar um tema novo.
 

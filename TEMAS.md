@@ -27,11 +27,12 @@ Com isso o jogo funciona: a jornada aparece como uma linha reta, as etapas se ch
 2. Copie `index.html` para `<nome>.html`. Troque o `<title>`, as og:meta e o `data-theme` do loader:
 
    ```
-   <script src="loader.js?v=3" data-i18n="i18n/pt.json i18n/en.json" data-theme="themes/<nome>.json"></script>
+   <script src="loader.js?v=4" data-i18n="i18n/pt.json i18n/en.json" data-theme="themes/<nome>.json"></script>
    ```
 
-3. Rode `just run` e abra `http://localhost:8000/<nome>.html`.
-4. Rode `just test`. O teste `tests/themes.test.js` joga o curso inteiro com todo tema de `themes/`, então o tema novo já entra no teste.
+3. Acrescente o tema em `themes.json`, com `id`, o `name` que aparece no seletor de tema e a `page`. O seletor no topo da página mostra todos os temas dessa lista.
+4. Rode `just run` e abra `http://localhost:8000/<nome>.html`.
+5. Rode `just test`. O teste `tests/themes.test.js` joga o curso inteiro com todo tema de `themes/`, então o tema novo já entra no teste. O teste também falha se o tema não estiver em `themes.json`.
 
 Se o tema tiver um erro de estrutura, como uma lição que não existe ou um rival sem cadastro, a página mostra a lista de problemas em vez do jogo.
 
