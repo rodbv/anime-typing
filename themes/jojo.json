@@ -30,6 +30,9 @@
     "rush": "ORA",
     "rushEvery": 25,
     "failBanner": "To Be Continued",
+    "failArt": [
+      "themes/jojo/johnny-falls.webp"
+    ],
     "winArt": [
       "themes/jojo/johnny.webp",
       "themes/jojo/gyro.webp"

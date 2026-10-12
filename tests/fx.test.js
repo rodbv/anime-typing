@@ -32,6 +32,7 @@ const failLesson = A => {
 failLesson(J);
 check(J.d.querySelector('#results .tbc')?.textContent === 'To Be Continued' && J.d.getElementById('results').classList.contains('cliffhanger'),
   'a failed lesson should end with To Be Continued');
+check(J.d.querySelector('#results .frozen img')?.getAttribute('src') === 'themes/jojo/johnny-falls.webp', 'a failed lesson should freeze the theme\'s fail art under the banner');
 check(J.ev('clipTurns.fail') === 1 && J.ev('clipSets.fail[0].src').endsWith('themes/jojo/roundabout.mp3'), 'a failed lesson should play the theme\'s fail clip');
 J.playLesson(2);
 check(!J.d.querySelector('#results .tbc') && !J.d.getElementById('results').classList.contains('cliffhanger'), 'a cleared lesson should not show the banner');

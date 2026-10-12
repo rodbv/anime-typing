@@ -680,7 +680,7 @@ function finish() {
   const cliffhanger = run.mode === "lesson" && !run.passed && !run.preview && FX.failBanner;
   r.classList.toggle("cliffhanger", !!cliffhanger);
   r.innerHTML = `
-    ${cliffhanger ? `<div class="tbc"><span>${esc(FX.failBanner)}</span></div>` : ""}
+    ${cliffhanger ? cliffhangerHtml() : ""}
     ${(run.won || courseDone) && FX.winArt.length ? victoryHtml() : ""}
     ${mission.justDone ? `<div class="done-box">🔥 <b>${esc(t("missionDoneTitle"))}</b> ${esc(t("missionDoneText", {name: data.profile.name || TH.hero.short}))}</div>` : ""}
     <h2 class="rt">${esc(title)} ${record ? `<span class="flair">${esc(t("flair"))} ${esc(t("newRecord"))}</span>` : ""}</h2>
@@ -726,6 +726,11 @@ function floatFx(kind, text, x, y, delay = 0) {
   // A fast typist starts effects faster than they end, so the oldest ones give way.
   while (layer.childElementCount >= 24) layer.firstChild.remove();
   layer.appendChild(el);
+}
+// The banner slides over the theme's frozen frame, when it has one, like the end of an episode.
+function cliffhangerHtml() {
+  const banner = `<div class="tbc"><span>${esc(FX.failBanner)}</span></div>`;
+  return FX.failArt.length ? `<div class="frozen">${FX.failArt.map(src => `<img src="${esc(src)}" alt="">`).join("")}${banner}</div>` : banner;
 }
 // The heroes strike a pose over the theme's marks after a won race or the last lesson.
 const victoryHtml = () => `<div class="victory" data-marks="${esc(FX.marks.join(""))}">${FX.winArt.map((src, i) =>
