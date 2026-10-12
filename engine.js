@@ -1707,7 +1707,8 @@ function makeRace(L) {
   const rival = RIVALS[L.race];
   const recent = data.history.filter(h => h.acc >= 90).slice(-3);
   const avg = recent.length ? recent.reduce((a, h) => a + h.wpm, 0) / recent.length : 0;
-  const wpm = Math.max(rival.floor, Math.round(avg * (rival.boss ? 1.2 : 1.1)));
+  // The ghost never runs below the lesson's pass speed, so beating it always means fast enough to pass.
+  const wpm = Math.max(rival.floor || 0, passWpm(LESSON_DEFS.indexOf(L)), Math.round(avg * (rival.boss ? 1.2 : 1.1)));
   return {id: L.race, nm: rival.nm, wpm, cps: wpm * 5 / 60};
 }
 function updateGhost() {

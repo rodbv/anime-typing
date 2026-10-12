@@ -8,6 +8,7 @@ ev('startRun("lesson",{lessonIdx:1, forceIntro:true})');
 const race = ev('run.race');
 console.log('race:', JSON.stringify(race));
 check(race.id === 'sandman' && race.wpm >= ev('RIVALS.sandman.floor'), 'the lesson 2 ghost should be the Sandman, at least at his floor');
+check(race.wpm >= ev('passWpm(1)'), 'the ghost should never run below the pass speed, got ' + race.wpm);
 check(d.getElementById('type-label').textContent.includes('🏁 Sandman'), 'the run label should name the rival');
 check(d.querySelector('#intro p.sub')?.textContent.includes('93%'), 'the intro should explain the race rule');
 ev('closeIntro()');
