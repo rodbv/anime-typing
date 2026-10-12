@@ -12,6 +12,13 @@ const errors = [];
 // A text key that a theme defines without a common default would show up as its own name in a theme that leaves it out.
 const themeOnly = files.flatMap(f => Object.keys(read(f).strings || {})).filter(k => !(k in common));
 if (themeOnly.length) throw new Error('strings without a default in i18n/pt.json: ' + [...new Set(themeOnly)].join(', '));
+// Every theme in themes/ is in the theme selector, and its page loads that theme file.
+const catalog = read('themes.json');
+for (const f of files.filter(f => f.startsWith('themes/'))) {
+  const entry = catalog.find(c => c.id === read(f).id);
+  if (!entry) throw new Error(`${f}: missing from themes.json`);
+  if (!fs.readFileSync(path.join(ROOT, entry.page), 'utf8').includes(`data-theme="${f}"`)) throw new Error(`${entry.page} should load ${f}`);
+}
 // Keys with a capital letter cannot be real words, so finding one on screen means a text is missing.
 const keyNames = Object.keys(common).filter(k => /[a-z][A-Z]/.test(k));
 

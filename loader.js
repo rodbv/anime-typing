@@ -1,13 +1,15 @@
 // Fetches the interface texts and the theme, then starts the engine with them.
 // The page lists the files in data attributes; ?v= on this script is passed to every file to skip stale caches.
+// themes.json lists every theme for the theme selector; without it, the page has no selector.
 (function () {
   const me = document.currentScript;
   const version = new URL(me.src).search;
   const files = (me.dataset.i18n || "").split(/\s+/).filter(Boolean);
   const theme = me.dataset.theme;
   const getJson = f => fetch(f + version).then(r => { if (!r.ok) throw new Error(f + ": " + r.status); return r.json(); });
-  Promise.all([getJson(theme), ...files.map(getJson)]).then(([themeData, ...dicts]) => {
+  Promise.all([getJson(theme), getJson("themes.json").catch(() => []), ...files.map(getJson)]).then(([themeData, catalog, ...dicts]) => {
     window.THEME = themeData;
+    window.THEMES = catalog;
     window.I18N = {};
     files.forEach((f, i) => { window.I18N[f.split("/").pop().replace(".json", "")] = dicts[i]; });
     const engine = document.createElement("script");

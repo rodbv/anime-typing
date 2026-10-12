@@ -8,6 +8,7 @@ document.body.insertAdjacentHTML("afterbegin", `
       <div class="sub" data-i18n="subtitle"></div>
     </div>
     <div class="controls">
+      <div class="ctl" id="theme-ctl" hidden><span data-i18n="theme"></span><div class="seg" id="theme-seg"></div></div>
       <div class="ctl"><span data-i18n="keyboard"></span>
         <div class="seg" data-set="layout"><button data-val="intl">US Intl</button><button data-val="us">US</button><button data-val="abnt">ABNT2</button></div>
       </div>
@@ -577,6 +578,10 @@ function applyTheme() {
   for (const [k, v] of Object.entries(TH.look.colors)) document.documentElement.style.setProperty("--" + k, v);
   $("#logo").innerHTML = `${esc(TH.look.logo[0])} <span>${esc(TH.look.logo[1])}</span>`;
   $("#deco").textContent = TH.look.deco;
+  // Each theme has its own page and progress, so switching opens the other page.
+  const catalog = window.THEMES || [];
+  $("#theme-ctl").hidden = catalog.length < 2;
+  $("#theme-seg").innerHTML = catalog.map(c => `<button data-page="${esc(c.page)}" class="${c.id === TH.id ? "on" : ""}">${esc(c.name)}</button>`).join("");
 }
 function applyI18n() {
   document.documentElement.lang = locale();
@@ -1126,6 +1131,10 @@ function setSetting(key, val) {
   else if (view === "type" && run && run.done) goBack();
   else showView(view);
 }
+$("#theme-seg").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (b && !b.classList.contains("on")) location.href = b.dataset.page;
+});
 document.querySelectorAll(".seg[data-set]").forEach(seg => {
   seg.addEventListener("click", e => {
     const b = e.target.closest("button");

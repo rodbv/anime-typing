@@ -15,7 +15,8 @@ function inlineLoader(attrs, themeEdit) {
   const themeFile = /data-theme="([^"]*)"/.exec(attrs)?.[1];
   const theme = themeFile && JSON.parse(read(themeFile));
   if (theme && themeEdit) themeEdit(theme);
-  return `<script>window.I18N = ${JSON.stringify(i18n)};${theme ? ` window.THEME = ${JSON.stringify(theme)};` : ''}</script>\n<script>\n${read('engine.js')}\n</script>`;
+  const catalog = fs.existsSync(path.join(ROOT, 'themes.json')) ? JSON.parse(read('themes.json')) : [];
+  return `<script>window.I18N = ${JSON.stringify(i18n)}; window.THEMES = ${JSON.stringify(catalog)};${theme ? ` window.THEME = ${JSON.stringify(theme)};` : ''}</script>\n<script>\n${read('engine.js')}\n</script>`;
 }
 
 const themeOf = (page = 'index.html') => /data-theme="([^"]*)"/.exec(read(page))[1];

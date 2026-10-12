@@ -1,0 +1,12 @@
+[
+  {
+    "id": "jojo",
+    "name": "JoJo",
+    "page": "index.html"
+  },
+  {
+    "id": "rush",
+    "name": "Rush",
+    "page": "rush.html"
+  }
+]
