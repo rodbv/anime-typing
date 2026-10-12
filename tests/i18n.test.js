@@ -1,4 +1,4 @@
-// Every interface text exists in each language with the same shape, so an English theme never falls back to Portuguese.
+// Every interface text exists in each language with the same shape, so the English interface never falls back to Portuguese.
 const assert = require('assert/strict');
 const pt = require('../i18n/pt.json');
 const en = require('../i18n/en.json');

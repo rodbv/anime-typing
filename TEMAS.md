@@ -42,7 +42,6 @@ Se o tema tiver um erro de estrutura, como uma lição que não existe ou um riv
 |---|---|---|
 | `id` | nome curto do tema | obrigatório |
 | `journey.stages` | as etapas (ver abaixo) | obrigatório |
-| `lang` | língua da interface: `"pt"` ou `"en"` | `"pt"` |
 | `storeKey` | chave do progresso no localStorage | `"typedojo:<id>"` |
 | `siteUrl` | endereço publicado da página. O QR code usa esse endereço quando o jogo roda fora de um servidor http. | o endereço da página |
 | `look` | `logo` (duas partes; a segunda aparece em destaque), `deco` (texto grande decorativo no fundo) e `colors` (`bg`, `panel`, `panel2`, `line`, `text`, `muted`, `accent`, `accent2`) | logo "TYPE DOJO", sem deco, cores de `engine.css` |
@@ -134,7 +133,7 @@ Três chaves de `strings` montam os textos de uma etapa. Elas aceitam qualquer c
 
 ## Textos
 
-Os textos comuns da interface e os textos padrão de um tema ficam em `i18n/pt.json` e `i18n/en.json`. Se uma chave não existir na língua do tema, o engine usa o texto em português. Uma chave que um tema define em `strings` precisa existir em `i18n/pt.json`, para que outro tema possa deixá-la de fora; o teste de temas confere isso.
+Os textos comuns da interface e os textos padrão de um tema ficam em `i18n/pt.json` e `i18n/en.json`. A interface usa a primeira língua do navegador que tenha textos em `i18n/`; em qualquer outra língua, ela fica em português. Os textos de `strings` do tema valem em todas as línguas. Uma chave que um tema define em `strings` precisa existir em `i18n/pt.json`, para que outro tema possa deixá-la de fora; o teste de temas confere isso.
 
 ## Testes
 

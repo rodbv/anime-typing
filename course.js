@@ -57,7 +57,7 @@ function starsFor(wpm, acc, idx) {
 
 function wordPools(accents) {
   const themed = [...TH.words.names.split(" "), ...TH.words.terms.split(" ")];
-  const common = COMMON[S.lang].split(" ");
+  const common = COMMON[LANG].split(" ");
   // A word that would lose an accent or a Ç on this layout is dropped, so no misspelled word shows up.
   const clean = a => uniq(a.filter(w => w && sanitize(w, accents) === w.normalize("NFC")));
   return {themed: clean(themed), common: clean(common)};

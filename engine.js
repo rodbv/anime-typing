@@ -15,7 +15,7 @@ const sanitize = (str, accents) => sanitizeFor(S.layout, str, accents);
 /* ---------- storage ---------- */
 const STORE_KEY = TH.storeKey;
 const DEFAULTS = {
-  settings: {layout: "intl", lang: TH.lang, showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
+  settings: {layout: "intl", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
   best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: [],
   profile: {name: ""}, days: {}, bestStreak: 0
@@ -33,7 +33,6 @@ function loadData() {
   out.totals = {...base.totals, ...(d.totals || {})};
   out.profile = {...base.profile, ...(d.profile || {})};
   out.days = d.days || {};
-  out.settings.lang = TH.lang;
   if (!LAYOUTS[out.settings.layout]) out.settings.layout = "intl";
   return out;
 }
@@ -555,7 +554,7 @@ function rankFor(w) {
   for (let i = 0; i < RANKS.length; i++) if (w >= RANKS[i][0]) { cur = RANKS[i]; nxt = RANKS[i + 1] || null; }
   return [cur, nxt];
 }
-const rankName = r => S.lang === "pt" ? r[2] : r[1];
+const rankName = r => LANG === "pt" ? r[2] : r[1];
 function lessonCounts() {
   const p = progress();
   let cleared = 0, stars = 0;
@@ -937,7 +936,7 @@ function handsSvg(o = {}) {
 }
 function tipList(k) {
   const p = HOME[S.layout][7].toUpperCase();
-  return (T[S.lang][k] || T.en[k] || []).map(x => x.split("{p}").join(p));
+  return (T[LANG][k] || T.pt[k] || []).map(x => x.split("{p}").join(p));
 }
 function lessonIntro(L) {
   const homeAll = [...HOME[S.layout]];
@@ -968,7 +967,7 @@ function keysIntro(L) {
     if (h === k) bullets.push(t("homeKeyLine", vars));
     else { bullets.push(t("reachLine", vars)); reach.push([h, k]); }
   }
-  const extra = T[S.lang]["in_x_" + L.id];
+  const extra = T[LANG]["in_x_" + L.id];
   if (extra) bullets.push(extra);
   return {title: `${t("newKeys")}: ${keys.map(keyName).join(" ")}`, bullets, hi: keys, reach};
 }

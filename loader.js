@@ -21,8 +21,8 @@
       document.body.appendChild(s);
     });
   }).catch(err => {
-    // The interface texts may be what failed to load, so this message picks its language from the browser.
-    const pt = (navigator.language || "").startsWith("pt");
+    // The interface texts may be what failed to load, so this message picks its language from the browser, like theme.js.
+    const pt = [...(navigator.languages || []), navigator.language].map(l => String(l || "").slice(0, 2).toLowerCase()).find(l => l === "pt" || l === "en") !== "en";
     const run = `<code>just run</code> (${pt ? "ou" : "or"} <code>python3 -m http.server</code>)`, local = `<a href="http://localhost:8000">http://localhost:8000</a>`;
     document.body.innerHTML = `<div style="font:16px/1.5 system-ui,sans-serif;max-width:560px;margin:40px auto;padding:0 16px">
       <h1 style="font-size:22px">${pt ? "O jogo não conseguiu carregar os arquivos" : "The game could not load its files"}</h1>

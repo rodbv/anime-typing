@@ -2,15 +2,18 @@
 // and the achievement conditions a theme can use. Functions here read the player's state from engine.js.
 
 /* ---------- i18n ---------- */
-// Interface texts by language, loaded by loader.js; the theme's strings replace the ones with the same key.
+// Interface texts by language, loaded by loader.js.
 const T = window.I18N;
-Object.assign(T[window.THEME.lang] || T.pt, window.THEME.strings);
+// The interface uses the first browser language the game has texts for, and Portuguese otherwise.
+const LANG = [...(navigator.languages || []), navigator.language].map(l => String(l || "").slice(0, 2).toLowerCase()).find(l => l in T) || "pt";
+// The theme's strings replace the interface texts with the same key, in every language.
+Object.assign(T[LANG], window.THEME.strings);
 const fill = (s, vars) => Object.entries(vars || {}).reduce((acc, [a, b]) => acc.split("{" + a + "}").join(b), s);
 const t = (k, vars) => {
-  const s = T[S.lang]?.[k] ?? T.pt[k] ?? T.en?.[k] ?? k;
+  const s = T[LANG][k] ?? T.pt[k] ?? k;
   return typeof s === "string" ? fill(s, vars) : s;
 };
-const locale = () => S.lang === "pt" ? "pt-BR" : "en";
+const locale = () => LANG === "pt" ? "pt-BR" : "en";
 
 /* ---------- content ---------- */
 // Story content of the page's theme, loaded by loader.js from the themes folder.
@@ -19,10 +22,10 @@ const DEFAULT_RANKS = [[0, "Beginner", "Iniciante"], [10, "Apprentice", "Aprendi
   [20, "Fast", "Rápido"], [25, "Very fast", "Muito rápido"], [30, "Expert", "Especialista"], [40, "Master", "Mestre"],
   [50, "Grandmaster", "Grão-mestre"], [60, "Legend", "Lenda"]];
 function withDefaults(th) {
-  const tx = k => (T[th.lang] || T.pt)[k] ?? T.pt[k];
+  const tx = k => T[LANG][k] ?? T.pt[k];
   const j = th.journey || {}, where = th.prologue?.where || {}, hero = {name: tx("defHero"), number: 1, icon: "⌨️", ...th.hero};
   return {
-    lang: "pt", story: {}, achievements: [], ranks: DEFAULT_RANKS, ...th,
+    story: {}, achievements: [], ranks: DEFAULT_RANKS, ...th,
     rivals: Object.fromEntries(Object.entries(th.rivals || {}).map(([id, r]) => [id, {floor: 0, pre: "", win: "", lose: "", ...r}])),
     storeKey: th.storeKey || "typedojo:" + th.id,
     look: {logo: ["TYPE", "DOJO"], deco: "", ...th.look, colors: {...th.look?.colors}},

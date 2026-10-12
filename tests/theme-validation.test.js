@@ -1,8 +1,8 @@
 // A theme with structure errors shows the list of problems instead of the game.
 const {boot} = require('./harness');
 const check = (ok, msg) => { if (!ok) throw new Error(msg); };
-function problems(themeEdit) {
-  const A = boot(null, 'http://localhost/', {themeEdit});
+function problems(themeEdit, lang) {
+  const A = boot(null, 'http://localhost/', {themeEdit, lang});
   check(A.errors.some(e => e.includes('theme problems')), 'expected a theme problems error');
   return A.d.body.textContent.replace(/\s+/g, ' ');
 }
@@ -25,8 +25,8 @@ const text = problems(th => {
 });
 expect(text, ['pelo menos 3 frases', 'evolution: a lição "zz" não existe', 'rival "sandman": falta o nome',
   'a etapa 42 não existe', 'o tipo "flying" não existe', 'a lição "qq" não existe']);
-// An English theme lists its problems in English.
-expect(problems(th => { th.lang = 'en'; th.journey.stages[0].lessons = ['fj', 'nope']; }),
+// An English browser lists the problems in English.
+expect(problems(th => { th.journey.stages[0].lessons = ['fj', 'nope']; }, 'en-US'),
   ['The theme has problems', 'stage 1: the lesson "nope" does not exist', 'the lesson "dk" is in no stage']);
 console.log('ERRORS', []);
 process.exit(0);

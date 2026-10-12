@@ -85,6 +85,10 @@ function boot(storage, url = 'http://localhost/', opts = {}) {
     beforeParse(w) {
       w.structuredClone = structuredClone; w.TextEncoder = TextEncoder; w.TextDecoder = TextDecoder;
       w.addEventListener('error', e => errors.push(e.message));
+      // The game takes its language from the browser; the tests run as a Brazilian browser unless they pass lang.
+      const langs = [].concat(opts.lang || 'pt-BR');
+      Object.defineProperty(w.navigator, 'languages', {get: () => langs});
+      Object.defineProperty(w.navigator, 'language', {get: () => langs[0]});
       if (opts.seed !== undefined) w.Math.random = seededRandom(opts.seed);
       if (opts.now !== undefined) w.Date = frozenDate(w.Date, opts.now);
       if (opts.clock) tick = fakeClock(w);
