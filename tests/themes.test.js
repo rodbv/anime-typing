@@ -54,7 +54,7 @@ for (const theme of files) {
       if (ev('currentStageIdx()') !== si) fail(`lesson ${id} should be in stage ${si + 1}`);
       if (ev('stageCleared(' + si + ')')) fail(`stage ${si + 1} cleared before lesson ${id}`);
       A.playLesson(lessonIds.indexOf(id));
-      if (!ev(`lessonDone(LESSON_DEFS[${lessonIds.indexOf(id)}])`)) fail(`lesson ${id} did not pass`);
+      if (!ev(`lessonDone("${id}")`)) fail(`lesson ${id} did not pass`);
     });
     dist += st.dist;
     if (!ev('stageCleared(' + si + ')')) fail(`stage ${si + 1} not cleared after its lessons`);

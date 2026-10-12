@@ -173,7 +173,7 @@ const COMMON = {
 const ACCENT_WORDS = "não mão mãe pão são irmão coração ação lição canção mãos já lá pá pé fé só nó é até está café sofá aí país saída útil fácil difícil rápido música último único número sábado próximo herói céu água três você vovô avô pôr mês português lâmpada câmera à às força faça laço peça poço caça moço praça cabeça começo rotação galão estação".split(" ");
 
 const stageRaceId = si => { const ls = LESSON_DEFS.filter(L => L.stage === si); return ls[ls.length - 1].id; };
-const stageCleared = si => (progress()[stageRaceId(si)]?.stars || 0) >= 1;
+const stageCleared = si => lessonDone(stageRaceId(si));
 const podiums = () => LESSON_DEFS.filter(L => L.race && (progress()[L.id]?.place || 9) <= 3).length;
 const missionsDone = () => Object.values(data.days || {}).filter(d => d.done).length;
 const daysTrained = () => Object.values(data.days || {}).filter(d => d.ms > 0).length;
@@ -181,7 +181,7 @@ const daysTrained = () => Object.values(data.days || {}).filter(d => d.ms > 0).l
 // Achievement conditions a theme can use, by type. Each one gets the condition from the theme and {run, m, lessons} of the finished run.
 const CONDITIONS = {
   stageCleared: w => stageCleared(w.stage),
-  lessonDone: (w, c) => (c.lessons[w.lesson]?.stars || 0) >= 1,
+  lessonDone: w => lessonDone(w.lesson),
   racePlace: (w, c) => (c.lessons[w.lesson]?.place || 9) <= w.place,
   perfectLesson: (w, c) => c.run.mode === "lesson" && c.m.acc === 100 && c.run.pos >= w.minChars,
   rhythm: (w, c) => c.m.rhythm === w.grade,
@@ -191,6 +191,7 @@ const CONDITIONS = {
   freeRun: (w, c) => c.run.mode === "free" && c.m.wpm >= w.wpm && c.m.acc >= w.acc
 };
 const ACHIEVEMENTS = TH.achievements;
+const achievementsGot = () => ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length;
 
 /* ---------- keyboard layouts ---------- */
 // keys: [base chars, shifted chars, finger per key]. Fingers: 0-3 left pinky..index, 4-7 right index..pinky, 8 thumb.
@@ -358,11 +359,13 @@ function allowedUpTo(idx) {
   return s;
 }
 const progress = () => data.lessons[S.layout];
-const isUnlocked = i => S.unlockAll || i === 0 || (progress()[LESSON_DEFS[i - 1].id]?.stars || 0) >= 1;
+const lessonDone = id => (progress()[id]?.stars || 0) >= 1;
+const lessonIndexOf = id => LESSON_DEFS.findIndex(L => L.id === id);
+const isUnlocked = i => S.unlockAll || i === 0 || lessonDone(LESSON_DEFS[i - 1].id);
 function nextLessonIdx() {
   for (let i = 0; i < LESSON_DEFS.length; i++) {
     if (!isUnlocked(i)) return i - 1;
-    if (!(progress()[LESSON_DEFS[i].id]?.stars >= 1)) return i;
+    if (!lessonDone(LESSON_DEFS[i].id)) return i;
   }
   return LESSON_DEFS.length - 1;
 }
@@ -395,7 +398,7 @@ const homeOf = k => { const rc = keyGeometry().pos[k]; return rc ? HOME[S.layout
 const passAcc = L => L.race ? 93 : 90;
 // A slow pass usually means the player looked at the keys, so each part of the course asks for a minimum speed.
 const passWpm = idx => idx < 6 ? 8 : idx < 13 ? 10 : 12;
-const accentsOn = () => S.layout !== "us" && (S.accents || (progress().acc2?.stars || 0) >= 1);
+const accentsOn = () => S.layout !== "us" && (S.accents || lessonDone("acc2"));
 
 // Warm-up drill: the finger leaves its home key, presses the new key and comes back ("fgf", "jhhj").
 function anchorPart(focus) {
@@ -608,8 +611,14 @@ function syncSegs() {
     b.classList.toggle("on", b.dataset.view === active);
   });
 }
+// The typing view shows one panel at a time: the text, the pause menu, the lesson tip or the results.
+const PANELS = {typing: ["#typing-area", "#type-actions"], menu: ["#menu"], intro: ["#intro"], results: ["#results"]};
+function showPanel(name) {
+  for (const [k, sels] of Object.entries(PANELS)) sels.forEach(sel => { $(sel).hidden = k !== name; });
+}
 function showView(v, {replace = false, fromHistory = false} = {}) {
   const prev = view;
+  if (v !== "type") run = null;
   view = v;
   document.querySelectorAll(".view").forEach(s => { s.hidden = s.id !== "v-" + v; });
   $("#tabs").hidden = v === "setup" || v === "prologue";
@@ -642,7 +651,6 @@ window.addEventListener("popstate", () => {
   if (!ROUTES.includes(v) || v === view) return;
   closeShare();
   if (v === "type" && !run) { showView("home", {replace: true}); return; }
-  if (v !== "type") run = null;
   showView(v, {fromHistory: true});
 });
 
@@ -651,18 +659,17 @@ function starRow(n) {
   return `<span class="stars">${[1, 2, 3].map(i => i <= n ? "★" : '<span class="off">★</span>').join("")}</span>`;
 }
 const lessonsInStage = si => LESSON_DEFS.filter(L => L.stage === si);
-const lessonDone = L => (progress()[L.id]?.stars || 0) >= 1;
 const fmtDist = n => Math.round(n).toLocaleString(locale()) + " " + (Math.round(n) === 1 && TH.journey.unitOne || TH.journey.unit);
 // Fills a stage template from the theme strings with the stage fields and its formatted distance.
 const stageText = (k, st) => t(k, {...st, dist: fmtDist(st.dist)});
 function distTraveled() {
   return STAGES.reduce((dist, st, si) => {
     const ls = lessonsInStage(si);
-    return dist + st.dist * ls.filter(lessonDone).length / ls.length;
+    return dist + st.dist * ls.filter(L => lessonDone(L.id)).length / ls.length;
   }, 0);
 }
 function currentStageIdx() {
-  const i = STAGES.findIndex((st, si) => lessonsInStage(si).some(L => !lessonDone(L)));
+  const i = STAGES.findIndex((st, si) => lessonsInStage(si).some(L => !lessonDone(L.id)));
   return i === -1 ? STAGES.length - 1 : i;
 }
 // The start and the stages go along the rows, left to right, and every other row runs back.
@@ -679,11 +686,11 @@ function journeyPoints() {
 }
 function mapSvg() {
   const pts = journeyPoints();
-  const si = STAGES.findIndex((st, i) => lessonsInStage(i).some(L => !lessonDone(L)));
+  const si = STAGES.findIndex((st, i) => lessonsInStage(i).some(L => !lessonDone(L.id)));
   let pos, done;
   if (si === -1) { pos = pts[pts.length - 1]; done = pts; }
   else {
-    const ls = lessonsInStage(si), frac = ls.filter(lessonDone).length / ls.length;
+    const ls = lessonsInStage(si), frac = ls.filter(L => lessonDone(L.id)).length / ls.length;
     const a = pts[si], b = pts[si + 1];
     pos = [a[0] + (b[0] - a[0]) * frac, a[1] + (b[1] - a[1]) * frac];
     done = [...pts.slice(0, si + 1), pos];
@@ -738,7 +745,7 @@ function newRun(mode, o = {}) {
     r.text = parts.join(" ");
     r.bounds = [parts[0].length + 1, parts[0].length + parts[1].length + 2];
     r.intro = lessonIntro(L);
-    r.introOpen = !!r.intro && (!!o.forceIntro || (!(progress()[L.id]?.stars >= 1) && !introSeen.has(L.id)));
+    r.introOpen = !!r.intro && (!!o.forceIntro || (!lessonDone(L.id) && !introSeen.has(L.id)));
     if (r.introOpen) introSeen.add(L.id);
   }
   else if (mode === "free") r.text = freeChunk(80);
@@ -753,7 +760,6 @@ function startRun(mode, o) {
 }
 // Leaves whatever the player is doing and opens the home screen.
 function goHome() {
-  run = null;
   showView("home");
 }
 function restart() {
@@ -762,7 +768,6 @@ function restart() {
 }
 function goBack() {
   const m = run ? run.mode : "lesson";
-  run = null;
   showView({lesson: "lessons", free: "free", quote: "quotes"}[m]);
 }
 function runLabel() {
@@ -795,11 +800,8 @@ function renderRun() {
   $("#text-inner").style.transform = "";
   appendText(run.text);
   $("#attrib").textContent = run.mode === "quote" ? run.quote[1] : "";
-  $("#results").hidden = true;
-  $("#typing-area").hidden = false;
-  $("#type-actions").hidden = false;
+  showPanel("typing");
   $("#banner").hidden = true;
-  $("#menu").hidden = true;
   $("#focus-overlay").hidden = true;
   $(".type-top .chips").hidden = run.mode === "lesson";
   $("#chip-acc").hidden = run.mode === "free";
@@ -811,10 +813,8 @@ function renderRun() {
   updateChips();
   setCursor();
   $("#btn-tip").hidden = !run.intro || run.introOpen;
-  $("#intro").hidden = !run.introOpen;
   if (run.introOpen) {
-    $("#typing-area").hidden = true;
-    $("#type-actions").hidden = true;
+    showPanel("intro");
     renderIntro();
   } else focusSink();
 }
@@ -961,7 +961,7 @@ $("#textbox").addEventListener("click", () => { if (run && !run.done) focusSink(
 /* ---------- finishing ---------- */
 function bestOverall() {
   const p = progress(), r1 = lessonIndexOf("r1");
-  const lessonBest = Math.max(0, ...LESSON_DEFS.filter((L, i) => i >= r1 && p[L.id]?.stars >= 1).map(L => p[L.id].wpm || 0));
+  const lessonBest = Math.max(0, ...LESSON_DEFS.filter((L, i) => i >= r1 && lessonDone(L.id)).map(L => p[L.id].wpm || 0));
   return Math.max(data.best.free, data.best.quote, lessonBest);
 }
 function rankFor(w) {
@@ -1004,7 +1004,7 @@ function finish() {
     const L = LESSON_DEFS[run.lessonIdx];
     const st = starsFor(m.wpm, m.acc, run.lessonIdx);
     const prev = progress()[L.id];
-    run.wasNew = !(prev?.stars >= 1);
+    run.wasNew = !lessonDone(L.id);
     record = !run.preview && !!prev && st >= 1 && m.wpm > prev.wpm;
     run.passed = st >= 1;
     if (!run.preview) {
@@ -1088,10 +1088,7 @@ function finish() {
     <h2 style="margin-top:14px">${esc(t("missed"))}</h2>${missHtml}
     <div class="type-actions">${btns.map(([id, label, primary]) => `<button class="btn${primary ? " primary" : ""}" data-act="${id}">${esc(label)}${primary ? " " + esc(t("enterHint")) : ""}</button>`).join("")}${run.preview ? "" : `<button class="btn" data-act="share">${esc(t("shareBtn"))}</button>`}</div>`;
   r.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", () => actions[b.dataset.act]()));
-  $("#typing-area").hidden = true;
-  $("#type-actions").hidden = true;
-  $("#menu").hidden = true;
-  r.hidden = false;
+  showPanel("results");
 }
 
 setInterval(() => {
@@ -1158,7 +1155,6 @@ $("#logo").addEventListener("click", () => { if (view !== "card") goHome(); });
 $("#tabs").addEventListener("click", e => {
   const b = e.target.closest("button");
   if (!b) return;
-  run = null;
   showView(b.dataset.view);
 });
 
@@ -1188,7 +1184,7 @@ document.querySelectorAll(".seg[data-set]").forEach(seg => {
 
 /* ---------- collection ---------- */
 function renderCollection() {
-  const got = ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length;
+  const got = achievementsGot();
   $("#coll-summary").textContent = t("collSummary", {n: got, t: ACHIEVEMENTS.length});
   const names = t("collGroups"), groups = uniq(ACHIEVEMENTS.map(a => a.s));
   $("#collection").innerHTML = groups.map(g => `
@@ -1413,9 +1409,7 @@ function renderIntro() {
 function closeIntro() {
   run.introOpen = false;
   run.tipOpen = false;
-  $("#intro").hidden = true;
-  $("#typing-area").hidden = false;
-  $("#type-actions").hidden = false;
+  showPanel("typing");
   $("#btn-tip").hidden = false;
   setCursor();
   focusSink();
@@ -1442,7 +1436,7 @@ function startNext() {
 function renderHome() {
   const lc = lessonCounts(), nx = Math.max(0, nextLessonIdx()), stg = STAGES[currentStageIdx()];
   const [cur] = rankFor(bestOverall());
-  const got = ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length;
+  const got = achievementsGot();
   const first = lc.cleared === 0 && data.totals.runs === 0;
   const prof = data.profile;
   $("#home").innerHTML = `
@@ -1487,10 +1481,10 @@ function shareSnapshot() {
   return {
     n: data.profile.name || TH.hero.name, d: dayKey(new Date()),
     mi: runs.length ? Math.max(1, Math.round((day.ms || 0) / 60000)) : 0, r: runs.length, w: best.wpm, a: best.acc,
-    ms: [day.next, day.review, day.free].filter(Boolean).length, md: day.done ? 1 : 0,
+    ms: missionStepsDone(day), md: day.done ? 1 : 0,
     it: ACHIEVEMENTS.filter(a => (data.unlocked[a.id] || 0) >= start).map(a => a.id),
     dist: Math.round(distTraveled()), st: Math.max(0, currentStageIdx()), lc: lc.cleared,
-    act: evolutionLevel(), col: ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length, pts: racePoints()
+    act: evolutionLevel(), col: achievementsGot(), pts: racePoints()
   };
 }
 const toB64url = str => btoa(String.fromCharCode(...new TextEncoder().encode(str))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -1582,7 +1576,7 @@ function whereSlide() {
   if (lc.cleared === LESSON_DEFS.length) return {art: "map", finished: true, title: W.finished.title, narr: W.finished.narr.map(x => fill(x, {total})), mentor: W.finished.mentor};
   const stg = STAGES[currentStageIdx()], nx = nextLessonIdx(), L = LESSON_DEFS[nx], day = today(), P = W.progress;
   const vars = {...stg, dist: fmtDist(distTraveled()), total, n: nx + 1, lesson: lessonTitle(L),
-    rival: L.race ? RIVALS[L.race].nm : "", done: [day.next, day.review, day.free].filter(Boolean).length};
+    rival: L.race ? RIVALS[L.race].nm : "", done: missionStepsDone(day)};
   return {art: "map", title: fill(P.title, vars), lesson: nx + 1,
     narr: [fill(P.distance, vars), fill(P.next, vars) + (L.race ? fill(P.race, vars) : ""), day.done ? P.missionDone : fill(P.mission, vars)],
     mentor: STORY[L.id]?.mentor || P.mentor};
@@ -1743,10 +1737,10 @@ const REVIEW_DAYS = [1, 3, 7];
 const daysAgo = ts => Math.round((new Date(dayKey(new Date())) - new Date(dayKey(new Date(ts)))) / 86400000);
 function reviewDue(L) {
   const p = progress()[L.id], n = p?.reviews || 0;
-  return lessonDone(L) && n < REVIEW_DAYS.length && daysAgo(p.cleared || p.last) >= REVIEW_DAYS[n];
+  return lessonDone(L.id) && n < REVIEW_DAYS.length && daysAgo(p.cleared || p.last) >= REVIEW_DAYS[n];
 }
 function pickReviewLesson(exclude) {
-  const pr = progress(), done = LESSON_DEFS.filter(L => lessonDone(L) && L.id !== exclude);
+  const pr = progress(), done = LESSON_DEFS.filter(L => lessonDone(L.id) && L.id !== exclude);
   if (!done.length) return null;
   const due = done.filter(reviewDue).sort((a, b) => (pr[a.id].cleared || pr[a.id].last) - (pr[b.id].cleared || pr[b.id].last));
   if (due.length) return due[0].id;
@@ -1766,6 +1760,9 @@ function today() {
   }
   return data.days[k];
 }
+const missionStepsDone = day => [day.next, day.review, day.free].filter(Boolean).length;
+// The last seven days, oldest first, ending today.
+const lastWeek = () => Array.from({length: 7}, (_, i) => { const dt = new Date(); dt.setDate(dt.getDate() - 6 + i); return dt; });
 function updateMission(m) {
   const day = today();
   day.ms += m.ms;
@@ -1787,9 +1784,7 @@ function weekHtml() {
   const names = t("weekdays");
   let n = 0;
   const dots = [];
-  for (let i = 6; i >= 0; i--) {
-    const dt = new Date();
-    dt.setDate(dt.getDate() - i);
+  for (const dt of lastWeek()) {
     const day = data.days[dayKey(dt)];
     if (day && day.ms > 0) n++;
     dots.push(`<span><i class="${day?.done ? "done" : day?.ms > 0 ? "part" : ""}"></i>${names[dt.getDay()]}</span>`);
@@ -1798,8 +1793,7 @@ function weekHtml() {
 }
 function missionHtml() {
   const day = today();
-  const idxOf = id => LESSON_DEFS.findIndex(L => L.id === id);
-  const label = id => { const i = idxOf(id); return {n: i + 1, title: lessonTitle(LESSON_DEFS[i])}; };
+  const label = id => { const i = lessonIndexOf(id); return {n: i + 1, title: lessonTitle(LESSON_DEFS[i])}; };
   // A numbered step with a play label, so the row reads as something to start, not a box to tick.
   const item = (n, ok, go, txt) => `<li><button data-go="${go}" class="${ok ? "ok" : ""}"><span class="mnum">${ok ? "✓" : n}</span><span class="mtxt">${esc(txt)}</span><span class="mgo">${esc(t(ok ? "mDone" : "mPlay"))}</span></button></li>`;
   return `<div class="card"><h2>${esc(t("missionTitle"))}</h2><ul class="mission">
@@ -1810,7 +1804,7 @@ function missionHtml() {
 }
 function startReview() {
   const id = today().reviewLesson;
-  const i = id ? LESSON_DEFS.findIndex(L => L.id === id) : Math.max(0, nextLessonIdx() - 1);
+  const i = id ? lessonIndexOf(id) : Math.max(0, nextLessonIdx() - 1);
   startRun("lesson", {lessonIdx: i});
 }
 
@@ -1859,15 +1853,14 @@ function rhythmGrade(gaps) {
 }
 const gradeOf = (v, cuts) => { const g = ["A", "B", "C", "D"].find((_, i) => v >= cuts[i]); return g || "E"; };
 // Highest evolution level whose lesson is cleared, 0 before the first one.
-const evolutionLevel = () => TH.evolution.levels.reduce((n, lv, i) => lessonDone(LESSON_DEFS[lessonIndexOf(lv.lesson)]) ? i + 1 : n, 0);
+const evolutionLevel = () => TH.evolution.levels.reduce((n, lv, i) => lessonDone(lv.lesson) ? i + 1 : n, 0);
 const evolutionName = n => `${TH.evolution.name} ${TH.evolution.levels[n - 1].label}`;
 function sheetStats() {
   const hist = data.history;
   const fast = hist.filter(h => h.acc >= 90).reduce((a, h) => Math.max(a, h.wpm), 0);
   const last = hist.slice(-10), acc = last.length ? Math.round(last.reduce((a, h) => a + h.acc, 0) / last.length) : 0;
   const cleared = Math.round(lessonCounts().cleared / LESSON_DEFS.length * 100);
-  let days = 0;
-  for (let i = 0; i < 7; i++) { const dt = new Date(); dt.setDate(dt.getDate() - i); if (data.days[dayKey(dt)]?.ms > 0) days++; }
+  const days = lastWeek().filter(dt => data.days[dayKey(dt)]?.ms > 0).length;
   const streak = data.bestStreak || 0;
   return [
     {nm: t("stPower"), g: gradeOf(streak, [200, 120, 60, 25]), v: t("stPowerV", {n: streak})},
@@ -1955,15 +1948,11 @@ function openMenu() {
       <button class="btn" data-m="home">${esc(t("tabHome"))}</button>
     </div>`;
   $("#banner").hidden = true;
-  $("#menu").hidden = false;
-  $("#typing-area").hidden = true;
-  $("#type-actions").hidden = true;
+  showPanel("menu");
 }
 function closeMenu() {
   run.menuOpen = false;
-  $("#menu").hidden = true;
-  $("#typing-area").hidden = false;
-  $("#type-actions").hidden = false;
+  showPanel("typing");
   setCursor();
   focusSink();
   if (run.pauseStart) showOverlay(true);
@@ -1984,21 +1973,18 @@ function openTip() {
   run.tipOpen = true;
   sink.blur();
   $("#focus-overlay").hidden = true;
-  $("#typing-area").hidden = true;
-  $("#type-actions").hidden = true;
-  $("#intro").hidden = false;
+  showPanel("intro");
   renderIntro();
 }
-const lessonIndexOf = id => LESSON_DEFS.findIndex(L => L.id === id);
 // Until the all-letters review is cleared, the free run sticks to letters from cleared lessons.
 function learnedLimit() {
   const r3 = lessonIndexOf("r3");
-  if (S.unlockAll || progress().r3?.stars >= 1) return null;
+  if (S.unlockAll || lessonDone("r3")) return null;
   let lim = 0;
-  LESSON_DEFS.forEach((L, i) => { if (i < r3 && progress()[L.id]?.stars >= 1) lim = Math.max(lim, i); });
+  LESSON_DEFS.forEach((L, i) => { if (i < r3 && lessonDone(L.id)) lim = Math.max(lim, i); });
   return lim;
 }
-const quotesUnlocked = () => S.unlockAll || progress().shift?.stars >= 1;
+const quotesUnlocked = () => S.unlockAll || lessonDone("shift");
 function renderFreeNote() {
   const lim = learnedLimit();
   $("#free-note").textContent = lim === null ? "" :

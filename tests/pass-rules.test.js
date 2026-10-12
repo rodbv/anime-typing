@@ -17,7 +17,7 @@ check(ev('runLabel()').includes('meta 8 PPM'), 'the run label should show the sp
 ev('activeMs = () => 600000; if (run.introOpen) closeIntro()');
 A.type(ev('run.text'));
 check(A.d.querySelector('#results h2').textContent.includes('8 PPM'), 'a slow run should fail with the speed message, got ' + A.d.querySelector('#results h2').textContent);
-check(!ev('lessonDone(LESSON_DEFS[0])'), 'a slow run should not clear the lesson');
+check(!ev('lessonDone(LESSON_DEFS[0].id)'), 'a slow run should not clear the lesson');
 
 // Spaced review: a lesson cleared yesterday is due once; after its review it waits until day 3.
 const B = boot(); B.ready();
