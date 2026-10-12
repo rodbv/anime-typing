@@ -6,10 +6,12 @@ const kb = () => A.vis('kb-wrap');
 const hint = () => d.getElementById('hint').textContent;
 const lit = () => d.querySelectorAll('#kb .key.next').length;
 const btn = () => d.getElementById('btn-kb').textContent;
+// The warm-up drill picks its key order at random, so the hint names the first key of this run.
+const firstKeyHint = () => hint().startsWith('Próxima: ' + ev('run.text[0]').toUpperCase());
 
 // New-key lesson: the keyboard shows in the warm-up and lights the next key.
 ev('startRun("lesson",{lessonIdx:2})'); ev('closeIntro()');
-check(kb() && hint().startsWith('Próxima: L') && lit() === 1 && btn() === 'Esconder teclado', 'the warm-up should show the keyboard and the next key');
+check(kb() && firstKeyHint() && lit() === 1 && btn() === 'Esconder teclado', 'the warm-up should show the keyboard and the next key');
 // Words part: right after a key the hint is empty, and it comes back after a pause.
 A.type(ev('run.text').slice(0, ev('run.bounds[0]')));
 check(kb() && hint() === '' && lit() === 0, 'right after a key the hint should be empty');
@@ -28,7 +30,7 @@ setTimeout(() => {
     ev('startRun("free")');
     check(!kb() && hint() === '', 'a free run should start with the keyboard hidden');
     ev('S.showKb=false; startRun("lesson",{lessonIdx:2})'); ev('closeIntro()');
-    check(!kb() && hint().startsWith('Próxima: L'), 'with the setting off, a new-key lesson should hide the keyboard and keep the hint');
+    check(!kb() && firstKeyHint(), 'with the setting off, a new-key lesson should hide the keyboard and keep the hint');
     console.log('ERRORS', A.errors);
     process.exit(0);
   }, 1600);
