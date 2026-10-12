@@ -586,7 +586,9 @@ function starRow(n) {
 }
 const lessonsInStage = si => LESSON_DEFS.filter(L => L.stage === si);
 const lessonDone = L => (progress()[L.id]?.stars || 0) >= 1;
-const fmtDist = n => Math.round(n).toLocaleString(locale()) + " " + TH.journey.unit;
+const fmtDist = n => Math.round(n).toLocaleString(locale()) + " " + (Math.round(n) === 1 && TH.journey.unitOne || TH.journey.unit);
+// Fills a stage template from the theme strings with the stage fields and its formatted distance.
+const stageText = (k, st) => t(k, {...st, dist: fmtDist(st.dist)});
 function distTraveled() {
   return STAGES.reduce((dist, st, si) => {
     const ls = lessonsInStage(si);
@@ -635,7 +637,7 @@ function lessonCard(L, i, nx) {
 function renderLessons() {
   const nx = nextLessonIdx();
   $("#lesson-grid").innerHTML = `<div class="card">${mapSvg()}<p class="sub" style="text-align:center;margin:4px 0 0">${esc(t("distOf", {a: fmtDist(distTraveled()), b: fmtDist(TOTAL_DIST)}))}</p></div>` +
-    STAGES.map((st, si) => `<h2 class="stage-h">${esc(st.lbl)}: ${esc(st.from)} → ${esc(st.to)} · ${fmtDist(st.dist)}</h2>
+    STAGES.map((st, si) => `<h2 class="stage-h">${esc(stageText("stageHead", st))}</h2>
       <div class="grid">${LESSON_DEFS.map((L, i) => L.stage === si ? lessonCard(L, i, nx) : "").join("")}</div>`).join("");
 }
 $("#lesson-grid").addEventListener("click", e => {
@@ -1296,7 +1298,7 @@ function lessonIntro(L) {
 const introSeen = new Set();
 function storyHtml(L) {
   const st = STORY[L.id] || {}, stage = STAGES[L.stage], rival = L.race ? RIVALS[L.race] : null;
-  return `<div class="stage-tag">${esc(stage.lbl)}: ${esc(stage.from)} → ${esc(stage.to)}</div>` +
+  return `<div class="stage-tag">${esc(stageText("stageTag", stage))}</div>` +
     (st.narr ? `<p class="narr">${esc(st.narr)}</p>` : "") +
     (st.mentor ? `<div class="bubble"><b>${esc(TH.mentor.name)}:</b> ${esc(st.mentor)}</div>` : "") +
     (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}${rival.no ? esc(t("runnerNo", {no: rival.no})) : ""}:</b> ${esc(rival.pre)}</div>` : "") +
@@ -1349,7 +1351,7 @@ function renderHome() {
     <div class="card hero">
       <div class="sub">${esc(t("racerTag", {n: TH.hero.number, name: prof.name || TH.hero.name}))}</div>
       <h1>${esc(stg.lbl)}: ${esc(stg.place)}</h1>
-      <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stg.from)} → ${esc(stg.to)} · ${esc(t("distOf", {a: fmtDist(distTraveled()), b: fmtDist(TOTAL_DIST)}))}</p>
+      <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stageText("stageRoute", stg))} · ${esc(t("distOf", {a: fmtDist(distTraveled()), b: fmtDist(TOTAL_DIST)}))}</p>
       <button class="btn primary" data-go="start">${esc(first ? t("homeStart") : t("homeContinue", {n: nx + 1}))} ${esc(t("enterHint"))}</button>
       <div class="chips" style="margin-top:14px">
         <span class="chip">${esc(t("rank"))}: <b style="font-size:14px">${esc(rankName(cur))}</b></span>
@@ -1479,7 +1481,7 @@ function whereSlide() {
   if (lc.cleared === 0) return {art: "map", ...W.start};
   if (lc.cleared === LESSON_DEFS.length) return {art: "map", finished: true, title: W.finished.title, narr: W.finished.narr.map(x => fill(x, {total})), mentor: W.finished.mentor};
   const stg = STAGES[currentStageIdx()], nx = nextLessonIdx(), L = LESSON_DEFS[nx], day = today(), P = W.progress;
-  const vars = {lbl: stg.lbl, place: stg.place, from: stg.from, to: stg.to, dist: fmtDist(distTraveled()), total, n: nx + 1, lesson: lessonTitle(L),
+  const vars = {...stg, dist: fmtDist(distTraveled()), total, n: nx + 1, lesson: lessonTitle(L),
     rival: L.race ? RIVALS[L.race].nm : "", done: [day.next, day.review, day.free].filter(Boolean).length};
   return {art: "map", title: fill(P.title, vars), lesson: nx + 1,
     narr: [fill(P.distance, vars), fill(P.next, vars) + (L.race ? fill(P.race, vars) : ""), day.done ? P.missionDone : fill(P.mission, vars)],
