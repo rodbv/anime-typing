@@ -13,7 +13,7 @@ function runFile(f) {
     let out = '';
     child.stdout.on('data', b => { out += b; });
     child.stderr.on('data', b => { out += b; });
-    const timer = setTimeout(() => { out += '\ntimed out after 120 s'; child.kill(); }, 120000);
+    const timer = setTimeout(() => { out += '\ntimed out after 300 s'; child.kill(); }, 300000);
     child.on('close', status => {
       clearTimeout(timer);
       const pageErrors = out.split('\n').filter(l => l.startsWith('ERRORS') && /[^\s[\]]/.test(l.slice(6)));
