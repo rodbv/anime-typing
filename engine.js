@@ -142,7 +142,8 @@ function withDefaults(th) {
   const tx = k => (T[th.lang] || T.pt)[k] ?? T.pt[k];
   const j = th.journey || {}, where = th.prologue?.where || {}, hero = {name: tx("defHero"), number: 1, icon: "⌨️", ...th.hero};
   return {
-    lang: "pt", rivals: {}, story: {}, achievements: [], ranks: DEFAULT_RANKS, ...th,
+    lang: "pt", story: {}, achievements: [], ranks: DEFAULT_RANKS, ...th,
+    rivals: Object.fromEntries(Object.entries(th.rivals || {}).map(([id, r]) => [id, {floor: 0, pre: "", win: "", lose: "", ...r}])),
     storeKey: th.storeKey || "typedojo:" + th.id,
     look: {logo: ["TYPE", "DOJO"], deco: "", ...th.look, colors: {...th.look?.colors}},
     hero: {short: hero.name, ...hero},
@@ -326,6 +327,17 @@ STAGES.forEach((st, si) => {
     const last = LESSON_DEFS.find(L => L.id === st.lessons?.[st.lessons.length - 1]);
     if (last) last.race = st.rival;
   }
+});
+// Content that later screens read is checked here, so a theme mistake shows on this list instead of breaking a screen.
+const lessonIds = new Set(LESSON_DEFS.map(L => L.id));
+if (TH.quotes.filter(q => q[0].length < 60).length < 3) themeProblems.push("quotes: a lição de frases precisa de pelo menos 3 frases com menos de 60 caracteres");
+TH.evolution.levels.forEach(lv => { if (!lessonIds.has(lv.lesson)) themeProblems.push(`evolution: a lição "${lv.lesson}" não existe`); });
+Object.entries(RIVALS).forEach(([id, r]) => { if (!r.nm) themeProblems.push(`rival "${id}": falta o nome (nm)`); });
+TH.achievements.forEach(a => {
+  const w = a.when || {};
+  if (!CONDITIONS[w.type]) themeProblems.push(`conquista "${a.id}": o tipo "${w.type}" não existe`);
+  if (w.lesson !== undefined && !lessonIds.has(w.lesson)) themeProblems.push(`conquista "${a.id}": a lição "${w.lesson}" não existe`);
+  if (w.type === "stageCleared" && !(Number.isInteger(w.stage) && w.stage >= 0 && w.stage < STAGES.length)) themeProblems.push(`conquista "${a.id}": a etapa ${w.stage} não existe`);
 });
 LESSON_DEFS.forEach((L, i) => {
   if (L.stage === undefined) themeProblems.push(`a lição "${L.id}" não está em nenhuma etapa`);
