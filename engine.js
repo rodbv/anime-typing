@@ -615,6 +615,7 @@ function finish() {
     }
     if (run.race) {
       const place = racePlace(m.ms);
+      run.won = run.passed && !run.preview && place === 1;
       if (run.passed && !run.preview) progress()[L.id].place = Math.min(progress()[L.id].place || 9, place);
       extra += raceResultHtml(place, m.ms);
     }
@@ -678,6 +679,7 @@ function finish() {
   r.classList.toggle("cliffhanger", !!cliffhanger);
   r.innerHTML = `
     ${cliffhanger ? `<div class="tbc"><span>${esc(FX.failBanner)}</span></div>` : ""}
+    ${(run.won || courseDone) && FX.winArt.length ? victoryHtml() : ""}
     ${mission.justDone ? `<div class="done-box">🔥 <b>${esc(t("missionDoneTitle"))}</b> ${esc(t("missionDoneText", {name: data.profile.name || TH.hero.short}))}</div>` : ""}
     <h2 class="rt">${esc(title)} ${record ? `<span class="flair">${esc(t("flair"))} ${esc(t("newRecord"))}</span>` : ""}</h2>
     ${mission.breakNow ? `<p class="tipline">⏸️ ${esc(t("breakMsg"))}</p>` : ""}
@@ -723,6 +725,9 @@ function floatFx(kind, text, x, y, delay = 0) {
   while (layer.childElementCount >= 24) layer.firstChild.remove();
   layer.appendChild(el);
 }
+// The heroes strike a pose over the theme's marks after a won race or the last lesson.
+const victoryHtml = () => `<div class="victory" data-marks="${esc(FX.marks.join(""))}">${FX.winArt.map((src, i) =>
+  `<img src="${esc(src)}" alt="" style="animation-delay:${i * 160}ms">`).join("")}</div>`;
 function streakFx() {
   const s = run.streak;
   if (s && s % FX.rushEvery === 0) sound("burst");

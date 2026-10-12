@@ -36,5 +36,14 @@ J.playLesson(2);
 check(!J.d.querySelector('#results .tbc') && !J.d.getElementById('results').classList.contains('cliffhanger'), 'a cleared lesson should not show the banner');
 failLesson(R);
 check(!R.d.querySelector('#results .tbc'), 'a theme without failBanner should not show it');
+// Winning a race shows the theme's victory art; a lesson without a race does not.
+const art = A => [...A.d.querySelectorAll('#results .victory img')].map(i => i.getAttribute('src'));
+J.playLesson(2);
+check(art(J).length === 0, 'a lesson without a race should not show the victory art');
+// The ghost follows the recent speed, so an empty history keeps it at its floor.
+J.ev('data.history = []'); J.playLesson(5);
+check(J.ev('run.won') && art(J).join() === 'themes/jojo/johnny.webp,themes/jojo/gyro.webp', 'a won race should show the victory art, got ' + art(J));
+R.playLesson(1);
+check(R.ev('run.won') && art(R).length === 0, 'a theme without winArt should not show it');
 console.log('ERRORS', J.errors, R.errors);
 process.exit(0);

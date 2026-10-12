@@ -29,7 +29,11 @@
     "marksAt": 12,
     "rush": "ORA",
     "rushEvery": 25,
-    "failBanner": "To Be Continued"
+    "failBanner": "To Be Continued",
+    "winArt": [
+      "themes/jojo/johnny.webp",
+      "themes/jojo/gyro.webp"
+    ]
   },
   "strings": {
     "subtitle": "A corrida de digitação de San Diego a Nova York",
