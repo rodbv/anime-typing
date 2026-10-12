@@ -495,15 +495,16 @@ function bumpKey(base, ok) {
   const s = ks[base] || (ks[base] = {h: 0, m: 0});
   if (ok) s.h++; else s.m++;
 }
-// Typing this word in capitals during a lesson fails it at once, to try the defeat screen.
-const FAIL_CHEAT = "DERROTA";
+// Typing one of these words in capitals during a lesson ends it at once, to try the result screens; the run saves nothing.
+const CHEATS = {DERROTA: "fail", VITORIA: "win"};
 function typeChar(ch) {
   if (!run || run.done || run.introOpen || run.menuOpen || view !== "type") return;
   if (!run.started) run.started = Date.now();
   resume();
   run.lastKey = Date.now();
-  run.typed = ((run.typed || "") + ch).slice(-FAIL_CHEAT.length);
-  if (run.mode === "lesson" && run.typed === FAIL_CHEAT) { run.forceFail = true; finish(); return; }
+  run.typed = ((run.typed || "") + ch).slice(-7);
+  const cheat = run.mode === "lesson" && Object.keys(CHEATS).find(w => run.typed.endsWith(w));
+  if (cheat) { run.cheat = CHEATS[cheat]; finish(); return; }
   const exp = run.text[run.pos];
   const st = strokes(exp, true);
   const base = (st && kb.map[st[0].c]?.base) || exp.toLowerCase();
@@ -606,23 +607,24 @@ function finish() {
   $("#focus-overlay").hidden = true;
   const m = metrics();
   let title, record = false, extra = "";
+  const saves = !run.preview && !run.cheat;
   run.passed = false;
   if (run.mode === "lesson") {
     const L = LESSON_DEFS[run.lessonIdx];
-    const st = run.forceFail ? 0 : starsFor(m.wpm, m.acc, run.lessonIdx);
+    const st = {fail: 0, win: 3}[run.cheat] ?? starsFor(m.wpm, m.acc, run.lessonIdx);
     const prev = progress()[L.id];
     run.wasNew = !lessonDone(L.id);
-    record = !run.preview && !!prev && st >= 1 && m.wpm > prev.wpm;
+    record = saves && !!prev && st >= 1 && m.wpm > prev.wpm;
     run.passed = st >= 1;
-    if (!run.preview) {
+    if (saves) {
       const due = run.passed && !run.wasNew && reviewDue(L);
       progress()[L.id] = {...prev, stars: Math.max(st, prev?.stars || 0), wpm: Math.max(m.wpm, prev?.wpm || 0), acc: Math.max(m.acc, prev?.acc || 0), last: Date.now(),
         cleared: prev?.cleared || (run.passed ? Date.now() : undefined), reviews: (prev?.reviews || 0) + (due ? 1 : 0)};
     }
     if (run.race) {
-      const place = racePlace(m.ms);
+      const place = run.cheat === "win" ? 1 : racePlace(m.ms);
       run.won = run.passed && !run.preview && place === 1;
-      if (run.passed && !run.preview) progress()[L.id].place = Math.min(progress()[L.id].place || 9, place);
+      if (run.passed && saves) progress()[L.id].place = Math.min(progress()[L.id].place || 9, place);
       extra += raceResultHtml(place, m.ms);
     }
     title = run.preview ? t("previewDone") : run.passed ? t("cleared")
@@ -636,9 +638,9 @@ function finish() {
     const [cur, nxt] = rankFor(bestOverall());
     extra = `<p>${esc(t("rank"))}: <b>${esc(rankName(cur))}</b>${nxt ? " · " + esc(t("nextRank", {r: rankName(nxt), n: nxt[0]})) : ""}</p>`;
   }
-  const mission = updateMission(m);
+  const mission = saves ? updateMission(m) : {};
   let fresh = [];
-  if (!run.preview) {
+  if (saves) {
     data.bestStreak = Math.max(data.bestStreak || 0, run.bestStreak);
     data.totals.runs++;
     data.totals.chars += run.pos;

@@ -38,6 +38,12 @@ check(J.ev('clipTurns.fail') === 1 && J.ev('clipSets.fail[0].src').endsWith('the
 J.ev('startRun("lesson",{lessonIdx:2})'); J.ev('if (run.introOpen) closeIntro()');
 typeClean(J, 3); [...'DERROTA'].forEach(ch => J.type(ch));
 check(J.ev('run.done') && !J.ev('run.passed') && J.d.querySelector('#results .frozen img'), 'typing DERROTA should fail the lesson');
+// Typing VITORIA wins a race at once, and neither word saves the run.
+J.ev('startRun("lesson",{lessonIdx:5})'); J.ev('if (run.introOpen) closeIntro()');
+const saved = J.saved();
+[...'VITORIA'].forEach(ch => J.type(ch));
+check(J.ev('run.passed && run.won') && J.d.querySelector('#results .victory img'), 'typing VITORIA should win the race');
+check(J.saved() === saved, 'a cheat should not save the run');
 J.playLesson(2);
 check(!J.d.querySelector('#results .tbc') && !J.d.getElementById('results').classList.contains('cliffhanger'), 'a cleared lesson should not show the banner');
 failLesson(R);
