@@ -29,7 +29,7 @@ function withDefaults(th) {
     rivals: Object.fromEntries(Object.entries(th.rivals || {}).map(([id, r]) => [id, {floor: 0, pre: "", win: "", lose: "", ...r}])),
     storeKey: th.storeKey || "typedojo:" + th.id,
     look: {logo: ["TYPE", "DOJO"], deco: "", ...th.look, colors: {...th.look?.colors}},
-    fx: {marks: [], marksAt: 12, rush: "", rushEvery: 25, failBanner: "", winArt: [], rushSound: "", ...th.fx},
+    fx: {marks: [], marksAt: 12, rush: "", rushEvery: 25, failBanner: "", winArt: [], rushSounds: [], ...th.fx},
     hero: {short: hero.name, ...hero},
     mentor: {name: tx("defMentor"), ...th.mentor},
     words: {names: "", terms: "", ...th.words},

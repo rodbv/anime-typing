@@ -14,6 +14,8 @@ A.type('\u0001');
 check(asked().join() === 'miss', 'a miss should ask for its sound');
 typeClean(26);
 check(asked().includes('burst') && ev('clips.join()') === 'themes/jojo/ora.mp3', '25 hits in a row should play the theme\'s ORA clip, got ' + ev('clips.join()'));
+typeClean(25);
+check(ev('clips.join()') === 'themes/jojo/ora.mp3,themes/jojo/chumimi.mp3', 'the next burst should play the next clip in the list, got ' + ev('clips.join()'));
 typeClean(ev('run.text.length - run.pos'));
 check(asked().pop() === 'clear', 'a cleared lesson should end with the clear sound');
 
