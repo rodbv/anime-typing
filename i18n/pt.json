@@ -174,6 +174,7 @@
   "exit": "Sair",
   "pausedOverlay": "Pausado. Clique aqui e aperte uma tecla para continuar.",
   "progressLabel": "Progresso",
+  "speedLabel": "Velocidade",
   "backToTyping": "Voltar a digitar (Enter)",
   "freeLimited": "Por enquanto, a corrida livre usa só as teclas que você já sabe: {k}. Todas as letras liberam depois da lição {n}.",
   "quotesLocked": "As frases liberam depois da lição {n} (Maiúsculas com Shift). Até lá, você pode ver uma prévia.",

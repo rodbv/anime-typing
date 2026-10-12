@@ -390,7 +390,7 @@ function renderRun() {
   $("#focus-overlay").hidden = true;
   $(".type-top .chips").hidden = run.mode === "lesson";
   $("#chip-acc").hidden = run.mode === "free";
-  $("#m-acc-wrap").hidden = run.mode !== "lesson";
+  $("#m-goals").hidden = run.mode !== "lesson";
   if (run.mode === "lesson") $("#m-acc-goal").style.left = accBarPct(passAcc(LESSON_DEFS[run.lessonIdx])) + "%";
   $("#hint").classList.remove("insist");
   $("#kb").classList.remove("insist");
@@ -463,6 +463,10 @@ function metrics() {
 }
 // The accuracy bar spans 50% to 100%.
 const accBarPct = acc => Math.max(0, (acc - 50) * 2);
+// The speed bar spans 0 to twice the lesson's goal, so the goal sits in the middle.
+const wpmBarPct = (wpm, goal) => Math.min(100, wpm / goal * 50);
+// Speed over the first few keys swings too much to call it slow.
+const SPEED_SETTLED = 10;
 function updateChips() {
   const m = metrics();
   $("#s-wpm").textContent = m.wpm;
@@ -474,7 +478,13 @@ function updateChips() {
   $("#m-prog-txt").textContent = run.mode === "free" ? `${secs} s` : `${Math.round(prog * 100)}%`;
   $("#m-acc").style.width = accBarPct(m.acc) + "%";
   $("#m-acc-txt").textContent = m.acc + "%";
-  if (run.mode === "lesson") $("#m-acc-bar").classList.toggle("low", m.acc < passAcc(LESSON_DEFS[run.lessonIdx]));
+  if (run.mode === "lesson") {
+    const goal = passWpm(run.lessonIdx);
+    $("#m-acc-bar").classList.toggle("low", m.acc < passAcc(LESSON_DEFS[run.lessonIdx]));
+    $("#m-wpm").style.width = wpmBarPct(m.wpm, goal) + "%";
+    $("#m-wpm-txt").textContent = `${m.wpm} / ${goal} ${t("wpm")}`;
+    $("#m-wpm-bar").classList.toggle("low", run.pos >= SPEED_SETTLED && m.wpm < goal);
+  }
   updateGhost();
 }
 function bumpKey(base, ok) {
