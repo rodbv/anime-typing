@@ -23,24 +23,24 @@ check(!bad.length, 'lesson text problems: ' + [...new Set(bad)].slice(0, 12).joi
 ev("S.layout='intl'");
 for (const i of [0, 4, 13]) console.log(`L${i + 1}:`, ev(`lessonParts(${i})`).join(' | '));
 
-// Up to the top-row review, stars depend on accuracy only; later they also ask for speed. A race asks for 93%.
+// Up to the top-row review, stars depend on accuracy only; later they also ask for speed. A race asks for 92%.
 check(JSON.stringify(ev('[starsFor(10,90,2), starsFor(10,95,2), starsFor(10,98,2)]')) === '[1,2,3]', 'lesson 3 stars should follow accuracy');
 check(JSON.stringify(ev('[starsFor(12,98,15), starsFor(16,95,15), starsFor(22,97,15)]')) === '[1,2,3]', 'lesson 16 stars should follow accuracy and speed');
-check(ev('starsFor(30,92,1)') === 0 && ev('starsFor(30,93,1)') === 1, 'a race should pass at 93% and fail at 92%');
+check(ev('starsFor(30,91,1)') === 0 && ev('starsFor(30,92,1)') === 1, 'a race should pass at 92% and fail at 91%');
 
 // A toast marks the end of each part.
 ev('startRun("lesson",{lessonIdx:2})'); ev('closeIntro()');
 A.type(ev('run.text').slice(0, ev('run.bounds[0]')));
 check(A.vis('toast') && d.getElementById('toast').textContent.startsWith('Trecho 1 de 3'), 'a toast should mark the end of part 1');
 
-// A race with misses below 93% fails with the accuracy message.
+// A race with misses below 92% fails with the accuracy message.
 A.playLesson(1, 0);
 check(d.querySelector('#results h2').textContent.includes('concluída'), 'a clean race should clear the lesson');
 ev('startRun("lesson",{lessonIdx:1})');
 const text = ev('run.text');
-for (let i = 0; i < 12; i++) { A.type('\u0001'); A.type(text[ev('run.pos')]); A.type(text.slice(ev('run.pos'), ev('run.pos') + 4)); }
+for (let i = 0; i < 16; i++) { A.type('\u0001'); A.type(text[ev('run.pos')]); A.type(text.slice(ev('run.pos'), ev('run.pos') + 4)); }
 A.type(text.slice(ev('run.pos')));
 console.log('race with misses:', ev('metrics().acc') + '%');
-check(ev('metrics().acc') < 93 && d.querySelector('#results h2').textContent.includes('93%'), 'a race below 93% should fail with the accuracy message');
+check(ev('metrics().acc') < 92 && d.querySelector('#results h2').textContent.includes('92%'), 'a race below 92% should fail with the accuracy message');
 console.log('ERRORS', A.errors);
 process.exit(0);

@@ -884,7 +884,7 @@
 </div>
 <h2 class="stage-h">Etapa 1: San Diego → Igreja Santa Maria Novella · 15 km</h2>
 <div class="grid">
-<button class="lesson" data-i="0" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
+<button class="lesson" data-i="0" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 92%)">
 <span class="n">Lição 1</span>
 <div class="keys">
 <span class="cap">F</span>
@@ -895,7 +895,7 @@
 <span class="sub"> · 12 PPM</span>
 </span>
 </button>
-<button class="lesson" data-i="1" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
+<button class="lesson" data-i="1" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 92%)">
 <span class="n">Lição 2</span>
 <div class="keys">
 <span class="cap">D</span>
@@ -911,7 +911,7 @@
 </div>
 <h2 class="stage-h">Etapa 2: Igreja Santa Maria Novella → Monument Valley · 1.200 km</h2>
 <div class="grid">
-<button class="lesson" data-i="2" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
+<button class="lesson" data-i="2" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 92%)">
 <span class="n">Lição 3</span>
 <div class="keys">
 <span class="cap">S</span>
@@ -923,7 +923,7 @@
 <span class="sub"> · 12 PPM</span>
 </span>
 </button>
-<button class="lesson" data-i="3" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
+<button class="lesson" data-i="3" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 92%)">
 <span class="n">Lição 4</span>
 <div class="keys">
 <span class="cap">A</span>
@@ -936,7 +936,7 @@
 <span class="sub"> · 11 PPM</span>
 </span>
 </button>
-<button class="lesson" data-i="4" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
+<button class="lesson" data-i="4" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 92%)">
 <span class="n">Lição 5</span>
 <div class="keys">
 <span class="cap">G</span>
@@ -947,7 +947,7 @@
 <span class="sub"> · 14 PPM</span>
 </span>
 </button>
-<button class="lesson" data-i="5" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
+<button class="lesson" data-i="5" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 92%)">
 <span class="n">Lição 6</span>
 <div class="title">Revisão: linha base</div>
 <span class="race-tag">🏁 Diego Brando</span>
@@ -961,7 +961,7 @@
 </div>
 <h2 class="stage-h">Etapa 3: Monument Valley → Cañon City · 510 km</h2>
 <div class="grid">
-<button class="lesson" data-i="6" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
+<button class="lesson" data-i="6" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 92%)">
 <span class="n">Lição 7</span>
 <div class="keys">
 <span class="cap">E</span>
@@ -974,7 +974,7 @@
 <span class="sub"> · 13 PPM</span>
 </span>
 </button>
-<button class="lesson next" data-i="7" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)">
+<button class="lesson next" data-i="7" title="Para passar: 90% de precisão e a velocidade da lição (nas corridas, 92%)">
 <span class="n">Lição 8</span>
 <div class="keys">
 <span class="cap">R</span>
@@ -2025,7 +2025,7 @@ fff jjjj fff jjj fff jfj ffff jjj jjj fff jjjj fff fjf fff jjj fjf fff jfj fff j
 <b>Gyro:</b> O médio fica no D e no K. Depois de cada golpe, o dedo volta para casa.</div>
 <div class="bubble rival">
 <b>Sandman (nº C-990):</b> Eu corro a pé. Mesmo assim, chego antes de você.</div>
-<p class="sub">🏁 Corrida contra Sandman: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Sandman: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Teclas novas: D K</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>
@@ -3087,7 +3087,7 @@ jjh jhj fgf hjh fgf hjh hjh jjh ffg gfg jhj jhj hjh algas gala galas algas sagas
 <b>Gyro:</b> A linha base inteira de uma vez. Respire, Johnny. Galope constante.</div>
 <div class="bubble rival">
 <b>Diego Brando (nº 001):</b> Um paraplégico e um carrasco. Vocês não chegam ao Monument Valley.</div>
-<p class="sub">🏁 Corrida contra Diego Brando: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Diego Brando: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Revisão: linha base</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>
@@ -3622,7 +3622,7 @@ ede dde ede kki ded kki deed ede ede iki ede ded ela delas de essa elas de esse 
 <b>Gyro:</b> O indicador sobe até o R e o U, e volta para o F e o J.</div>
 <div class="bubble rival">
 <b>Hot Pants (nº 191):</b> Com o Cream Starter eu fecho qualquer ferida. E qualquer atalho também.</div>
-<p class="sub">🏁 Corrida contra Hot Pants: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Hot Pants: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Teclas novas: R U</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>
@@ -4428,7 +4428,7 @@ jjm jmj njn jmj jjn jnj jnnj njn jmj njn mjm mjm norisuke medo nosso grande mont
 <b>Gyro:</b> O C é do médio esquerdo e a vírgula é do médio direito. Ritmo vence pressa.</div>
 <div class="bubble rival">
 <b>Norisuke Higashikata:</b> Eu e o Hono vamos no nosso ritmo.</div>
-<p class="sub">🏁 Corrida contra Norisuke Higashikata: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Norisuke Higashikata: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Teclas novas: C ,</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>
@@ -4967,7 +4967,7 @@ ddc kk, kk, dccd kk, ddc kk, ddc ddc kk, kk, dccd rancho cachorro como, cadeira,
 <b>Gyro:</b> A linha de cima inteira. Não olhe para as mãos, olhe para a trilha.</div>
 <div class="bubble rival">
 <b>Pocoloco (nº A-777):</b> Eu sou um sortudo em cinco bilhões!</div>
-<p class="sub">🏁 Corrida contra Pocoloco: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Pocoloco: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Revisão: linha de cima, N e M</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>
@@ -5498,7 +5498,7 @@ jhj jhj gfg hjh frf aaq fggf rfr frf qaq rfr ffg norisuke guardanapo porta salas
 <b>Gyro:</b> Chapéu no E (ê), crase no A (à) e o Ç. Mesmo jeito: primeiro o sinal, depois a letra.</div>
 <div class="bubble rival">
 <b>Gyro Zeppeli (nº B-636):</b> Nyo-ho! Hoje a Valkyrie não espera você, Johnny.</div>
-<p class="sub">🏁 Corrida contra Gyro Zeppeli: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Gyro Zeppeli: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Acentos: ^, ` e Ç</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>
@@ -6300,7 +6300,7 @@ ll. ll. xsx ll. xsx ll. xsx ll. sxs ll. sxs ll. ll. lixo luxo caixa. peixe caixa
 <b>Gyro:</b> As letras raras: Z com o mindinho, W com o anelar e Y com o indicador direito. Quase lá, Johnny.</div>
 <div class="bubble rival">
 <b>Diego Brando (nº 001):</b> Com o Scary Monsters, eu vejo a corrida de cima.</div>
-<p class="sub">🏁 Corrida contra Diego Brando: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Diego Brando: o fantasma corre a 19 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Teclas novas: Z W Y</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>
@@ -6574,7 +6574,7 @@ zaz jyj ssw jjy swws ssw yjy aza zaz azza wsw jyj lucy cowboy zeppeli dez treze 
 <b>Gyro:</b> Todas as letras. Respire e mantenha o galope.</div>
 <div class="bubble rival">
 <b>Funny Valentine:</b> Neste mundo, cada erro seu vira uma cópia que trabalha para mim.</div>
-<p class="sub">🏁 Corrida contra Funny Valentine: o fantasma corre a 20 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Funny Valentine: o fantasma corre a 20 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Revisão: todas as letras</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>
@@ -7110,7 +7110,7 @@ Bbb Ppp Ggg Yyy Eee Xxx Qqq Rrr Ttt Eee Aaa Hhh Ttt Joestar Selo Salada Folha Tr
 <b>Gyro:</b> Frases inteiras, com pontuação. Esta é a reta final.</div>
 <div class="bubble rival">
 <b>Diego de outro mundo:</b> Eu vim de outro mundo para terminar esta corrida.</div>
-<p class="sub">🏁 Corrida contra Diego de outro mundo: o fantasma corre a 20 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.</p>
+<p class="sub">🏁 Corrida contra Diego de outro mundo: o fantasma corre a 20 PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 92% de precisão.</p>
 <h2 class="rt" style="margin-top:16px">Frases com pontuação</h2>
 <svg class="hands" viewBox="-6 -6 608 298" role="img">
 <defs>

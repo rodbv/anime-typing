@@ -71,7 +71,7 @@ function drill(letters, focus) {
 const VOWELS = "aeiou";
 const PART_LEN = 48;
 const homeOf = k => { const rc = keyGeometry().pos[k]; return rc ? HOME[S.layout][rc.f] : k; };
-const passAcc = L => L.race ? 93 : 90;
+const passAcc = L => L.race ? 92 : 90;
 // A slow pass usually means the player looked at the keys, so each part of the course asks for a minimum speed.
 const passWpm = idx => idx < 6 ? 8 : idx < 13 ? 10 : 12;
 // Warm-up drill: the finger leaves its home key, presses the new key and comes back ("fgf", "jhhj").

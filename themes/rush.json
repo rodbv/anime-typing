@@ -28,7 +28,7 @@
     "quoteIntro": "Digite versos do Rush, em inglês. Maiúsculas e pontuação contam.",
     "freeLimited": "Por enquanto, o treino livre usa só as teclas que você já sabe: {k}. Todas as letras liberam depois da lição {n}.",
     "lessonTip": "Cada lição é um disco. Termine as lições para avançar na discografia.",
-    "passRule": "Para passar: 90% de precisão e a velocidade da lição (nos duelos, 93%)",
+    "passRule": "Para passar: {acc}% de precisão e a velocidade da lição (nos duelos, {raceAcc}%)",
     "homeStart": "Primeiro disco: lição 1",
     "homeContinue": "Continuar a discografia: lição {n}",
     "racerTag": "Starman nº {n} · {name}",
@@ -45,7 +45,7 @@
       "Tente não olhar para o teclado. Olhe para a tela."
     ],
     "partDone": "Faixa {n} de 3 · +{dist}",
-    "raceRule": "Duelo contra {nm}: o fantasma toca a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
+    "raceRule": "Duelo contra {nm}: o fantasma toca a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de {acc}% de precisão.",
     "mNext": "Próximo disco: lição {n} ({title})",
     "sheetTitle": "Ficha do músico",
     "stPower": "Força",

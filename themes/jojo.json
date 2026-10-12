@@ -44,7 +44,7 @@
       "Tente não olhar para o teclado. Olhe para a trilha."
     ],
     "partDone": "Trecho {n} de 3 · +{dist}",
-    "raceRule": "Corrida contra {nm}: o fantasma corre a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
+    "raceRule": "Corrida contra {nm}: o fantasma corre a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de {acc}% de precisão.",
     "mNext": "Próximo trecho: lição {n} ({title})",
     "sheetTitle": "Ficha do Stand",
     "stPower": "Poder",

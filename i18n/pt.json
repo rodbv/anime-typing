@@ -10,7 +10,7 @@
   "tabStats": "Progresso",
   "lessonTip": "Deixe os dedos na linha base: F e J têm um relevo para você achar sem olhar. Olhe para a tela, não para as mãos.",
   "lesson": "Lição",
-  "passRule": "Para passar: 90% de precisão e a velocidade da lição (nas corridas, 93%)",
+  "passRule": "Para passar: {acc}% de precisão e a velocidade da lição (nas corridas, {raceAcc}%)",
   "preview": "Prévia",
   "lockedTip": "Bloqueada: clique para ver uma prévia. A prévia não conta para o progresso.",
   "previewDone": "Fim da prévia. Esta rodada não conta para o progresso.",
@@ -273,7 +273,7 @@
     "Tente não olhar para o teclado. Olhe para a tela."
   ],
   "partDone": "Parte {n} de 3 · +{dist}",
-  "raceRule": "Corrida contra {nm}: o fantasma digita a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
+  "raceRule": "Corrida contra {nm}: o fantasma digita a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de {acc}% de precisão.",
   "mNext": "Próxima lição: {n} ({title})",
   "sheetTitle": "Ficha",
   "stPower": "Força",

@@ -302,7 +302,7 @@ function lessonCard(L, i, nx) {
   const best = p ? ` · ${p.wpm} ${t("wpm")}` : "";
   const race = L.race ? `<span class="race-tag">🏁 ${esc(RIVALS[L.race].nm)}</span>` : "";
   const foot = locked ? `<span class="sub">${esc(t("preview"))}</span>` : `<span>${starRow(p?.stars || 0)}<span class="sub">${best}</span></span>`;
-  return `<button class="lesson${locked ? " locked" : ""}${i === nx && !locked ? " next" : ""}" data-i="${i}" title="${esc(locked ? t("lockedTip") : t("passRule"))}">
+  return `<button class="lesson${locked ? " locked" : ""}${i === nx && !locked ? " next" : ""}" data-i="${i}" title="${esc(locked ? t("lockedTip") : t("passRule", {acc: passAcc({}), raceAcc: passAcc({race: true})}))}">
     <span class="n">${t("lesson")} ${i + 1}${locked ? " 🔒" : ""}</span>${keys}${race}${foot}</button>`;
 }
 function renderLessons() {
@@ -391,6 +391,7 @@ function renderRun() {
   $(".type-top .chips").hidden = run.mode === "lesson";
   $("#chip-acc").hidden = run.mode === "free";
   $("#m-acc-wrap").hidden = run.mode !== "lesson";
+  if (run.mode === "lesson") $("#m-acc-goal").style.left = accBarPct(passAcc(LESSON_DEFS[run.lessonIdx])) + "%";
   $("#hint").classList.remove("insist");
   $("#kb").classList.remove("insist");
   $("#m-ghost").hidden = !run.race;
@@ -460,6 +461,8 @@ function metrics() {
     rhythm: rhythmGrade(run.gaps)
   };
 }
+// The accuracy bar spans 50% to 100%.
+const accBarPct = acc => Math.max(0, (acc - 50) * 2);
 function updateChips() {
   const m = metrics();
   $("#s-wpm").textContent = m.wpm;
@@ -469,10 +472,9 @@ function updateChips() {
   const prog = run.mode === "free" ? Math.min(1, m.ms / (run.limit * 1000)) : run.pos / run.text.length;
   $("#m-prog").style.width = (prog * 100).toFixed(1) + "%";
   $("#m-prog-txt").textContent = run.mode === "free" ? `${secs} s` : `${Math.round(prog * 100)}%`;
-  // The accuracy bar spans 50% to 100%, so the 90% goal sits at 80% of its width.
-  $("#m-acc").style.width = Math.max(0, (m.acc - 50) * 2) + "%";
+  $("#m-acc").style.width = accBarPct(m.acc) + "%";
   $("#m-acc-txt").textContent = m.acc + "%";
-  $("#m-acc-bar").classList.toggle("low", m.acc < 90);
+  if (run.mode === "lesson") $("#m-acc-bar").classList.toggle("low", m.acc < passAcc(LESSON_DEFS[run.lessonIdx]));
   updateGhost();
 }
 function bumpKey(base, ok) {
@@ -978,7 +980,7 @@ function storyHtml(L) {
     (st.narr ? `<p class="narr">${esc(st.narr)}</p>` : "") +
     (st.mentor ? `<div class="bubble"><b>${esc(TH.mentor.name)}:</b> ${esc(st.mentor)}</div>` : "") +
     (rival ? `<div class="bubble rival"><b>${esc(rival.nm)}${rival.no ? esc(t("runnerNo", {no: rival.no})) : ""}:</b> ${esc(rival.pre)}</div>` : "") +
-    (rival && run && run.race ? `<p class="sub">🏁 ${esc(t("raceRule", {nm: rival.nm, wpm: run.race.wpm}))}</p>` : "");
+    (rival && run && run.race ? `<p class="sub">🏁 ${esc(t("raceRule", {nm: rival.nm, wpm: run.race.wpm, acc: passAcc(L)}))}</p>` : "");
 }
 function renderIntro() {
   const I = run.intro;

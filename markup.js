@@ -75,7 +75,7 @@ document.body.insertAdjacentHTML("afterbegin", `
       <div class="meter"><i id="m-prog"></i><span class="ghostmark" id="m-ghost" hidden></span></div>
       <div id="m-acc-wrap">
         <div class="meter-label"><span data-i18n="accuracy"></span><span id="m-acc-txt"></span></div>
-        <div class="meter acc" id="m-acc-bar"><i id="m-acc"></i><span class="goal" style="left:80%"></span></div>
+        <div class="meter acc" id="m-acc-bar"><i id="m-acc"></i><span class="goal" id="m-acc-goal"></span></div>
       </div>
     </div>
     <div class="banner" id="banner" hidden><span id="banner-msg"></span>

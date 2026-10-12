@@ -133,7 +133,7 @@ Três chaves de `strings` montam os textos de uma etapa. Elas aceitam qualquer c
 
 ## Textos
 
-Os textos comuns da interface e os textos padrão de um tema ficam em `i18n/pt.json` e `i18n/en.json`. A interface usa a primeira língua do navegador que tenha textos em `i18n/`; em qualquer outra língua, ela fica em português. Os textos de `strings` do tema valem em todas as línguas. Uma chave que um tema define em `strings` precisa existir em `i18n/pt.json`, para que outro tema possa deixá-la de fora; o teste de temas confere isso.
+Os textos comuns da interface e os textos padrão de um tema ficam em `i18n/pt.json` e `i18n/en.json`. A interface usa a primeira língua do navegador que tenha textos em `i18n/`; em qualquer outra língua, ela fica em português. Os textos de `strings` do tema valem em todas as línguas. Os textos `passRule` e `raceRule` recebem a precisão exigida pelo engine em `{acc}` e, no `passRule`, a das corridas em `{raceAcc}`; o tema não escreve esses números. Uma chave que um tema define em `strings` precisa existir em `i18n/pt.json`, para que outro tema possa deixá-la de fora; o teste de temas confere isso.
 
 ## Testes
 

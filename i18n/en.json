@@ -10,7 +10,7 @@
   "tabStats": "Progress",
   "lessonTip": "Keep your fingers on the home row: F and J have a bump so you can find them without looking. Look at the screen, not at your hands.",
   "lesson": "Lesson",
-  "passRule": "To pass: 90% accuracy and the lesson's speed (93% in races)",
+  "passRule": "To pass: {acc}% accuracy and the lesson's speed ({raceAcc}% in races)",
   "preview": "Preview",
   "lockedTip": "Locked: click to preview it. A preview does not count toward progress.",
   "previewDone": "Preview finished. This run does not count toward progress.",
@@ -273,7 +273,7 @@
     "Try not to look at the keyboard. Look at the screen."
   ],
   "partDone": "Part {n} of 3 · +{dist}",
-  "raceRule": "Race against {nm}: the ghost types at {wpm} WPM, marked by a line above the letter. Finish before it. To pass, you need 93% accuracy.",
+  "raceRule": "Race against {nm}: the ghost types at {wpm} WPM, marked by a line above the letter. Finish before it. To pass, you need {acc}% accuracy.",
   "mNext": "Next lesson: {n} ({title})",
   "sheetTitle": "Profile",
   "stPower": "Power",
