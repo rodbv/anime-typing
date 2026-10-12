@@ -1,21 +1,34 @@
+// The on-screen keyboard shows in new-key lessons; elsewhere the hint waits for a pause, and the player can toggle it.
 const {boot} = require('./harness');
+const check = (ok, msg) => { if (!ok) throw new Error(msg); };
 const A = boot(); const {d, ev} = A; A.ready();
-const state = () => `kb=${A.vis('kb-wrap')} hint="${d.getElementById('hint').textContent.slice(0, 30)}" lit=${d.querySelectorAll('#kb .key.next').length}`;
+const kb = () => A.vis('kb-wrap');
+const hint = () => d.getElementById('hint').textContent;
+const lit = () => d.querySelectorAll('#kb .key.next').length;
+const btn = () => d.getElementById('btn-kb').textContent;
+
+// New-key lesson: the keyboard shows in the warm-up and lights the next key.
 ev('startRun("lesson",{lessonIdx:2})'); ev('closeIntro()');
-console.log('new-key lesson, warm-up:', state(), '| btn:', d.getElementById('btn-kb').textContent);
+check(kb() && hint().startsWith('Próxima: L') && lit() === 1 && btn() === 'Esconder teclado', 'the warm-up should show the keyboard and the next key');
+// Words part: right after a key the hint is empty, and it comes back after a pause.
 A.type(ev('run.text').slice(0, ev('run.bounds[0]')));
-console.log('words part, right after a key:', state());
+check(kb() && hint() === '' && lit() === 0, 'right after a key the hint should be empty');
 setTimeout(() => {
-  console.log('words part, after 1.3 s:', state());
-  A.type('\u0001'); console.log('after a mistake:', state());
-  // review lesson: keyboard hidden, hint after 1.5 s
+  check(hint().startsWith('Próxima:') && lit() === 1, 'after a pause the hint should come back');
+  A.type('\u0001');
+  check(hint().startsWith('Próxima:') && lit() === 1, 'after a mistake the hint should show');
+
+  // Review lesson: the keyboard is hidden, and the hint waits 1.5 s.
   ev('startRun("lesson",{lessonIdx:5})'); ev('closeIntro()');
-  console.log('review start:', state(), '| btn:', d.getElementById('btn-kb').textContent);
+  check(!kb() && hint() === '' && btn() === 'Mostrar teclado', 'a review should start with the keyboard hidden');
   setTimeout(() => {
-    console.log('review after 1.6 s:', state());
-    d.getElementById('btn-kb').click(); console.log('after Mostrar teclado:', state(), '| btn:', d.getElementById('btn-kb').textContent);
-    ev('startRun("free")'); console.log('free run start:', state());
-    ev('S.showKb=false; startRun("lesson",{lessonIdx:2})'); ev('closeIntro()'); console.log('setting off, new-key lesson:', state());
+    check(!kb() && hint().startsWith('Próxima:') && lit() === 1, 'a review should show the hint after a pause');
+    d.getElementById('btn-kb').click();
+    check(kb() && btn() === 'Esconder teclado', 'the button should show the keyboard');
+    ev('startRun("free")');
+    check(!kb() && hint() === '', 'a free run should start with the keyboard hidden');
+    ev('S.showKb=false; startRun("lesson",{lessonIdx:2})'); ev('closeIntro()');
+    check(!kb() && hint().startsWith('Próxima: L'), 'with the setting off, a new-key lesson should hide the keyboard and keep the hint');
     console.log('ERRORS', A.errors);
     process.exit(0);
   }, 1600);

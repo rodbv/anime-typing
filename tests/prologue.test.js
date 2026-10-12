@@ -1,31 +1,51 @@
+// The opening story: keys move between slides, the last slide shows where the player is, and its buttons go to the right place.
 const {boot} = require('./harness');
+const check = (ok, msg) => { if (!ok) throw new Error(msg); };
 const A = boot(); const {d, ev} = A;
 const title = X => X.d.querySelector('#prologue h1')?.textContent;
 const nextBtn = X => X.d.querySelector('[data-pro=next]').textContent;
 const body = X => [...X.d.querySelectorAll('#prologue .card > p')].map(p => p.textContent).join(' | ');
-console.log('first run view:', ev('view'), '| tabs hidden:', d.getElementById('tabs').hidden, '| title:', title(A));
-A.key('Enter'); console.log('Enter ->', title(A));
-A.key('ArrowRight'); console.log('ArrowRight ->', title(A), '| hands art:', !!d.querySelector('#prologue .pro-art svg.hands'));
-A.key('ArrowLeft'); console.log('ArrowLeft ->', title(A));
-A.key('Escape'); console.log('Esc jumps to last:', title(A), '| map:', !!d.querySelector('#prologue .pro-art svg'), '| button:', nextBtn(A), '| skip shown:', !!d.querySelector('[data-pro=skip]'));
-A.key('Enter'); console.log('first run after last -> view:', ev('view'));
-// returning player mid-race: prologue opens on every load, last slide shows the position
+
+// First visit: Enter and the arrows move between slides, and Esc jumps to the last one.
+check(ev('view') === 'prologue' && d.getElementById('tabs').hidden, 'a first visit should open the story without tabs');
+const first = title(A);
+A.key('Enter'); const second = title(A);
+check(second !== first, 'Enter should go to the next slide');
+A.key('ArrowRight');
+check(d.querySelector('#prologue .pro-art svg.hands'), 'the third slide should draw the hands');
+A.key('ArrowLeft');
+check(title(A) === second, 'ArrowLeft should go back one slide');
+A.key('Escape');
+check(title(A) === 'Na largada' && nextBtn(A).startsWith('Fazer a inscrição') && !d.querySelector('[data-pro=skip]'), 'Esc should jump to the start position slide');
+A.key('Enter');
+check(ev('view') === 'setup', 'Enter on the last slide of a first visit should open the setup');
+
+// A returning player in the middle of the course sees the story again; the last slide shows the position.
 A.ready(); A.playLesson(0); A.playLesson(1); A.playLesson(2);
 const B = boot(A.saved());
-console.log('reload view:', B.ev('view'), '| title:', title(B));
+check(B.ev('view') === 'prologue' && title(B) === first, 'a reload without a hash should open the story');
 B.d.querySelector('[data-pro=skip]').click();
 console.log('last slide:', title(B), '|', body(B));
-console.log('buttons:', nextBtn(B), '/', B.d.querySelector('[data-pro=home]')?.textContent);
-B.key('Enter'); console.log('Enter starts lesson:', B.ev('view'), B.ev('run.lessonIdx'), B.ev('LESSON_DEFS[run.lessonIdx].id'));
-// race lesson mention
+check(title(B) === 'Etapa 2: Deserto do Arizona' && body(B).includes('Próxima lição: 4'), 'the last slide should show the stage and the next lesson');
+check(nextBtn(B).includes('lição 4') && B.d.querySelector('[data-pro=home]'), 'the last slide should offer lesson 4 and home');
+B.key('Enter');
+check(B.ev('view') === 'type' && B.ev('LESSON_DEFS[run.lessonIdx].id') === 'a', 'Enter should start lesson 4');
+
+// Before a race, the last slide names the rival; its home button goes home.
 const C = boot(A.saved());
 C.ev('S.unlockAll=false; LESSON_DEFS.slice(0,5).forEach(L => progress()[L.id] = {stars:1,wpm:20,acc:95,last:1}); save()');
-C.ev('prologueAt = PROLOGUE.length; renderPrologue()'); console.log('before race:', body(C).split(' | ')[1]);
-C.d.querySelector('[data-pro=home]').click(); console.log('home button ->', C.ev('view'));
-// finished race
+C.ev('prologueAt = PROLOGUE.length; renderPrologue()');
+check(body(C).includes('corrida contra Diego Brando'), 'the slide before a race should name the rival');
+C.d.querySelector('[data-pro=home]').click();
+check(C.ev('view') === 'home', 'the home button should go home');
+
+// After the course, the last slide shows the finish, and Enter goes home.
 C.ev('LESSON_DEFS.forEach(L => progress()[L.id] = {stars:1,wpm:20,acc:95,last:1}); showView("prologue"); prologueAt = PROLOGUE.length; renderPrologue()');
-console.log('finished:', title(C), '|', nextBtn(C)); C.key('Enter'); console.log('finished Enter ->', C.ev('view'));
-// replay from Ficha
-C.ev('showView("stats")'); C.d.getElementById('btn-prologue').click(); console.log('replay:', C.ev('view'), title(C));
+check(title(C) === 'Trinity Church, Nova York' && nextBtn(C).startsWith('Ir para o início'), 'the finished slide should offer home');
+C.key('Enter');
+check(C.ev('view') === 'home', 'Enter on the finished slide should go home');
+// The profile can replay the story from the first slide.
+C.ev('showView("stats")'); C.d.getElementById('btn-prologue').click();
+check(C.ev('view') === 'prologue' && title(C) === first, 'replaying the story should start at the first slide');
 console.log('ERRORS', A.errors, B.errors, C.errors);
 process.exit(0);

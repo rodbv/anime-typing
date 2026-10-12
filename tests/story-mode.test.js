@@ -27,7 +27,7 @@ for (const layout of ['intl', 'abnt', 'us']) {
     if (layout === 'intl' && [0, 2, 13, 17, 20].includes(i)) console.log(`  L${i + 1}`, d.querySelector('#intro .stage-tag').textContent, '|', (d.querySelector('#intro .bubble')?.textContent || '').slice(0, 70), '|', txt.slice(0, 60));
   }
 }
-console.log('problems:', bad.length ? bad : 'none');
+if (bad.length) throw new Error('lesson problems: ' + bad.join('; '));
 ev("S.layout='abnt'");
 // lessons view
 ev('showView("lessons")');

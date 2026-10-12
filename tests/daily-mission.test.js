@@ -1,29 +1,37 @@
+// The daily mission: next lesson, review and free run, the mission-done screen, the review pick and the break tip.
 const {boot} = require('./harness');
+const check = (ok, msg) => { if (!ok) throw new Error(msg); };
 const A = boot(); const {d, ev} = A; A.ready();
-console.log('home mission:', [...d.querySelectorAll('#home .mission button')].map(b => b.textContent.trim()).join(' / '));
-console.log('week dots:', d.querySelectorAll('#home .week i').length, '|', d.querySelector('#home .week span:last-child').textContent);
-// task 1: next lesson
+const tasks = () => JSON.stringify(ev('(({next,review,free,done})=>({next,review,free,done}))(today())'));
+
+check(d.querySelectorAll('#home .mission button').length === 3, 'the home screen should list three mission tasks');
+check(d.querySelectorAll('#home .week i').length === 7, 'the week strip should show seven days');
 A.playLesson(0);
-console.log('after L1:', JSON.stringify(ev('(({next,review,free,done})=>({next,review,free,done}))(today())')));
-// task 2 with no review lesson picked on day 1: any lesson after the next one
+check(tasks() === '{"next":true,"review":false,"free":false,"done":false}', 'the first lesson should count as the next lesson, got ' + tasks());
+// With no review lesson picked on day 1, any lesson after the next one counts as the review.
 A.playLesson(0);
-console.log('after replay L1:', JSON.stringify(ev('(({next,review,free,done})=>({next,review,free,done}))(today())')));
-// task 3: free run, closes the mission with the mission done box
+check(tasks() === '{"next":true,"review":true,"free":false,"done":false}', 'a replay should count as the review on day 1, got ' + tasks());
+
+// The free run closes the mission with the mission-done box.
 ev('S.time=30; startRun("free")'); A.type(ev('run.text').slice(0, 10)); ev('run.started -= 31000; run.lastKey = Date.now()');
 setTimeout(() => {
-  console.log('free done:', ev('run.done'), '| mission done box:', d.querySelector('#results .done-box')?.textContent.slice(0, 80));
-  console.log('buttons:', [...d.querySelectorAll('#results [data-act]')].map(b => b.dataset.act + ':' + b.textContent).join(' | '));
-  console.log('nyoho unlocked:', !!ev('data.unlocked.nyoho'));
-  A.key('Enter'); console.log('Enter goes home:', ev('view'), '| home says done:', !!d.querySelector('#home .mission + p'));
-  // next day: review lesson chosen by worst key
-  ev('data.keys.intl = {d:{h:20,m:8}, f:{h:40,m:1}}; progress().dk = {stars:1,wpm:10,acc:95,last:1}; delete data.days[dayKey(new Date())]');
-  console.log('review lesson by worst key D:', ev('today().reviewLesson'), '| next:', ev('today().nextLesson'));
-  // break reminder after 20 min
+  check(ev('run.done'), 'the free run should end after its time');
+  check(d.querySelector('#results .done-box'), 'the mission-done box should show');
+  const acts = [...d.querySelectorAll('#results [data-act]')].map(b => b.dataset.act);
+  check(acts[0] === 'home' && acts.includes('back'), 'the mission-done result should offer home first and keep back, got ' + acts);
+  check(ev('data.unlocked.nyoho'), 'the first mission should unlock its achievement');
+  A.key('Enter');
+  check(ev('view') === 'home' && d.querySelector('#home .mission + p'), 'Enter should go home, which says the mission is done');
+
+  // The next day, the review lesson is the one with the key that has the most misses.
+  ev('data.keys.intl = {d:{h:20,m:8}, f:{h:40,m:1}}; progress().dk = {stars:1,wpm:10,acc:95,last:Date.now(),cleared:Date.now()}; delete data.days[dayKey(new Date())]');
+  check(ev('today().reviewLesson') === 'dk' && ev('today().nextLesson') === 'sl', 'the review should follow the worst key, D');
+  // After 20 minutes in a day, the result suggests a break.
   ev('today().ms = 20*60000');
   A.playLesson(2);
-  console.log('break tip:', d.querySelector('#results .tipline')?.textContent);
+  check(d.querySelector('#results .tipline')?.textContent.includes('20 minutos'), 'the result should suggest a break after 20 minutes');
   ev('showView("home")'); d.querySelector('#home [data-go=review]').click();
-  console.log('review button starts lesson:', ev('run.lessonIdx'), ev('LESSON_DEFS[run.lessonIdx].id'));
+  check(ev('LESSON_DEFS[run.lessonIdx].id') === 'dk', 'the review task should start the review lesson');
   console.log('ERRORS', A.errors);
   process.exit(0);
 }, 300);
