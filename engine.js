@@ -289,6 +289,11 @@ STAGES.forEach((st, si) => (st.lessons || []).forEach(id => {
   if (!L) themeProblems.push(`etapa ${si + 1}: a lição "${id}" não existe`);
   else L.stage = si;
 }));
+const VIEW = TH.journey.view ?? "line";
+if (!["line", "snake", "map"].includes(VIEW)) themeProblems.push(`journey.view "${VIEW}" não existe: use "line", "snake" ou "map"`);
+if (VIEW === "map") [TH.journey.start, ...STAGES].forEach((st, i) => {
+  if (!Array.isArray(st.pt)) themeProblems.push(`${i ? `etapa ${i}` : "journey.start"}: falta a posição no mapa (pt)`);
+});
 STAGES.forEach((st, si) => {
   if (!st.rival) return;
   if (!RIVALS[st.rival]) themeProblems.push(`etapa ${si + 1}: o rival "${st.rival}" não existe`);
@@ -599,8 +604,20 @@ function currentStageIdx() {
   const i = STAGES.findIndex((st, si) => lessonsInStage(si).some(L => !lessonDone(L)));
   return i === -1 ? STAGES.length - 1 : i;
 }
+// The start and the stages go along the rows, left to right, and every other row runs back.
+function rowPoints(n, rows) {
+  const sizes = Array.from({length: rows}, (_, r) => Math.floor(n / rows) + (r < n % rows ? 1 : 0));
+  return sizes.flatMap((size, r) => Array.from({length: size}, (_, c) => {
+    const x = size === 1 ? 320 : 60 + c * 520 / (size - 1);
+    return [Math.round((r % 2 ? 640 - x : x) * 10) / 10, 145 + (r - (rows - 1) / 2) * 75];
+  }));
+}
+function journeyPoints() {
+  if (VIEW === "map") return [TH.journey.start.pt, ...STAGES.map(st => st.pt)];
+  return rowPoints(STAGES.length + 1, VIEW === "snake" ? 3 : 1);
+}
 function mapSvg() {
-  const pts = [TH.journey.start.pt, ...STAGES.map(st => st.pt)];
+  const pts = journeyPoints();
   const si = STAGES.findIndex((st, i) => lessonsInStage(i).some(L => !lessonDone(L)));
   let pos, done;
   if (si === -1) { pos = pts[pts.length - 1]; done = pts; }
@@ -614,14 +631,15 @@ function mapSvg() {
   const places = [TH.journey.start, ...STAGES];
   const dots = places.map((pl, i) => {
     const reached = i === 0 || stageCleared(i - 1);
-    return `<circle cx="${pl.pt[0]}" cy="${pl.pt[1]}" r="5" style="fill:${reached ? "var(--accent)" : "var(--panel2)"};stroke:var(--accent)"/>` +
-      (pl.label ? `<text x="${pl.pt[0]}" y="${pl.pt[1] + pl.dy}" text-anchor="middle" style="fill:var(--muted);font:600 11px system-ui,sans-serif">${esc(pl.label)}</text>` : "");
+    const [x, y] = pts[i];
+    return `<circle cx="${x}" cy="${y}" r="5" style="fill:${reached ? "var(--accent)" : "var(--panel2)"};stroke:var(--accent)"/>` +
+      (pl.label ? `<text x="${x}" y="${y + (pl.dy ?? 20)}" text-anchor="middle" style="fill:var(--muted);font:600 11px system-ui,sans-serif">${esc(pl.label)}</text>` : "");
   }).join("");
   return `<svg class="map" viewBox="20 30 600 230" role="img" aria-label="${esc(t("mapLabel"))}">
     <polyline points="${line(pts)}" style="fill:none;stroke:var(--line);stroke-width:3;stroke-dasharray:6 6"/>
     <polyline points="${line(done)}" style="fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round"/>
     ${dots}
-    <g transform="translate(${pos[0].toFixed(1)},${(pos[1] - 6).toFixed(1)}) scale(-1,1)"><text text-anchor="middle" style="font-size:26px">${TH.journey.marker}</text></g>
+    <g transform="translate(${pos[0].toFixed(1)},${(pos[1] - 6).toFixed(1)})${VIEW === "map" ? " scale(-1,1)" : ""}"><text text-anchor="middle" style="font-size:26px">${TH.journey.marker}</text></g>
   </svg>`;
 }
 function lessonCard(L, i, nx) {

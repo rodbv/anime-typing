@@ -153,6 +153,7 @@
     ]
   ],
   "journey": {
+    "view": "map",
     "unit": "km",
     "marker": "🐎",
     "start": {
