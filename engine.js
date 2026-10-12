@@ -598,7 +598,8 @@ function syncSegs() {
     b.classList.toggle("on", b.dataset.view === active);
   });
 }
-function showView(v) {
+function showView(v, {replace = false, fromHistory = false} = {}) {
+  const prev = view;
   view = v;
   document.querySelectorAll(".view").forEach(s => { s.hidden = s.id !== "v-" + v; });
   $("#tabs").hidden = v === "setup" || v === "prologue";
@@ -612,7 +613,28 @@ function showView(v) {
   if (v === "stats") renderStats();
   if (v === "collection") renderCollection();
   syncSegs();
+  if (!fromHistory) route(v, prev, replace);
 }
+
+/* ---------- routes ---------- */
+// Each screen has its own #hash, so the browser Back button moves between screens and a reload stays on the screen.
+const ROUTES = ["home", "lessons", "free", "quotes", "collection", "stats", "prologue", "setup", "type"];
+function route(v, prev, replace) {
+  if (!ROUTES.includes(v) || location.hash === "#" + v) return;
+  // Leaving a lesson for the screen it started from steps back, so Back afterwards does not land on the finished lesson.
+  if (prev === "type" && history.state?.from === v) { history.back(); return; }
+  const state = {view: v, from: prev};
+  if (replace || prev === "type") history.replaceState(state, "", "#" + v);
+  else history.pushState(state, "", "#" + v);
+}
+window.addEventListener("popstate", () => {
+  const v = location.hash.slice(1);
+  if (!ROUTES.includes(v) || v === view) return;
+  closeShare();
+  if (v === "type" && !run) { showView("home", {replace: true}); return; }
+  if (v !== "type") run = null;
+  showView(v, {fromHistory: true});
+});
 
 /* ---------- lessons view ---------- */
 function starRow(n) {
@@ -1586,7 +1608,7 @@ function renderPrologue() {
 function endPrologue() {
   const P = whereSlide();
   prologueAt = 0;
-  if (!S.setupDone) showView("setup");
+  if (!S.setupDone) showView("setup", {replace: true});
   else if (P.lesson) startNext();
   else goHome();
 }
@@ -1645,7 +1667,7 @@ function finishSetup() {
   if (!setup.layout) { setup.needLayout = true; renderSetup(); return; }
   S.setupDone = true;
   save();
-  showView("home");
+  showView("home", {replace: true});
 }
 function handleSetupKey(e) {
   if (e.target && e.target.tagName === "INPUT") {
@@ -1974,8 +1996,9 @@ window.addEventListener("pagehide", save);
 applyTheme();
 applyI18n();
 const params = new URLSearchParams(location.search);
+const startView = location.hash.slice(1);
 if (params.get("card")) showCard(params.get("card"));
 else {
-  showView("prologue");
+  showView(S.setupDone && ROUTES.includes(startView) && !["type", "setup"].includes(startView) ? startView : "prologue", {replace: true});
   if (params.has("qr")) openShare();
 }
