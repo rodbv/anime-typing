@@ -27,7 +27,7 @@ Com isso o jogo funciona: a jornada aparece como uma linha reta, as etapas se ch
 2. Copie `index.html` para `<nome>.html`. Troque o `<title>`, as og:meta e o `data-theme` do loader:
 
    ```
-   <script src="loader.js?v=7" data-i18n="i18n/pt.json i18n/en.json" data-theme="themes/<nome>.json"></script>
+   <script src="loader.js?v=8" data-i18n="i18n/pt.json i18n/en.json" data-theme="themes/<nome>.json"></script>
    ```
 
 3. Acrescente o tema em `themes.json`, com `id`, o `name` que aparece no seletor de tema e a `page`. O seletor no topo da página mostra todos os temas dessa lista.
