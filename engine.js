@@ -15,7 +15,7 @@ const sanitize = (str, accents) => sanitizeFor(S.layout, str, accents);
 /* ---------- storage ---------- */
 const STORE_KEY = TH.storeKey;
 const DEFAULTS = {
-  settings: {layout: "intl", lang: "pt", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
+  settings: {layout: "intl", lang: TH.lang, showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
   best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: [],
   profile: {name: ""}, days: {}, bestStreak: 0

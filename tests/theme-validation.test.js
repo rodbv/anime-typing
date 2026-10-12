@@ -25,5 +25,8 @@ const text = problems(th => {
 });
 expect(text, ['pelo menos 3 frases', 'evolution: a lição "zz" não existe', 'rival "sandman": falta o nome',
   'a etapa 42 não existe', 'o tipo "flying" não existe', 'a lição "qq" não existe']);
+// An English theme lists its problems in English.
+expect(problems(th => { th.lang = 'en'; th.journey.stages[0].lessons = ['fj', 'nope']; }),
+  ['The theme has problems', 'stage 1: the lesson "nope" does not exist', 'the lesson "dk" is in no stage']);
 console.log('ERRORS', []);
 process.exit(0);
