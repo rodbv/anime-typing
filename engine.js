@@ -121,17 +121,30 @@ let S = data.settings;
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) { /* storage unavailable */ } }
 
 /* ---------- lessons ---------- */
+// The course in order. type picks the title, text and tip from LESSON_TYPES. milestone names what clearing the lesson changes:
+// speedCounts (lesson speeds count toward the best speed from here on), lastAccuracyStars (the last lesson whose stars
+// ignore speed), accents (free runs use accents), allLetters (free runs use every letter) and quotes (opens the quotes mode).
 const LESSON_DEFS = [
-  {id: "fj", k: "fj"}, {id: "dk", k: "dk"},
-  {id: "sl", k: "sl"}, {id: "a", k: {intl: "a;", us: "a;", abnt: "aç"}}, {id: "gh", k: "gh"}, {id: "r1", review: "home"},
-  {id: "ei", k: "ei"}, {id: "ru", k: "ru"},
-  {id: "to", k: "to"}, {id: "nm", k: "nm"}, {id: "c,", k: "c,"},
-  {id: "qp", k: "qp"}, {id: "r2", review: "mid"},
-  {id: "acc1", accents: 1}, {id: "acc2", accents: 2},
-  {id: "vb", k: "vb"}, {id: "x.", k: "x."}, {id: "zwy", k: "zwy"},
-  {id: "r3", review: "all"},
-  {id: "shift", shift: true}, {id: "quotes", quotes: true}
+  {id: "fj", type: "keys", k: "fj"}, {id: "dk", type: "keys", k: "dk"},
+  {id: "sl", type: "keys", k: "sl"}, {id: "a", type: "keys", k: {intl: "a;", us: "a;", abnt: "aç"}}, {id: "gh", type: "keys", k: "gh"},
+  {id: "r1", type: "review", review: "home", milestone: "speedCounts"},
+  {id: "ei", type: "keys", k: "ei"}, {id: "ru", type: "keys", k: "ru"},
+  {id: "to", type: "keys", k: "to"}, {id: "nm", type: "keys", k: "nm"}, {id: "c,", type: "keys", k: "c,"},
+  {id: "qp", type: "keys", k: "qp"}, {id: "r2", type: "review", review: "mid", milestone: "lastAccuracyStars"},
+  {id: "acc1", type: "accents", level: 1}, {id: "acc2", type: "accents", level: 2, milestone: "accents"},
+  {id: "vb", type: "keys", k: "vb"}, {id: "x.", type: "keys", k: "x."}, {id: "zwy", type: "keys", k: "zwy"},
+  {id: "r3", type: "review", review: "all", milestone: "allLetters"},
+  {id: "shift", type: "shift", milestone: "quotes"}, {id: "quotes", type: "quotes"}
 ];
+// What each type of lesson shows and types. newKeys marks the types that teach keys, which get the keyboard and quick hints.
+const LESSON_TYPES = {
+  keys: {newKeys: true, title: L => [...lessonKeys(L)].map(c => c.toUpperCase()).join(" "), parts: (L, idx) => keysParts(L, idx), intro: L => keysIntro(L)},
+  review: {newKeys: false, title: L => t("rv_" + L.review), parts: (L, idx) => mixedParts(idx), intro: L => ({title: lessonTitle(L), bullets: tipList("in_rv"), hi: [], reach: []})},
+  accents: {newKeys: true, title: L => t(L.level === 1 ? "acc1Lesson" : "acc2Lesson"), parts: (L, idx) => accentParts(L, idx), intro: L => accentIntro(L)},
+  shift: {newKeys: true, title: () => t("shiftLesson"), parts: (L, idx) => shiftParts(idx), intro: () => shiftIntro()},
+  quotes: {newKeys: false, title: () => t("quotesLesson"), parts: () => quoteParts(), intro: () => quoteIntro()}
+};
+const milestoneIdx = name => LESSON_DEFS.findIndex(L => L.milestone === name);
 // The theme groups the course into stages in course order; a stage's rival races its last lesson.
 const themeProblems = [];
 if (!TH.id) themeProblems.push("o tema precisa de um id");
@@ -174,13 +187,7 @@ if (themeProblems.length) {
   throw new Error("theme problems: " + themeProblems.join("; "));
 }
 const lessonKeys = L => !L.k ? "" : (typeof L.k === "string" ? L.k : L.k[S.layout]);
-function lessonTitle(L) {
-  if (L.k) return [...lessonKeys(L)].map(c => c.toUpperCase()).join(" ");
-  if (L.review) return t("rv_" + L.review);
-  if (L.shift) return t("shiftLesson");
-  if (L.accents) return t(L.accents === 1 ? "acc1Lesson" : "acc2Lesson");
-  return t("quotesLesson");
-}
+const lessonTitle = L => LESSON_TYPES[L.type].title(L);
 function allowedUpTo(idx) {
   const s = new Set();
   for (let i = 0; i <= idx; i++) for (const c of lessonKeys(LESSON_DEFS[i])) s.add(c);
@@ -189,6 +196,7 @@ function allowedUpTo(idx) {
 const progress = () => data.lessons[S.layout];
 const lessonDone = id => (progress()[id]?.stars || 0) >= 1;
 const lessonIndexOf = id => LESSON_DEFS.findIndex(L => L.id === id);
+const milestoneDone = name => lessonDone(LESSON_DEFS[milestoneIdx(name)].id);
 const isUnlocked = i => S.unlockAll || i === 0 || lessonDone(LESSON_DEFS[i - 1].id);
 function nextLessonIdx() {
   for (let i = 0; i < LESSON_DEFS.length; i++) {
@@ -201,7 +209,7 @@ function nextLessonIdx() {
 function starsFor(wpm, acc, idx) {
   const L = LESSON_DEFS[idx];
   if (acc < passAcc(L) || wpm < passWpm(idx)) return 0;
-  if (idx <= lessonIndexOf("r2")) return acc >= 98 ? 3 : acc >= 95 ? 2 : 1;
+  if (idx <= milestoneIdx("lastAccuracyStars")) return acc >= 98 ? 3 : acc >= 95 ? 2 : 1;
   if (acc >= 97 && wpm >= 20) return 3;
   if (acc >= 94 && wpm >= 15) return 2;
   return 1;
@@ -226,7 +234,7 @@ const homeOf = k => { const rc = keyGeometry().pos[k]; return rc ? HOME[S.layout
 const passAcc = L => L.race ? 93 : 90;
 // A slow pass usually means the player looked at the keys, so each part of the course asks for a minimum speed.
 const passWpm = idx => idx < 6 ? 8 : idx < 13 ? 10 : 12;
-const accentsOn = () => S.layout !== "us" && (S.accents || lessonDone("acc2"));
+const accentsOn = () => S.layout !== "us" && (S.accents || milestoneDone("accents"));
 
 // Warm-up drill: the finger leaves its home key, presses the new key and comes back ("fgf", "jhhj").
 function anchorPart(focus) {
@@ -272,57 +280,64 @@ function wordPart(themedList, commonList, used, fallback, opts = {}) {
   }
   return out.join(" ");
 }
-function lessonParts(idx) {
-  const L = LESSON_DEFS[idx];
-  if (L.quotes) {
-    return TH.quotes.filter(q => q[0].length < 60).sort(() => Math.random() - 0.5).slice(0, 3).map(q => sanitize(q[0], S.layout !== "us"));
-  }
+const lessonParts = idx => { const L = LESSON_DEFS[idx]; return LESSON_TYPES[L.type].parts(L, idx); };
+const lower = a => a.map(w => w.toLowerCase());
+// The letters and punctuation the course has taught up to a lesson, and the theme and common words made only of them.
+function courseWords(idx) {
   const allowed = allowedUpTo(idx);
   const letters = [...allowed].filter(isLetter);
   const puncts = [...allowed].filter(c => !isLetter(c));
   const {themed, common} = wordPools(false);
   const fits = w => [...w.toLowerCase()].every(c => allowed.has(c));
-  const used = {};
-  const T1 = themed.filter(fits), C1 = common.filter(fits);
-  const lower = a => a.map(w => w.toLowerCase());
   const syl = focus => () => sylWord(letters, focus) || anchorPart(focus.length ? focus : letters).split(" ")[0];
-
-  if (L.accents && S.layout !== "us") {
-    const baseFits = w => [...w.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()].every(c => allowed.has(c) || c === "c");
-    const pool = uniq([...ACCENT_WORDS, ...COMMON.pt.split(" "), ...TH.words.terms.split(" ")])
-      .filter(w => /[^\x00-\x7f]/.test(w) && sanitize(w, true) === w.normalize("NFC") && baseFits(w));
-    const second = w => /[âêôàç]/i.test(w);
-    const mine = pool.filter(w => L.accents === 1 ? !second(w) : second(w));
-    const marks = (L.accents === 1 ? ["á", "é", "í", "ó", "ú", "ã", "õ", "ão", "ãe"] : ["â", "ê", "ô", "à", "ça", "ço", "çu"]).filter(m => sanitize(m, true) === m);
-    const warm = [];
-    while (warm.join(" ").length < PART_LEN) warm.push(pick(marks));
-    const known = L.accents === 1 ? mine : pool;
-    return [
-      warm.join(" "),
-      wordPart([], mine, used, () => pick(marks)),
-      wordPart([], [...known, ...lower(C1)], used, syl([]))
-    ];
+  return {allowed, letters, puncts, T1: themed.filter(fits), C1: common.filter(fits), used: {}, syl};
+}
+const quoteParts = () => TH.quotes.filter(q => q[0].length < 60).sort(() => Math.random() - 0.5).slice(0, 3).map(q => sanitize(q[0], S.layout !== "us"));
+// Without accents on the layout, an accents lesson is a mixed review.
+function accentParts(L, idx) {
+  if (S.layout === "us") return mixedParts(idx);
+  const {allowed, C1, used, syl} = courseWords(idx);
+  const baseFits = w => [...w.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()].every(c => allowed.has(c) || c === "c");
+  const pool = uniq([...ACCENT_WORDS, ...COMMON.pt.split(" "), ...TH.words.terms.split(" ")])
+    .filter(w => /[^\x00-\x7f]/.test(w) && sanitize(w, true) === w.normalize("NFC") && baseFits(w));
+  const second = w => /[âêôàç]/i.test(w);
+  const mine = pool.filter(w => L.level === 1 ? !second(w) : second(w));
+  const marks = (L.level === 1 ? ["á", "é", "í", "ó", "ú", "ã", "õ", "ão", "ãe"] : ["â", "ê", "ô", "à", "ça", "ço", "çu"]).filter(m => sanitize(m, true) === m);
+  const warm = [];
+  while (warm.join(" ").length < PART_LEN) warm.push(pick(marks));
+  const known = L.level === 1 ? mine : pool;
+  return [
+    warm.join(" "),
+    wordPart([], mine, used, () => pick(marks)),
+    wordPart([], [...known, ...lower(C1)], used, syl([]))
+  ];
+}
+function shiftParts(idx) {
+  const {letters, T1, C1, used, syl} = courseWords(idx);
+  const names = T1.filter(w => w[0] !== w[0].toLowerCase());
+  const warm = [];
+  while (warm.join(" ").length < PART_LEN) { const k = pick(letters.filter(c => c !== "ç")); warm.push(k.toUpperCase() + k + k); }
+  const sentences = [];
+  while (sentences.join(" ").length < PART_LEN) {
+    const ws = [pick(names.length ? names : C1), pick(C1), pick(C1)].map(w => w.toLowerCase());
+    sentences.push(cap(ws.join(" ")) + ".");
   }
-  if (L.shift) {
-    const names = T1.filter(w => w[0] !== w[0].toLowerCase());
-    const warm = [];
-    while (warm.join(" ").length < PART_LEN) { const k = pick(letters.filter(c => c !== "ç")); warm.push(k.toUpperCase() + k + k); }
-    const sentences = [];
-    while (sentences.join(" ").length < PART_LEN) {
-      const ws = [pick(names.length ? names : C1), pick(C1), pick(C1)].map(w => w.toLowerCase());
-      sentences.push(cap(ws.join(" ")) + ".");
-    }
-    return [warm.join(" "), wordPart(names, C1.map(cap), used, () => cap(syl([])())), sentences.join(" ")];
-  }
-  const focusAll = L.k ? [...lessonKeys(L)] : null;
-  if (!focusAll || L.accents) {
-    const sample = [...letters].sort(() => Math.random() - 0.5).slice(0, 4);
-    return [
-      anchorPart(sample),
-      wordPart(lower(T1), lower(C1), used, syl([]), {punct: puncts, punctRate: 0.1}),
-      wordPart(lower(T1), lower(C1), used, syl([]), {punct: puncts, punctRate: 0.1})
-    ];
-  }
+  return [warm.join(" "), wordPart(names, C1.map(cap), used, () => cap(syl([])())), sentences.join(" ")];
+}
+// A review mixes every letter taught so far.
+function mixedParts(idx) {
+  const {letters, puncts, T1, C1, used, syl} = courseWords(idx);
+  const sample = [...letters].sort(() => Math.random() - 0.5).slice(0, 4);
+  return [
+    anchorPart(sample),
+    wordPart(lower(T1), lower(C1), used, syl([]), {punct: puncts, punctRate: 0.1}),
+    wordPart(lower(T1), lower(C1), used, syl([]), {punct: puncts, punctRate: 0.1})
+  ];
+}
+// A new-keys lesson: a warm-up on the new keys, words with them, then words with every letter so far.
+function keysParts(L, idx) {
+  const {puncts, T1, C1, used, syl} = courseWords(idx);
+  const focusAll = [...lessonKeys(L)];
   const focusLetters = focusAll.filter(isLetter);
   const focusPunct = focusAll.filter(c => !isLetter(c));
   const hasFocus = w => [...w.toLowerCase()].some(c => focusLetters.includes(c));
@@ -541,7 +556,7 @@ function mapSvg() {
 function lessonCard(L, i, nx) {
   const p = progress()[L.id];
   const locked = !isUnlocked(i);
-  const keys = L.k ? `<div class="keys">${[...lessonKeys(L)].map(c => `<span class="cap">${esc(c.toUpperCase())}</span>`).join("")}</div>` : `<div class="title">${esc(lessonTitle(L))}</div>`;
+  const keys = L.type === "keys" ? `<div class="keys">${[...lessonKeys(L)].map(c => `<span class="cap">${esc(c.toUpperCase())}</span>`).join("")}</div>` : `<div class="title">${esc(lessonTitle(L))}</div>`;
   const best = p ? ` · ${p.wpm} ${t("wpm")}` : "";
   const race = L.race ? `<span class="race-tag">🏁 ${esc(RIVALS[L.race].nm)}</span>` : "";
   const foot = locked ? `<span class="sub">${esc(t("preview"))}</span>` : `<span>${starRow(p?.stars || 0)}<span class="sub">${best}</span></span>`;
@@ -788,7 +803,7 @@ $("#textbox").addEventListener("click", () => { if (run && !run.done) focusSink(
 
 /* ---------- finishing ---------- */
 function bestOverall() {
-  const p = progress(), r1 = lessonIndexOf("r1");
+  const p = progress(), r1 = milestoneIdx("speedCounts");
   const lessonBest = Math.max(0, ...LESSON_DEFS.filter((L, i) => i >= r1 && lessonDone(L.id)).map(L => p[L.id].wpm || 0));
   return Math.max(data.best.free, data.best.quote, lessonBest);
 }
@@ -1191,16 +1206,21 @@ function lessonIntro(L) {
   if (L.id === "fj") return {title: t("in_fj_t"), bullets: tipList("in_fj"), hi: ["f", "j"], reach: []};
   if (L.id === "a") return {title: t("in_a_t"), bullets: tipList("in_a"), hi: homeAll, reach: []};
   if (L.id === "r1") return {title: t("rv_home"), bullets: tipList("in_r1"), hi: homeAll, reach: []};
-  if (L.shift) return {title: t("shiftLesson"), bullets: tipList("in_shift"), hi: ["shiftL", "shiftR"], reach: [[homeAll[0], "shiftL"], [homeAll[7], "shiftR"]]};
-  if (L.accents) {
-    const title = lessonTitle(L), n = L.accents;
-    if (S.layout === "intl") return {title, bullets: tipList(`in_acc${n}_intl`), hi: n === 1 ? ["'", "~"] : ["^", "`", ",", "altgr"], reach: []};
-    if (S.layout === "abnt") return {title, bullets: tipList(`in_acc${n}_abnt`), hi: n === 1 ? ["´", "~"] : ["^", "`", "ç"], reach: []};
-    return {title, bullets: tipList("in_acc_us"), hi: [], reach: []};
-  }
-  if (L.quotes) return {title: t("quotesLesson"), bullets: tipList(S.layout === "intl" ? "in_q_intl" : "in_q"), hi: [",", ".", "!", "?", "shiftL", "shiftR"], reach: []};
-  if (L.review) return {title: lessonTitle(L), bullets: tipList("in_rv"), hi: [], reach: []};
-  if (!L.k) return null;
+  return LESSON_TYPES[L.type].intro(L);
+}
+function shiftIntro() {
+  const homeAll = [...HOME[S.layout]];
+  return {title: t("shiftLesson"), bullets: tipList("in_shift"), hi: ["shiftL", "shiftR"], reach: [[homeAll[0], "shiftL"], [homeAll[7], "shiftR"]]};
+}
+function accentIntro(L) {
+  const title = lessonTitle(L), n = L.level;
+  if (S.layout === "intl") return {title, bullets: tipList(`in_acc${n}_intl`), hi: n === 1 ? ["'", "~"] : ["^", "`", ",", "altgr"], reach: []};
+  if (S.layout === "abnt") return {title, bullets: tipList(`in_acc${n}_abnt`), hi: n === 1 ? ["´", "~"] : ["^", "`", "ç"], reach: []};
+  return {title, bullets: tipList("in_acc_us"), hi: [], reach: []};
+}
+const quoteIntro = () => ({title: t("quotesLesson"), bullets: tipList(S.layout === "intl" ? "in_q_intl" : "in_q"), hi: [",", ".", "!", "?", "shiftL", "shiftR"], reach: []});
+// Each new key gets a line: a home key stays put, any other key is a reach from the finger's home key.
+function keysIntro(L) {
   const g = keyGeometry(), keys = [...lessonKeys(L)], bullets = [], reach = [];
   for (const k of keys) {
     const rc = g.pos[k];
@@ -1638,7 +1658,7 @@ function startReview() {
 
 /* ---------- keyboard help on demand ---------- */
 const partIndex = () => { const b = run.bounds || []; return run.pos >= (b[1] ?? Infinity) ? 2 : run.pos >= (b[0] ?? Infinity) ? 1 : 0; };
-const newKeyLesson = () => run.mode === "lesson" && (() => { const L = LESSON_DEFS[run.lessonIdx]; return !!(L.k || L.accents || L.shift); })();
+const newKeyLesson = () => run.mode === "lesson" && LESSON_TYPES[LESSON_DEFS[run.lessonIdx].type].newKeys;
 // New keys are taught with full help during the warm-up, then the help waits for a pause or a mistake.
 function helpPolicy() {
   const fresh = newKeyLesson();
@@ -1806,21 +1826,21 @@ function openTip() {
 }
 // Until the all-letters review is cleared, the free run sticks to letters from cleared lessons.
 function learnedLimit() {
-  const r3 = lessonIndexOf("r3");
-  if (S.unlockAll || lessonDone("r3")) return null;
+  const r3 = milestoneIdx("allLetters");
+  if (S.unlockAll || milestoneDone("allLetters")) return null;
   let lim = 0;
   LESSON_DEFS.forEach((L, i) => { if (i < r3 && lessonDone(L.id)) lim = Math.max(lim, i); });
   return lim;
 }
-const quotesUnlocked = () => S.unlockAll || lessonDone("shift");
+const quotesUnlocked = () => S.unlockAll || milestoneDone("quotes");
 function renderFreeNote() {
   const lim = learnedLimit();
   $("#free-note").textContent = lim === null ? "" :
-    t("freeLimited", {k: [...allowedUpTo(lim)].filter(isLetter).map(c => c.toUpperCase()).join(" "), n: lessonIndexOf("r3") + 1});
+    t("freeLimited", {k: [...allowedUpTo(lim)].filter(isLetter).map(c => c.toUpperCase()).join(" "), n: milestoneIdx("allLetters") + 1});
 }
 function renderQuoteNote() {
   const open = quotesUnlocked();
-  $("#quote-note").textContent = open ? "" : t("quotesLocked", {n: lessonIndexOf("shift") + 1});
+  $("#quote-note").textContent = open ? "" : t("quotesLocked", {n: milestoneIdx("quotes") + 1});
   $("#btn-quote").textContent = open ? t("start") : t("previewBtn");
 }
 const startQuote = () => startRun("quote", {preview: !quotesUnlocked()});
