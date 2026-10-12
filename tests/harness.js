@@ -6,6 +6,8 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
+// The engine files the loader runs, in its order.
+const ENGINE_SCRIPTS = JSON.parse(/const SCRIPTS = (\[[^\]]*\]);/.exec(read('loader.js'))[1]);
 
 // jsdom has no fetch, so the loader's JSON files go into the page as globals, followed by the engine.
 // A test can pass themeEdit to change the theme data before the page loads.
@@ -16,7 +18,7 @@ function inlineLoader(attrs, themeEdit) {
   const theme = themeFile && JSON.parse(read(themeFile));
   if (theme && themeEdit) themeEdit(theme);
   const catalog = fs.existsSync(path.join(ROOT, 'themes.json')) ? JSON.parse(read('themes.json')) : [];
-  return `<script>window.I18N = ${JSON.stringify(i18n)}; window.THEMES = ${JSON.stringify(catalog)};${theme ? ` window.THEME = ${JSON.stringify(theme)};` : ''}</script>\n<script>\n${read('engine.js')}\n</script>`;
+  return `<script>window.I18N = ${JSON.stringify(i18n)}; window.THEMES = ${JSON.stringify(catalog)};${theme ? ` window.THEME = ${JSON.stringify(theme)};` : ''}</script>\n${ENGINE_SCRIPTS.map(f => `<script>\n${read(f)}\n</script>`).join('\n')}`;
 }
 
 const themeOf = (page = 'index.html') => /data-theme="([^"]*)"/.exec(read(page))[1];

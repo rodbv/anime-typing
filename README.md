@@ -34,8 +34,8 @@ O [ROTEIRO.md](ROTEIRO.md) descreve a história do tema JoJo, as etapas e as dec
 
 ## Estrutura
 
-- `engine.js` e `engine.css`: o jogo, igual para todos os temas.
-- `loader.js`: busca o tema e os textos e depois inicia o engine.
+- `markup.js`, `engine.js` e `engine.css`: o jogo, igual para todos os temas. `markup.js` traz o HTML das telas.
+- `loader.js`: busca o tema e os textos e depois roda os arquivos do engine, na ordem da lista `SCRIPTS`.
 - `themes/jojo.json` e `themes/rush.json`: o conteúdo de cada tema.
 - `i18n/pt.json` e `i18n/en.json`: os textos comuns da interface e os textos padrão de um tema.
 - `index.html` e `rush.html`: as páginas de cada tema.

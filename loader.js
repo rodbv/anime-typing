@@ -1,7 +1,9 @@
-// Fetches the interface texts and the theme, then starts the engine with them.
+// Fetches the interface texts and the theme, then runs the engine files with them.
 // The page lists the files in data attributes; ?v= on this script is passed to every file to skip stale caches.
 // themes.json lists every theme for the theme selector; without it, the page has no selector.
 (function () {
+  // The engine files, in the order they run.
+  const SCRIPTS = ["markup.js", "engine.js"];
   const me = document.currentScript;
   const version = new URL(me.src).search;
   const files = (me.dataset.i18n || "").split(/\s+/).filter(Boolean);
@@ -12,9 +14,12 @@
     window.THEMES = catalog;
     window.I18N = {};
     files.forEach((f, i) => { window.I18N[f.split("/").pop().replace(".json", "")] = dicts[i]; });
-    const engine = document.createElement("script");
-    engine.src = "engine.js" + version;
-    document.body.appendChild(engine);
+    SCRIPTS.forEach(src => {
+      const s = document.createElement("script");
+      s.src = src + version;
+      s.async = false;
+      document.body.appendChild(s);
+    });
   }).catch(err => {
     document.body.innerHTML = `<div style="font:16px/1.5 system-ui,sans-serif;max-width:560px;margin:40px auto;padding:0 16px">
       <h1 style="font-size:22px">O jogo não conseguiu carregar os arquivos</h1>
