@@ -1726,6 +1726,8 @@
 <input type="checkbox" id="opt-acc"> Usar acentos nas frases e na corrida livre</label>
 <label class="toggle">
 <input type="checkbox" id="opt-unlock"> Desbloquear todas as lições</label>
+<label class="toggle">
+<input type="checkbox" id="opt-sound" checked=""> Sons</label>
 <button class="btn small" id="btn-redo" style="margin-top:8px">Configurar teclado de novo</button>
 <button class="btn small" id="btn-prologue" style="margin-top:8px">Ver a história de novo</button>
 <button class="btn small" id="btn-share" style="margin-top:8px">📲 Compartilhar no Zap</button>

@@ -15,7 +15,7 @@ const sanitize = (str, accents) => sanitizeFor(S.layout, str, accents);
 /* ---------- storage ---------- */
 const STORE_KEY = TH.storeKey;
 const DEFAULTS = {
-  settings: {layout: "intl", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false},
+  settings: {layout: "intl", showKb: true, time: 60, accents: false, unlockAll: false, setupDone: false, sound: true},
   lessons: {intl: {}, us: {}, abnt: {}}, keys: {intl: {}, us: {}, abnt: {}},
   best: {free: 0, quote: 0}, totals: {runs: 0, chars: 0}, unlocked: {}, history: [],
   profile: {name: ""}, days: {}, bestStreak: 0
@@ -508,6 +508,7 @@ function typeChar(ch) {
     run.lastOk = now;
     run.streak = run.errAt.has(run.pos) ? 0 : run.streak + 1;
     run.bestStreak = Math.max(run.bestStreak, run.streak);
+    sound("hit");
     streakFx();
     $("#kb").classList.remove("insist");
     $("#hint").classList.remove("insist");
@@ -529,6 +530,7 @@ function typeChar(ch) {
     setCursor();
   } else {
     run.streak = 0;
+    sound("miss");
     el.classList.add("bad");
     run.errCount[run.pos] = (run.errCount[run.pos] || 0) + 1;
     clearTimeout(run.helpTimer);
@@ -669,6 +671,7 @@ function finish() {
   };
   run.primary = actions[btns[0][0]];
 
+  sound(run.mode === "lesson" && !run.passed && !run.preview ? "fail" : "clear");
   const r = $("#results");
   // A failed lesson ends like an episode: the card fades from sepia while the theme's banner slides in.
   const cliffhanger = run.mode === "lesson" && !run.passed && !run.preview && FX.failBanner;
@@ -719,10 +722,42 @@ function floatFx(kind, text, x, y, delay = 0) {
 }
 function streakFx() {
   const s = run.streak;
+  if (s && s % FX.rushEvery === 0) sound("burst");
   if (calmMotion() || !s) return;
   // The marks rise along the left and right edges of the box, as in the manga, and leave the text clear.
   if (FX.marks.length && s >= FX.marksAt && s % 2 === 0) floatFx("mark", FX.marks[s / 2 % FX.marks.length], (s / 2 % 2 ? 1 : 92) + s % 4, fxSpot(s, 1) * 0.7);
   if (FX.rush && s % FX.rushEvery === 0) for (let i = 0; i < 6; i++) floatFx("rush", FX.rush, fxSpot(s, i + 2), fxSpot(s, i + 9) * 0.7, i * 70);
+}
+
+/* ---------- sound ---------- */
+// Synthesized sounds, so the game ships no audio files. The context starts on the first sound, which always follows a key press.
+let audio = null;
+function tone(freq, ms, {type = "triangle", gain = 0.08, at = 0, slide = 0} = {}) {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  audio = audio || new AC();
+  const t0 = audio.currentTime + at / 1000, t1 = t0 + ms / 1000;
+  const osc = audio.createOscillator(), g = audio.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  if (slide) osc.frequency.exponentialRampToValueAtTime(freq * slide, t1);
+  g.gain.setValueAtTime(gain, t0);
+  g.gain.exponentialRampToValueAtTime(0.0001, t1);
+  osc.connect(g).connect(audio.destination);
+  osc.start(t0);
+  osc.stop(t1);
+}
+// A soft hoof tap per hit, a low thud per miss, a rising chord every few hits in a row, a fanfare for a result and a falling pair for a failed lesson.
+const SOUNDS = {
+  hit: () => tone(150, 50, {type: "sine", gain: 0.05}),
+  miss: () => tone(95, 160, {type: "square", gain: 0.035, slide: 0.7}),
+  burst: () => [392, 523, 659, 784].forEach((f, i) => tone(f, 120, {at: i * 60})),
+  clear: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 180, {at: i * 110})),
+  fail: () => [330, 247].forEach((f, i) => tone(f, 280, {at: i * 230, type: "sawtooth", gain: 0.04}))
+};
+function sound(name) {
+  if (!S.sound) return;
+  try { SOUNDS[name](); } catch (e) { /* the browser refused audio; the game goes on silent */ }
 }
 
 /* ---------- global keys ---------- */
@@ -860,6 +895,7 @@ function renderStats() {
         <label class="toggle"><input type="checkbox" id="opt-kb" ${S.showKb ? "checked" : ""}> ${esc(t("showKb"))}</label>
         <label class="toggle"><input type="checkbox" id="opt-acc" ${S.accents ? "checked" : ""}> ${esc(t("accents"))}</label>
         <label class="toggle"><input type="checkbox" id="opt-unlock" ${S.unlockAll ? "checked" : ""}> ${esc(t("unlockAll"))}</label>
+        <label class="toggle"><input type="checkbox" id="opt-sound" ${S.sound ? "checked" : ""}> ${esc(t("soundOpt"))}</label>
         <button class="btn small" id="btn-redo" style="margin-top:8px">${esc(t("redoSetup"))}</button>
         <button class="btn small" id="btn-prologue" style="margin-top:8px">${esc(t("replayPrologue"))}</button>
         <button class="btn small" id="btn-share" style="margin-top:8px">${esc(t("shareBtn"))}</button>
@@ -878,6 +914,7 @@ function renderStats() {
   $("#opt-kb").addEventListener("change", e => { S.showKb = e.target.checked; save(); });
   $("#opt-acc").addEventListener("change", e => { S.accents = e.target.checked; save(); });
   $("#opt-unlock").addEventListener("change", e => { S.unlockAll = e.target.checked; save(); });
+  $("#opt-sound").addEventListener("change", e => { S.sound = e.target.checked; save(); });
   $("#btn-redo").addEventListener("click", () => { setup = {step: 1, layout: null, msg: ""}; showView("setup"); });
   $("#btn-prologue").addEventListener("click", () => { prologueAt = 0; showView("prologue"); });
   $("#btn-share").addEventListener("click", openShare);
