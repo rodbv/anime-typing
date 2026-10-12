@@ -687,7 +687,7 @@ function finish() {
   r.classList.toggle("cliffhanger", !!cliffhanger);
   r.innerHTML = `
     ${cliffhanger ? cliffhangerHtml() : ""}
-    ${(run.won || courseDone) && FX.winArt.length ? victoryHtml() : ""}
+    ${(run.won || courseDone) && FX.winArt.length ? victoryHtml() : run.mode === "lesson" && run.passed && !run.preview && FX.clearArt.length ? cheerHtml() : ""}
     ${mission.justDone ? `<div class="done-box">🔥 <b>${esc(t("missionDoneTitle"))}</b> ${esc(t("missionDoneText", {name: data.profile.name || TH.hero.short}))}</div>` : ""}
     <h2 class="rt">${esc(title)} ${record ? `<span class="flair">${esc(t("flair"))} ${esc(t("newRecord"))}</span>` : ""}</h2>
     ${mission.breakNow ? `<p class="tipline">⏸️ ${esc(t("breakMsg"))}</p>` : ""}
@@ -738,6 +738,9 @@ function cliffhangerHtml() {
   const banner = `<div class="tbc"><span>${esc(FX.failBanner)}</span></div>`;
   return FX.failArt.length ? `<div class="frozen">${FX.failArt.map(src => `<img src="${esc(src)}" alt="">`).join("")}${banner}</div>` : banner;
 }
+// A cleared lesson gets one of the theme's smaller images, in turns; the full pose stays for won races.
+let cheerTurn = 0;
+const cheerHtml = () => `<div class="cheer"><img src="${esc(FX.clearArt[cheerTurn++ % FX.clearArt.length])}" alt=""></div>`;
 // The heroes strike a pose over the theme's marks after a won race or the last lesson.
 const victoryHtml = () => `<div class="victory" data-marks="${esc(FX.marks.join(""))}">${FX.winArt.map((src, i) =>
   `<img src="${esc(src)}" alt="" style="animation-delay:${i * 160}ms">`).join("")}</div>`;

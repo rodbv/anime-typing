@@ -33,6 +33,12 @@
     "failArt": [
       "themes/jojo/johnny-falls.webp"
     ],
+    "clearArt": [
+      "themes/jojo/gyro-fist.webp",
+      "themes/jojo/gyro-valkyrie.webp",
+      "themes/jojo/johnny-slowdancer.webp",
+      "themes/jojo/gyro-teeth.webp"
+    ],
     "winArt": [
       "themes/jojo/johnny.webp",
       "themes/jojo/gyro.webp"

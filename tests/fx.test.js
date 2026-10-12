@@ -51,10 +51,13 @@ check(!R.d.querySelector('#results .tbc'), 'a theme without failBanner should no
 // Winning a race shows the theme's victory art; a lesson without a race does not.
 const art = A => [...A.d.querySelectorAll('#results .victory img')].map(i => i.getAttribute('src'));
 J.playLesson(2);
-check(art(J).length === 0, 'a lesson without a race should not show the victory art');
+const cheer = A => A.d.querySelector('#results .cheer img')?.getAttribute('src');
+check(art(J).length === 0 && cheer(J), 'a lesson without a race should show a cheer image, not the victory art');
+const first = cheer(J); J.playLesson(2);
+check(cheer(J) && cheer(J) !== first, 'the next cleared lesson should show the next cheer image');
 // The ghost follows the recent speed, so an empty history keeps it at its floor.
 J.ev('data.history = []'); J.playLesson(5);
-check(J.ev('run.won') && art(J).join() === 'themes/jojo/johnny.webp,themes/jojo/gyro.webp', 'a won race should show the victory art, got ' + art(J));
+check(J.ev('run.won') && art(J).join() === 'themes/jojo/johnny.webp,themes/jojo/gyro.webp' && !cheer(J), 'a won race should show the victory art alone, got ' + art(J));
 R.playLesson(1);
 check(R.ev('run.won') && art(R).length === 0, 'a theme without winArt should not show it');
 console.log('ERRORS', J.errors, R.errors);

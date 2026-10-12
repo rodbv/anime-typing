@@ -175,8 +175,10 @@ body.cardmode header .controls,body.cardmode .tabs,body.cardmode footer{display:
 .victory::before{left:6%}
 .victory::after{right:6%}
 .victory img{position:relative;height:100%;margin:0 -18px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.55));animation:pose .7s cubic-bezier(.2,1.4,.4,1) both}
+.cheer{display:flex;justify-content:center;margin:0 0 10px}
+.cheer img{max-height:150px;max-width:100%;border-radius:10px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5));animation:pose .7s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes pose{0%{opacity:0;transform:translateY(40px) scale(.8)}100%{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.results.cliffhanger,.tbc,.fx,.victory img{animation:none}}
+@media (prefers-reduced-motion:reduce){.results.cliffhanger,.tbc,.fx,.victory img,.cheer img{animation:none}}
 .c.ghost{box-shadow:inset 0 3px 0 var(--accent2)}
 .c.ghost.cur{box-shadow:inset 0 3px 0 var(--accent2),inset 0 -3px 0 var(--accent)}
 .meter .ghostmark{position:absolute;top:0;bottom:0;width:4px;margin-left:-2px;background:var(--accent2);border-radius:2px}
