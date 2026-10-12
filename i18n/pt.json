@@ -262,5 +262,115 @@
   "distOf": "{a} de {b}",
   "missionDoneTitle": "Missão cumprida!",
   "mPlay": "Jogar ▶",
-  "mDone": "Feito"
+  "mDone": "Feito",
+  "racerTag": "Jogador nº {n} · {name}",
+  "collGroups": {},
+  "setupNumber": "O seu número: {n}.",
+  "in_rv": [
+    "Revisão: todas as teclas que você já aprendeu até aqui.",
+    "Tente não olhar para o teclado. Olhe para a tela."
+  ],
+  "partDone": "Parte {n} de 3 · +{dist}",
+  "raceRule": "Corrida contra {nm}: o fantasma digita a {wpm} PPM, marcado por uma linha em cima da letra. Chegue antes dele. Para passar, você precisa de 93% de precisão.",
+  "mNext": "Próxima lição: {n} ({title})",
+  "sheetTitle": "Ficha",
+  "stPower": "Força",
+  "stSpeed": "Velocidade",
+  "stRange": "Alcance",
+  "stDurability": "Resistência",
+  "stPrecision": "Precisão",
+  "stPotential": "Potencial",
+  "stPowerV": "{n} letras seguidas sem erro",
+  "stRangeV": "{n}% da jornada",
+  "stDurabilityV": "treinou {n} dos últimos 7 dias",
+  "stPotentialV": "ainda dá para evoluir",
+  "stage": "Etapa",
+  "proSignUp": "Começar (Enter)",
+  "mapLabel": "mapa da jornada",
+  "sheetAria": "ficha do jogador",
+  "shareText": "{icon} {name} (nº {number}): {mi} min de treino hoje, missão {ms} de 3{items}. {stage}, {dist} de {total}.",
+  "shareHelp": "Aponte a câmera do celular para o código. Ele abre o seu diário, com um botão para mandar no WhatsApp.",
+  "cardRacer": "{icon} Nº {number} · ",
+  "cardTitle": "Diário de treino",
+  "cardJourney": "Na jornada",
+  "mReview": "Revisão: refaça a lição {n} ({title})",
+  "mReviewAny": "Revisão: refaça qualquer lição",
+  "mentorTip": "Dica",
+  "sheetEmpty": "Ainda sem nível",
+  "missionDoneText": "Bom trabalho hoje, {name}. Amanhã tem mais.",
+  "flair": "★",
+  "stageHead": "{lbl}: {place}",
+  "stageTag": "{lbl}: {place}",
+  "stageRoute": "",
+  "defHero": "Jogador",
+  "defMentor": "Treinador",
+  "defUnit": "etapas",
+  "defUnitOne": "etapa",
+  "defEvolution": "Nível",
+  "proWhere": {
+    "start": {
+      "title": "Antes da primeira lição",
+      "narr": [
+        "A missão diária na tela inicial diz o que treinar.",
+        "15 minutos por dia, sem olhar para as mãos. Primeiro a precisão, depois a velocidade: com 90% de acerto você passa de lição."
+      ]
+    },
+    "finished": {
+      "title": "Fim da jornada",
+      "narr": [
+        "Você completou {total}.",
+        "Agora o treino livre e as frases deixam os seus dedos mais rápidos."
+      ]
+    },
+    "progress": {
+      "title": "{lbl}: {place}",
+      "distance": "Você já completou {dist} de {total}.",
+      "next": "Próxima lição: {n} ({lesson}).",
+      "race": " É uma corrida contra {rival}.",
+      "missionDone": "A missão de hoje já está cumprida. Um treino a mais é bônus.",
+      "mission": "Missão de hoje: {done} de 3 feitas."
+    }
+  },
+  "defQuotes": [
+    [
+      "Devagar se vai ao longe.",
+      "Ditado popular"
+    ],
+    [
+      "A prática leva à perfeição.",
+      "Ditado popular"
+    ],
+    [
+      "Água mole em pedra dura, tanto bate até que fura.",
+      "Ditado popular"
+    ],
+    [
+      "De grão em grão, a galinha enche o papo.",
+      "Ditado popular"
+    ],
+    [
+      "Quem não arrisca não petisca.",
+      "Ditado popular"
+    ],
+    [
+      "Antes tarde do que nunca.",
+      "Ditado popular"
+    ],
+    [
+      "Mais vale um pássaro na mão do que dois voando.",
+      "Ditado popular"
+    ],
+    [
+      "Quem espera sempre alcança.",
+      "Ditado popular"
+    ],
+    [
+      "Cada macaco no seu galho.",
+      "Ditado popular"
+    ],
+    [
+      "Em boca fechada não entra mosquito.",
+      "Ditado popular"
+    ]
+  ]
 }

@@ -133,7 +133,29 @@ const locale = () => S.lang === "pt" ? "pt-BR" : "en";
 
 /* ---------- content ---------- */
 // Story content of the page's theme, loaded by loader.js from the themes folder.
-const TH = window.THEME;
+// A theme needs only an id and its stages; every other section falls back to these defaults.
+const DEFAULT_RANKS = [[0, "Beginner", "Iniciante"], [10, "Apprentice", "Aprendiz"], [15, "Typist", "Digitador"],
+  [20, "Fast", "Rápido"], [25, "Very fast", "Muito rápido"], [30, "Expert", "Especialista"], [40, "Master", "Mestre"],
+  [50, "Grandmaster", "Grão-mestre"], [60, "Legend", "Lenda"]];
+function withDefaults(th) {
+  const tx = k => (T[th.lang] || T.pt)[k] ?? T.pt[k];
+  const j = th.journey || {}, where = th.prologue?.where || {}, hero = {name: tx("defHero"), number: 1, icon: "⌨️", ...th.hero};
+  return {
+    lang: "pt", rivals: {}, story: {}, achievements: [], ranks: DEFAULT_RANKS, ...th,
+    storeKey: th.storeKey || "typedojo:" + th.id,
+    look: {logo: ["TYPE", "DOJO"], deco: "", ...th.look, colors: {...th.look?.colors}},
+    hero: {short: hero.name, ...hero},
+    mentor: {name: tx("defMentor"), ...th.mentor},
+    words: {names: "", terms: "", ...th.words},
+    quotes: th.quotes?.length ? th.quotes : tx("defQuotes"),
+    evolution: {name: tx("defEvolution"), levels: [], ...th.evolution},
+    prologue: {slides: th.prologue?.slides || [],
+      where: Object.fromEntries(["start", "finished", "progress"].map(k => [k, {...tx("proWhere")[k], ...where[k]}]))},
+    journey: {view: "line", marker: "📍", start: {}, ...j, unit: j.unit ?? tx("defUnit"), unitOne: j.unitOne ?? j.unit ?? tx("defUnitOne"),
+      stages: (j.stages || []).map((st, i) => ({lbl: `${tx("stage")} ${i + 1}`, dist: 1, ...st}))}
+  };
+}
+const TH = withDefaults(window.THEME);
 const STAGES = TH.journey.stages;
 const TOTAL_DIST = STAGES.reduce((a, st) => a + st.dist, 0);
 const RIVALS = TH.rivals;
@@ -284,6 +306,8 @@ const LESSON_DEFS = [
 ];
 // The theme groups the course into stages in course order; a stage's rival races its last lesson.
 const themeProblems = [];
+if (!TH.id) themeProblems.push("o tema precisa de um id");
+STAGES.forEach((st, si) => { if (!st.place) themeProblems.push(`etapa ${si + 1}: falta o nome (place)`); });
 STAGES.forEach((st, si) => (st.lessons || []).forEach(id => {
   const L = LESSON_DEFS.find(x => x.id === id);
   if (!L) themeProblems.push(`etapa ${si + 1}: a lição "${id}" não existe`);
@@ -1113,9 +1137,9 @@ document.querySelectorAll(".seg[data-set]").forEach(seg => {
 function renderCollection() {
   const got = ACHIEVEMENTS.filter(a => data.unlocked[a.id]).length;
   $("#coll-summary").textContent = t("collSummary", {n: got, t: ACHIEVEMENTS.length});
-  const groups = t("collGroups");
-  $("#collection").innerHTML = Object.keys(groups).map(g => `
-    <div class="coll-group"><h2>${esc(groups[g])}</h2><div class="coll">
+  const names = t("collGroups"), groups = uniq(ACHIEVEMENTS.map(a => a.s));
+  $("#collection").innerHTML = groups.map(g => `
+    <div class="coll-group"><h2>${esc(names[g] ?? g)}</h2><div class="coll">
     ${ACHIEVEMENTS.filter(a => a.s === g).map(a => {
       const u = data.unlocked[a.id];
       return `<div class="item ${u ? "got" : "locked"}"><span class="ic">${a.ic}</span><div>
@@ -1369,7 +1393,7 @@ function renderHome() {
     <div class="card hero">
       <div class="sub">${esc(t("racerTag", {n: TH.hero.number, name: prof.name || TH.hero.name}))}</div>
       <h1>${esc(stg.lbl)}: ${esc(stg.place)}</h1>
-      <p class="sub" style="font-size:15px;margin:0 0 14px">${esc(stageText("stageRoute", stg))} · ${esc(t("distOf", {a: fmtDist(distTraveled()), b: fmtDist(TOTAL_DIST)}))}</p>
+      <p class="sub" style="font-size:15px;margin:0 0 14px">${esc([stageText("stageRoute", stg), t("distOf", {a: fmtDist(distTraveled()), b: fmtDist(TOTAL_DIST)})].filter(Boolean).join(" · "))}</p>
       <button class="btn primary" data-go="start">${esc(first ? t("homeStart") : t("homeContinue", {n: nx + 1}))} ${esc(t("enterHint"))}</button>
       <div class="chips" style="margin-top:14px">
         <span class="chip">${esc(t("rank"))}: <b style="font-size:14px">${esc(rankName(cur))}</b></span>

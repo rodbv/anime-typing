@@ -179,5 +179,112 @@
   "previewBtn": "Preview (Enter)",
   "footer": "Progress is saved in this browser.",
   "mPlay": "Play ▶",
-  "mDone": "Done"
+  "mDone": "Done",
+  "racerTag": "Player no. {n} · {name}",
+  "collGroups": {},
+  "setupNumber": "Your number: {n}.",
+  "in_rv": [
+    "Review: every key you have learned so far.",
+    "Try not to look at the keyboard. Look at the screen."
+  ],
+  "partDone": "Part {n} of 3 · +{dist}",
+  "raceRule": "Race against {nm}: the ghost types at {wpm} WPM, marked by a line above the letter. Finish before it. To pass, you need 93% accuracy.",
+  "mNext": "Next lesson: {n} ({title})",
+  "sheetTitle": "Profile",
+  "stPower": "Power",
+  "stSpeed": "Speed",
+  "stRange": "Range",
+  "stDurability": "Stamina",
+  "stPrecision": "Precision",
+  "stPotential": "Potential",
+  "stPowerV": "{n} letters in a row without a miss",
+  "stRangeV": "{n}% of the journey",
+  "stDurabilityV": "trained {n} of the last 7 days",
+  "stPotentialV": "still room to grow",
+  "stage": "Stage",
+  "proSignUp": "Start (Enter)",
+  "mapLabel": "journey map",
+  "sheetAria": "player profile",
+  "shareText": "{icon} {name} (no. {number}): {mi} min of practice today, mission {ms} of 3{items}. {stage}, {dist} of {total}.",
+  "shareHelp": "Point the phone camera at the code. It opens your diary, with a button to send it on WhatsApp.",
+  "cardRacer": "{icon} No. {number} · ",
+  "cardTitle": "Training diary",
+  "cardJourney": "On the journey",
+  "cardPoints": "race points",
+  "mReview": "Review: play lesson {n} again ({title})",
+  "mReviewAny": "Review: play any lesson again",
+  "mentorTip": "Tip",
+  "sheetEmpty": "No level yet",
+  "missionDoneText": "Good work today, {name}. More tomorrow.",
+  "flair": "★",
+  "stageHead": "{lbl}: {place}",
+  "stageTag": "{lbl}: {place}",
+  "stageRoute": "",
+  "defHero": "Player",
+  "defMentor": "Coach",
+  "defUnit": "stages",
+  "defUnitOne": "stage",
+  "defEvolution": "Level",
+  "proWhere": {
+    "start": {
+      "title": "Before the first lesson",
+      "narr": [
+        "The daily mission on the home screen says what to practice.",
+        "15 minutes a day, without looking at your hands. Accuracy first, then speed: with 90% accuracy you pass a lesson."
+      ]
+    },
+    "finished": {
+      "title": "End of the journey",
+      "narr": [
+        "You completed {total}.",
+        "Now free practice and quotes make your fingers faster."
+      ]
+    },
+    "progress": {
+      "title": "{lbl}: {place}",
+      "distance": "You have completed {dist} of {total}.",
+      "next": "Next lesson: {n} ({lesson}).",
+      "race": " It is a race against {rival}.",
+      "missionDone": "Today's mission is done. Extra practice is a bonus.",
+      "mission": "Today's mission: {done} of 3 done."
+    }
+  },
+  "defQuotes": [
+    [
+      "Slow and steady wins the race.",
+      "Proverb"
+    ],
+    [
+      "Practice makes perfect.",
+      "Proverb"
+    ],
+    [
+      "Little strokes fell great oaks.",
+      "Proverb"
+    ],
+    [
+      "Better late than never.",
+      "Proverb"
+    ],
+    [
+      "Rome was not built in a day.",
+      "Proverb"
+    ],
+    [
+      "Where there is a will, there is a way.",
+      "Proverb"
+    ],
+    [
+      "Actions speak louder than words.",
+      "Proverb"
+    ],
+    [
+      "Patience is a virtue.",
+      "Proverb"
+    ],
+    [
+      "The early bird catches the worm.",
+      "Proverb"
+    ]
+  ]
 }

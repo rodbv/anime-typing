@@ -1,0 +1,48 @@
+{
+  "id": "minimal",
+  "journey": {
+    "stages": [
+      {
+        "place": "Lugar 1",
+        "lessons": [
+          "fj",
+          "dk",
+          "sl",
+          "a"
+        ]
+      },
+      {
+        "place": "Lugar 2",
+        "lessons": [
+          "gh",
+          "r1",
+          "ei",
+          "ru",
+          "to"
+        ]
+      },
+      {
+        "place": "Lugar 3",
+        "lessons": [
+          "nm",
+          "c,",
+          "qp",
+          "r2",
+          "acc1"
+        ]
+      },
+      {
+        "place": "Lugar 4",
+        "lessons": [
+          "acc2",
+          "vb",
+          "x.",
+          "zwy",
+          "r3",
+          "shift",
+          "quotes"
+        ]
+      }
+    ]
+  }
+}
