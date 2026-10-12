@@ -932,7 +932,7 @@ function renderStats() {
   $("#opt-unlock").addEventListener("change", e => { S.unlockAll = e.target.checked; save(); });
   $("#opt-sound").addEventListener("change", e => { S.sound = e.target.checked; save(); });
   $("#btn-redo").addEventListener("click", () => { setup = {step: 1, layout: null, msg: ""}; showView("setup"); });
-  $("#btn-prologue").addEventListener("click", () => { prologueAt = 0; showView("prologue"); });
+  $("#btn-prologue").addEventListener("click", () => { prologueAt = 0; offerResume = false; showView("prologue"); });
   $("#btn-share").addEventListener("click", openShare);
   resetArmed = false;
   $("#btn-reset").addEventListener("click", e => {
@@ -1269,6 +1269,9 @@ function whereSlide() {
 }
 const prologueSlides = () => [...PROLOGUE, whereSlide()];
 let prologueAt = 0;
+// A returning player opens the site on the first slide with the race as the main choice and the story as the other.
+let offerResume = false;
+const resuming = () => offerResume && prologueAt === 0;
 function prologueArt(art) {
   if (art === "map") return mapSvg();
   if (art === "hands") return handsSvg({hi: ["f", "j"]});
@@ -1286,10 +1289,10 @@ function renderPrologue() {
       ${P.mentor ? `<div class="bubble"><b>${esc(TH.mentor.name)}:</b> ${esc(P.mentor)}</div>` : ""}
       <div class="pro-dots">${slides.map((_, i) => `<i class="${i === prologueAt ? "on" : ""}"></i>`).join("")}</div>
       <div class="pro-nav">
-        ${!last ? `<button class="btn small" data-pro="skip">${esc(t("proSkip"))}</button>` : P.finished && S.setupDone ? "<span></span>" : `<button class="btn small" data-pro="home">${esc(t("proHome"))}</button>`}
+        ${resuming() ? `<button class="btn small" data-pro="next">${esc(t("proRecap"))}</button>` : !last ? `<button class="btn small" data-pro="skip">${esc(t("proSkip"))}</button>` : P.finished && S.setupDone ? "<span></span>" : `<button class="btn small" data-pro="home">${esc(t("proHome"))}</button>`}
         <span style="display:flex;gap:8px">
           ${prologueAt ? `<button class="btn" data-pro="prev">${esc(t("proPrev"))}</button>` : ""}
-          <button class="btn primary" data-pro="next">${esc(nextLbl)}</button>
+          ${resuming() ? `<button class="btn primary" data-pro="skip">${esc(t("proResume"))}</button>` : `<button class="btn primary" data-pro="next">${esc(nextLbl)}</button>`}
         </span>
       </div>
     </div>`;
@@ -1303,13 +1306,15 @@ function endPrologue() {
   else goHome();
 }
 function stepPrologue(d) {
+  offerResume = false;
   const i = prologueAt + d, n = PROLOGUE.length + 1;
   if (i >= n) { endPrologue(); return; }
   prologueAt = Math.max(0, i);
   renderPrologue();
 }
-const toLastSlide = () => { prologueAt = PROLOGUE.length; renderPrologue(); };
+const toLastSlide = () => { offerResume = false; prologueAt = PROLOGUE.length; renderPrologue(); };
 function handlePrologueKey(e) {
+  if (resuming() && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); toLastSlide(); return; }
   const act = {Enter: 1, " ": 1, ArrowRight: 1, ArrowLeft: -1}[e.key];
   if (act) { e.preventDefault(); stepPrologue(act); }
   else if (e.key === "Escape") { e.preventDefault(); if (prologueAt < PROLOGUE.length) toLastSlide(); else { prologueAt = 0; goHome(); } }
@@ -1691,6 +1696,7 @@ const params = new URLSearchParams(location.search);
 const startView = location.hash.slice(1);
 if (params.get("card")) showCard(params.get("card"));
 else {
+  offerResume = S.setupDone;
   showView(S.setupDone && ROUTES.includes(startView) && !["type", "setup"].includes(startView) ? startView : "prologue", {replace: true});
   if (params.has("qr")) openShare();
 }

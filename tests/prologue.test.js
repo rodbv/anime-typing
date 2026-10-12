@@ -24,7 +24,11 @@ check(ev('view') === 'setup', 'Enter on the last slide of a first visit should o
 A.ready(); A.playLesson(0); A.playLesson(1); A.playLesson(2);
 const B = boot(A.saved());
 check(B.ev('view') === 'prologue' && title(B) === first, 'a reload without a hash should open the story');
-B.d.querySelector('[data-pro=skip]').click();
+check(B.d.querySelector('.btn.primary').textContent.startsWith('Continuar a corrida') && nextBtn(B) === 'Relembrar a história', 'a returning player should get the race as the main button and the story as the other');
+B.key('ArrowRight'); B.key('ArrowLeft');
+check(nextBtn(B).startsWith('Próximo'), 'after the player moves through the story the first slide should offer the next slide');
+B.ev('offerResume = true; renderPrologue()');
+B.key('Enter');
 console.log('last slide:', title(B), '|', body(B));
 check(title(B) === 'Etapa 2: Deserto do Arizona' && body(B).includes('Próxima lição: 4'), 'the last slide should show the stage and the next lesson');
 check(nextBtn(B).includes('lição 4') && B.d.querySelector('[data-pro=home]'), 'the last slide should offer lesson 4 and home');
