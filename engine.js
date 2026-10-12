@@ -183,7 +183,7 @@ function syncSegs() {
     seg.querySelectorAll("button").forEach(b => b.classList.toggle("on", String(S[key]) === b.dataset.val));
   });
   document.querySelectorAll("#tabs button").forEach(b => {
-    const active = view === "type" ? (run ? {lesson: "lessons", free: "free", quote: "quotes"}[run.mode] : "") : view;
+    const active = view === "type" ? (run ? MODE_SCREEN[run.mode] : "") : view;
     b.classList.toggle("on", b.dataset.view === active);
   });
 }
@@ -192,28 +192,36 @@ const PANELS = {typing: ["#typing-area", "#type-actions"], menu: ["#menu"], intr
 function showPanel(name) {
   for (const [k, sels] of Object.entries(PANELS)) sels.forEach(sel => { $(sel).hidden = k !== name; });
 }
+// Each screen with its own #hash. render runs when the screen opens, enter is what Enter does there,
+// keys takes every key press instead, and noTabs hides the tab bar.
+const SCREENS = {
+  home: {render: () => renderHome(), enter: () => startNext()},
+  lessons: {render: () => renderLessons(), enter: () => startNext()},
+  free: {render: () => renderFreeNote(), enter: () => startRun("free")},
+  quotes: {render: () => renderQuoteNote(), enter: () => startQuote()},
+  collection: {render: () => renderCollection()},
+  stats: {render: () => renderStats()},
+  prologue: {render: () => renderPrologue(), keys: e => handlePrologueKey(e), noTabs: true},
+  setup: {render: () => renderSetup(), keys: e => handleSetupKey(e), noTabs: true},
+  type: {keys: e => handleTypingKey(e)}
+};
+// The screen each kind of run starts from, and goes back to.
+const MODE_SCREEN = {lesson: "lessons", free: "free", quote: "quotes"};
 function showView(v, {replace = false, fromHistory = false} = {}) {
   const prev = view;
   if (v !== "type") run = null;
   view = v;
   document.querySelectorAll(".view").forEach(s => { s.hidden = s.id !== "v-" + v; });
-  $("#tabs").hidden = v === "setup" || v === "prologue";
+  $("#tabs").hidden = !!SCREENS[v].noTabs;
   document.body.classList.toggle("focus", v === "type");
-  if (v === "free") renderFreeNote();
-  if (v === "quotes") renderQuoteNote();
-  if (v === "setup") renderSetup();
-  if (v === "prologue") renderPrologue();
-  if (v === "home") renderHome();
-  if (v === "lessons") renderLessons();
-  if (v === "stats") renderStats();
-  if (v === "collection") renderCollection();
+  SCREENS[v].render?.();
   syncSegs();
   if (!fromHistory) route(v, prev, replace);
 }
 
 /* ---------- routes ---------- */
 // Each screen has its own #hash, so the browser Back button moves between screens and a reload stays on the screen.
-const ROUTES = ["home", "lessons", "free", "quotes", "collection", "stats", "prologue", "setup", "type"];
+const ROUTES = Object.keys(SCREENS);
 function route(v, prev, replace) {
   if (!ROUTES.includes(v) || location.hash === "#" + v) return;
   // Leaving a lesson for the screen it started from steps back, so Back afterwards does not land on the finished lesson.
@@ -344,7 +352,7 @@ function restart() {
 }
 function goBack() {
   const m = run ? run.mode : "lesson";
-  showView({lesson: "lessons", free: "free", quote: "quotes"}[m]);
+  showView(MODE_SCREEN[m]);
 }
 function runLabel() {
   if (run.mode === "lesson") return `${t("lesson")} ${run.lessonIdx + 1} · ${lessonTitle(LESSON_DEFS[run.lessonIdx])} · ${t("wpmGoal", {n: passWpm(run.lessonIdx)})}` +
@@ -678,50 +686,45 @@ setInterval(() => {
 const onButton = e => !!(e.target.closest && e.target.closest("button, a"));
 document.addEventListener("keydown", e => {
   if (!$("#share").hidden) { if (e.key === "Escape") { e.preventDefault(); closeShare(); } return; }
-  if (view === "card") return;
-  if (view === "setup") { handleSetupKey(e); return; }
-  if (view === "prologue") { handlePrologueKey(e); return; }
-  if (view === "type" && run) {
-    if (run.introOpen) {
-      if (e.key === "Enter") { e.preventDefault(); closeIntro(); }
-      else if (e.key === "Escape") { e.preventDefault(); if (run.started || run.tipOpen) closeIntro(); else goBack(); }
-      return;
-    }
-    if (run.menuOpen) {
-      if (e.key === "Escape" || (e.key === "Enter" && !onButton(e))) { e.preventDefault(); closeMenu(); }
-      return;
-    }
-    if (e.key === "Escape") { e.preventDefault(); if (run.done) goBack(); else openMenu(); return; }
-    if (e.key === "Enter") { if (onButton(e)) return; e.preventDefault(); if (run.done && run.primary) run.primary(); return; }
-    if (e.key === "Tab") { e.preventDefault(); return; }
-    if (run.done) return;
-    $("#caps").hidden = !(e.getModifierState && e.getModifierState("CapsLock"));
-    if (!run.bannerShown) {
-      let suggest = null;
-      if (S.layout !== "abnt" && (e.key === "ç" || e.key === "Ç") && e.code === "Semicolon") suggest = "abnt";
-      else if (S.layout === "abnt" && e.code === "Semicolon" && (e.key === ";" || e.key === ":")) suggest = "intl";
-      else if (S.layout === "intl" && e.code === "Quote" && (e.key === "'" || e.key === '"')) suggest = "us";
-      else if (S.layout === "us" && e.code === "Quote" && e.key === "Dead") suggest = "intl";
-      if (suggest) {
-        run.bannerShown = true;
-        run.suggest = suggest;
-        $("#banner-msg").textContent = t({abnt: "layoutHintAbnt", intl: "layoutHintIntl", us: "layoutHintUs"}[suggest]);
-        $("#banner").hidden = false;
-      }
-    }
-    if (e.key.length === 1 && kb) {
-      const info = kb.map[e.key];
-      if (info) { info.el.classList.add("press"); setTimeout(() => info.el.classList.remove("press"), 110); }
-    }
-    if (document.activeElement !== sink) focusSink();
+  const screen = SCREENS[view];
+  if (screen?.keys) screen.keys(e);
+  else if (e.key === "Enter" && !onButton(e)) screen?.enter?.();
+});
+function handleTypingKey(e) {
+  if (!run) return;
+  if (run.introOpen) {
+    if (e.key === "Enter") { e.preventDefault(); closeIntro(); }
+    else if (e.key === "Escape") { e.preventDefault(); if (run.started || run.tipOpen) closeIntro(); else goBack(); }
     return;
   }
-  if (e.key === "Enter" && !onButton(e)) {
-    if (view === "free") startRun("free");
-    else if (view === "quotes") startQuote();
-    else if (view === "lessons" || view === "home") startNext();
+  if (run.menuOpen) {
+    if (e.key === "Escape" || (e.key === "Enter" && !onButton(e))) { e.preventDefault(); closeMenu(); }
+    return;
   }
-});
+  if (e.key === "Escape") { e.preventDefault(); if (run.done) goBack(); else openMenu(); return; }
+  if (e.key === "Enter") { if (onButton(e)) return; e.preventDefault(); if (run.done && run.primary) run.primary(); return; }
+  if (e.key === "Tab") { e.preventDefault(); return; }
+  if (run.done) return;
+  $("#caps").hidden = !(e.getModifierState && e.getModifierState("CapsLock"));
+  if (!run.bannerShown) {
+    let suggest = null;
+    if (S.layout !== "abnt" && (e.key === "ç" || e.key === "Ç") && e.code === "Semicolon") suggest = "abnt";
+    else if (S.layout === "abnt" && e.code === "Semicolon" && (e.key === ";" || e.key === ":")) suggest = "intl";
+    else if (S.layout === "intl" && e.code === "Quote" && (e.key === "'" || e.key === '"')) suggest = "us";
+    else if (S.layout === "us" && e.code === "Quote" && e.key === "Dead") suggest = "intl";
+    if (suggest) {
+      run.bannerShown = true;
+      run.suggest = suggest;
+      $("#banner-msg").textContent = t({abnt: "layoutHintAbnt", intl: "layoutHintIntl", us: "layoutHintUs"}[suggest]);
+      $("#banner").hidden = false;
+    }
+  }
+  if (e.key.length === 1 && kb) {
+    const info = kb.map[e.key];
+    if (info) { info.el.classList.add("press"); setTimeout(() => info.el.classList.remove("press"), 110); }
+  }
+  if (document.activeElement !== sink) focusSink();
+}
 
 $("#banner-yes").addEventListener("click", () => { setSetting("layout", run.suggest); });
 $("#banner-no").addEventListener("click", () => { $("#banner").hidden = true; focusSink(); });
